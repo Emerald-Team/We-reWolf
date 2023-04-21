@@ -1,5 +1,9 @@
-import '@@components/styles/globals.css'
+import '@components/styles/globals.css'
 
-export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />
+export default function App() {
+  return (
+    <>
+     hello werewolves
+    </>
+  )
 }
