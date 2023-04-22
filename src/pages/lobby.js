@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
-import GameSettings from "../comps/GameSettings";
-import PlayerList from "../comps/PlayerList";
+import GameSettings from "../comps/gameSettings";
+import PlayerList from "../comps/playerList";
 export default function Lobby() {
 
 
