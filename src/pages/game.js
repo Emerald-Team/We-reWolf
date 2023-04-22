@@ -50,7 +50,7 @@ export default function Game() {
             </div>
             <div style={player}>
               <Image src={avatar1} alt="Avatar" width="100" height="100" />
-              <small>user2</small>
+              <small>user2 Vote:2</small>
             </div>
             <div style={player}>
               <Image src={avatar} alt="Avatar" width="100" height="100" />
