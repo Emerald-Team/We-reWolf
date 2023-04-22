@@ -1,11 +1,4 @@
-import Image from "next/image"
-import { Inter } from "next/font/google"
-import App from "./_app"
-import Layout from "../comps/Layout"
-
-const inter = Inter({ subsets: ["latin"] })
-
-export default function Home() {
+export default function SignUp() {
   const styles = {
     container: {
       display: "flex",
@@ -35,6 +28,13 @@ export default function Home() {
       borderRadius: "4px",
       border: "1px solid #ccc",
     },
+    inputLast: {
+      width: "100%",
+      padding: "8px 16px",
+      marginBottom: "7px",
+      borderRadius: "4px",
+      border: "1px solid #ccc",
+    },
     button: {
       width: "100%",
       padding: "12px 24px",
@@ -44,41 +44,23 @@ export default function Home() {
       border: "none",
       cursor: "pointer",
     },
-    text: {
-      marginBottom: "16px",
-    },
-    imageBox: {
-      marginLeft: "24px",
-    },
-    image: {
-      width: "200px",
-      height: "200px",
-      objectFit: "cover",
-      borderRadius: "4px",
-    },
   }
 
   return (
     <div style={styles.container}>
       <div style={styles.loginBox}>
-        <h2 style={{ marginBottom: "10px" }}>Login</h2>
+        <h2 style={{ marginBottom: "10px" }}>Sign Up</h2>
         <form style={styles.form}>
-          <input type="text" placeholder="Username" style={styles.input} />
+          <input type="email" placeholder="Email" style={styles.input} />
           <input type="password" placeholder="Password" style={styles.input} />
+          <input type="text" placeholder="Username" style={styles.input} />
+          <input type="text" placeholder="w.e. you want" style={styles.input} />
+          <input type="text" placeholder="w.e. you want" style={styles.input} />
+          <input type="text" placeholder="w.e. you want" style={styles.input} />
           <button type="submit" style={styles.button}>
             Login
           </button>
         </form>
-        <p style={styles.text}>Move to sign up logic here</p>
-      </div>
-      <div style={styles.imageBox}>
-        <Image
-          src="/wold2.gif"
-          alt="Login"
-          style={styles.image}
-          width={150}
-          height={60}
-        />
       </div>
     </div>
   )

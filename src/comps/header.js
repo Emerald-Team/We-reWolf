@@ -1,5 +1,6 @@
 import React from "react"
 import Image from "next/image"
+import Link from "next/link"
 
 const Header = ({ changeTheme, buttonName }) => {
   return (
@@ -12,14 +13,10 @@ const Header = ({ changeTheme, buttonName }) => {
         backgroundColor: "#2A303C",
       }}
     >
-      <div style={{ height: "3rem", width: "auto" }}>
-        <Image
-          src="/Screenshot_2023-04-21_at_10.24.04_PM-removebg-preview.png"
-          alt="Title"
-          layout="responsive"
-          width={150}
-          height={60}
-        />
+      <div style={{ height: "4.5rem", marginTop: "-0.5rem" }}>
+        <Link href="/">
+          <Image src="/white.png" alt="Title" width={250} height={70} />
+        </Link>
       </div>
       <button
         style={{
