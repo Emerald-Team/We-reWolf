@@ -20,11 +20,7 @@
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
     "mongodb": "^5.3.0",
-<<<<<<< HEAD
     "mongoose": "^7.0.5",
-=======
-    "mongoose": "^7.0.4",
->>>>>>> basic schema setup, connect to mongodb, install dependencies: mongoose, auth0
     "next": "13.3.0",
     "path": "^0.12.7",
     "postcss": "8.4.23",
