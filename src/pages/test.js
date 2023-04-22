@@ -1,7 +1,5 @@
-const Test = ({changeTheme, buttonName}) => {
-  return (
-<h1>helloOooooooooo world</h1>
-  );
-};
+const Test = ({ changeTheme, buttonName }) => {
+  return <h1>helloOooooooooo world</h1>
+}
 
-export default Test;
+export default Test
