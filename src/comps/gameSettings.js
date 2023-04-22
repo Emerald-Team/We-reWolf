@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Counter from "./Counter.js";
+import Counter from "./counter.js";
 const GameSettings = ({ count, setCount }) => {
   const [selected, setSelected] = useState([]);
 
