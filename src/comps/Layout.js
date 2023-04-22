@@ -26,10 +26,10 @@ const Layout = ({ children }) => {
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        minHeight: "100vh", // Set a minimum height to cover the entire viewport
-        minHeight: "100vh", // Set a minimum height to cover the entire viewport
-        display: "flex", // Use flexbox to center content vertically and horizontally
-        flexDirection: "column", // Add flexDirection for vertical layout
+        minHeight: "100vh",
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <Header changeTheme={changeTheme} buttonName={buttonName} />
