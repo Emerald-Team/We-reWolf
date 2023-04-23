@@ -23,19 +23,19 @@ export default function Game() {
   return (
     <>
       <div style={containerStyle}>
-        <div style={gameContainerStyle}>
+        <div style={gameContainerStyleNight}>
           <div style={boxContainerStyle}>
-            <div style={roleStyle}>
+            <div style={roleStyleNight}>
               <p>Werewolf</p>
             </div>
-            <div style={timerStyle}>
+            <div style={timerStyleNight}>
               <p>1:58</p>
             </div>
-            <div style={dayStyle}>
+            <div style={dayStyleNight}>
               <p>Day 🔆/Night 🌙</p>
             </div>
           </div>
-          <div className="players" style={playerContainer}>
+          <div className="players" style={playerContainerNight}>
             <div style={player}>
               <Image src={avatar} alt="Avatar" width="100" height="100" />
               <small>user1</small>
@@ -69,7 +69,7 @@ export default function Game() {
               <small>user2</small>
             </div>
           </div>
-          <div style={werewolfTextContainer}>Werewolves: user1, user2</div>
+          <div style={werewolfTextContainerNight}>Werewolves: user1, user2</div>
         </div>
         <div style={chatContainerStyle}>
           <div style={chatContentContainerStyle}>
@@ -122,6 +122,21 @@ var gameContainerStyle = {
   position: "relative",
 }
 
+var gameContainerStyleNight = {
+  backgroundColor: "rgba(64, 66, 64, 0.7)", // CHANGE COLOR HERE THROUGH STATE
+  width: "45%",
+  height: "70vh",
+  marginLeft: "200px",
+  marginRight: "100px",
+  marginBottom: "20px",
+  marginTop: "40px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "flex-start",
+  alignItems: "center",
+  position: "relative",
+}
+
 var boxContainerStyle = {
   display: "flex",
   justifyContent: "space-between",
@@ -140,6 +155,17 @@ var roleStyle = {
   flex: "0.2",
 }
 
+var roleStyleNight = {
+  backgroundColor: "rgba(213, 222, 213, 0.1)",
+  height: "100px",
+  margin: "0 5px",
+  display: "flex",
+  color: "white",
+  justifyContent: "center",
+  alignItems: "center",
+  flex: "0.2",
+}
+
 var timerStyle = {
   backgroundColor: "transparent",
   height: "100px",
@@ -148,6 +174,17 @@ var timerStyle = {
   justifyContent: "center",
   alignItems: "center",
   flex: "1",
+}
+
+var timerStyleNight = {
+  backgroundColor: "transparent",
+  height: "100px",
+  margin: "0 5px",
+  display: "flex",
+  color: "white",
+  justifyContent: "center",
+  alignItems: "center",
+  flex: "0.2",
 }
 
 var dayStyle = {
@@ -160,6 +197,17 @@ var dayStyle = {
   flex: "0.2",
 }
 
+var dayStyleNight = {
+  backgroundColor: "rgba(213, 222, 213, 0.1)",
+  height: "100px",
+  margin: "0 5px",
+  display: "flex",
+  color: "white",
+  justifyContent: "center",
+  alignItems: "center",
+  flex: "0.2",
+}
+
 var playerContainer = {
   display: "grid",
   marginTop: "30px",
@@ -167,8 +215,21 @@ var playerContainer = {
   gap: "20px",
 }
 
+var playerContainerNight = {
+  display: "grid",
+  marginTop: "30px",
+  gridTemplateColumns: "repeat(4, auto)",
+  gap: "20px",
+  color: "white",
+}
+
 var player = {
   textAlign: "center",
+}
+
+var playerNight = {
+  textAlign: "center",
+  color: "white",
 }
 
 var werewolfTextContainer = {
@@ -178,12 +239,20 @@ var werewolfTextContainer = {
   textAlign: "right",
 }
 
+var werewolfTextContainerNight = {
+  position: "absolute",
+  bottom: "10px",
+  right: "10px",
+  textAlign: "right",
+  color: "white",
+}
+
 var chatContainerStyle = {
   backgroundColor: "rgba(0, 0, 0, 0.7)",
-  width: "35%",
+  width: "55%",
   height: "70vh",
   marginLeft: "auto",
-  marginRight: "300px",
+  marginRight: "100px",
   marginBottom: "20px",
   marginTop: "40px",
   display: "flex",
