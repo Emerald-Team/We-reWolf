@@ -11,6 +11,7 @@ export default function End() {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    height: "80vh",
   }
 
   var imageContainerStyle = {
@@ -33,7 +34,7 @@ export default function End() {
     marginLeft: "auto",
     marginRight: "300px",
     marginBottom: "20px",
-    marginTop: "40px",
+    marginTop: "30px",
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
@@ -51,7 +52,6 @@ export default function End() {
 
   var inputContainerStyle = {
     display: "flex",
-    marginTop: "16px",
     justifyContent: "flex-end",
     marginRight: "300px",
   }

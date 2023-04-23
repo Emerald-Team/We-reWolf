@@ -8,14 +8,14 @@ export default function Game() {
 
   const avatar = useMemo(() => {
     return createAvatar(lorelei, {
-      size: 128,
+      size: 100,
       seed: "John",
     }).toDataUriSync()
   }, [])
 
   const avatar1 = useMemo(() => {
     return createAvatar(lorelei, {
-      size: 128,
+      size: 100,
       seed: "Amy",
     }).toDataUriSync()
   }, [])
@@ -32,7 +32,8 @@ export default function Game() {
               <p>1:58</p>
             </div>
             <div style={dayStyleNight}>
-              <p>Day 🔆/Night 🌙</p>
+              <p>Night 🌙</p>
+              {/* Day 🔆 */}
             </div>
           </div>
           <div className="players" style={playerContainerNight}>
@@ -68,8 +69,22 @@ export default function Game() {
               <Image src={avatar1} alt="Avatar" width="100" height="100" />
               <small>user2</small>
             </div>
+            <div style={player}>
+              <Image src={avatar} alt="Avatar" width="100" height="100" />
+              <small>user1</small>
+            </div>
+            <div style={player}>
+              <Image src={avatar1} alt="Avatar" width="100" height="100" />
+              <small>user2</small>
+            </div>
+            <div style={player}>
+              <Image src={avatar1} alt="Avatar" width="100" height="100" />
+              <small>user2</small>
+            </div>
           </div>
-          <div style={werewolfTextContainerNight}>Werewolves: user1, user2</div>
+          <small style={werewolfTextContainerNight}>
+            Werewolves: user1, user2
+          </small>
         </div>
         <div style={chatContainerStyle}>
           <div style={chatContentContainerStyle}>
@@ -105,12 +120,14 @@ var containerStyle = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
+  height: "80vh",
 }
 
 var gameContainerStyle = {
-  backgroundColor: "rgba(256, 256, 256, 0.7)", // CHANGE COLOR HERE THROUGH STATE
+  backgroundColor: "rgba(256, 256, 256, 0.7)",
   width: "45%",
   height: "70vh",
+  minWidth: "45%",
   marginLeft: "200px",
   marginRight: "100px",
   marginBottom: "20px",
@@ -123,11 +140,11 @@ var gameContainerStyle = {
 }
 
 var gameContainerStyleNight = {
-  backgroundColor: "rgba(64, 66, 64, 0.7)", // CHANGE COLOR HERE THROUGH STATE
+  backgroundColor: "rgba(64, 66, 64, 0.7)",
   width: "45%",
-  height: "70vh",
-  marginLeft: "200px",
-  marginRight: "100px",
+  height: "80vh",
+  marginLeft: "100px",
+  marginRight: "50px",
   marginBottom: "20px",
   marginTop: "40px",
   display: "flex",
@@ -147,7 +164,7 @@ var boxContainerStyle = {
 
 var roleStyle = {
   backgroundColor: "rgba(0, 0, 0, 0.1)",
-  height: "100px",
+  height: "50px",
   margin: "0 5px",
   display: "flex",
   justifyContent: "center",
@@ -157,7 +174,7 @@ var roleStyle = {
 
 var roleStyleNight = {
   backgroundColor: "rgba(213, 222, 213, 0.1)",
-  height: "100px",
+  height: "50px",
   margin: "0 5px",
   display: "flex",
   color: "white",
@@ -189,7 +206,7 @@ var timerStyleNight = {
 
 var dayStyle = {
   backgroundColor: "rgba(0, 0, 0, 0.1)",
-  height: "100px",
+  height: "50",
   margin: "0 5px",
   display: "flex",
   justifyContent: "center",
@@ -199,7 +216,7 @@ var dayStyle = {
 
 var dayStyleNight = {
   backgroundColor: "rgba(213, 222, 213, 0.1)",
-  height: "100px",
+  height: "50px",
   margin: "0 5px",
   display: "flex",
   color: "white",
@@ -210,15 +227,14 @@ var dayStyleNight = {
 
 var playerContainer = {
   display: "grid",
-  marginTop: "30px",
-  gridTemplateColumns: "repeat(4, auto)",
-  gap: "20px",
+  marginTop: "20px",
+  gridTemplateColumns: "repeat(5, auto)",
 }
 
 var playerContainerNight = {
   display: "grid",
   marginTop: "30px",
-  gridTemplateColumns: "repeat(4, auto)",
+  gridTemplateColumns: "repeat(5, auto)",
   gap: "20px",
   color: "white",
 }
@@ -250,11 +266,12 @@ var werewolfTextContainerNight = {
 var chatContainerStyle = {
   backgroundColor: "rgba(0, 0, 0, 0.7)",
   width: "55%",
+  minWidth: "45%",
   height: "70vh",
   marginLeft: "auto",
   marginRight: "100px",
   marginBottom: "20px",
-  marginTop: "40px",
+  marginTop: "30px",
   display: "flex",
   flexDirection: "column",
   alignItems: "flex-start",
@@ -274,7 +291,7 @@ var inputContainerStyle = {
   display: "flex",
   marginTop: "16px",
   justifyContent: "flex-end",
-  marginRight: "300px",
+  marginRight: "100px",
 }
 
 var inputStyle = {
@@ -283,7 +300,8 @@ var inputStyle = {
   border: "none",
   flex: "1",
   padding: "8px",
-  maxWidth: "30%",
+  minWidth: "8%",
+  maxWidth: "38%",
 }
 
 var buttonStyle = {
