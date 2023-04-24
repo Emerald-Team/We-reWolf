@@ -1,11 +1,17 @@
-import { useMemo } from "react"
+import { useMemo, useState, useEffect } from "react"
 import { createAvatar } from "@dicebear/core"
 import { lorelei } from "@dicebear/collection"
 import Image from "next/image"
 import Chat from './chat.js'
+import axios from 'axios'
 
 export default function Game() {
-  var insideChat = [{ username: "User1", text: "HAHA EASY GAME" }]
+  //hardcoded for testing
+  const username = "Snarls Barkley"
+  const gameID = "1234"
+
+  const [messages, setMessages] = useState([])
+  const [text, setText] = useState('')
 
   const avatar = useMemo(() => {
     return createAvatar(lorelei, {
@@ -20,6 +26,49 @@ export default function Game() {
       seed: "Amy",
     }).toDataUriSync()
   }, [])
+
+  const getMessages = () => {
+
+    const options = {
+      method: "GET",
+      url: `api/messages/${gameID}`
+    }
+    axios(options)
+      .then(res => {
+        setMessages(res.data)
+      })
+      .catch(console.log)
+
+  }
+
+  const handleText = (e) => {
+    setText(e.target.value)
+  }
+
+  const handleSend = () => {
+    const payload = {
+      user: username,
+      body: text,
+      visibleTo: {
+        all: true
+      }
+    }
+    const options = {
+      method: 'POST',
+      url: `api/messages/${gameID}`,
+      data: payload
+    }
+    axios(options)
+      .then(res => {
+        setText('')
+        setMessages(res.data)
+      })
+      .catch(console.log)
+  }
+
+  useEffect(() => {
+    getMessages()
+  })
 
   return (
     <>
@@ -87,28 +136,28 @@ export default function Game() {
             Werewolves: user1, user2
           </small>
         </div>
-        {/* hardcoded for testing, will work properly with proper props */}
-        <Chat username={'someGuyWithATuba'} gameID={'1234'}/>
-        {/* <div style={chatContainerStyle}>
+        <div style={chatContainerStyle}>
           <div style={chatContentContainerStyle}>
-            {insideChat.map((chat) => {
+            {messages.map((chat) => {
               return (
-                <p style={textStyle}>
-                  {chat.username}: {chat.text}
+                <p style={textStyle} key={chat._id}>
+                  {chat.user}: {chat.body}
                 </p>
               )
             })}
           </div>
-        </div> */}
+        </div>
       </div>
-      {/* <div style={inputContainerStyle}>
+      <div style={inputContainerStyle}>
         <input
           type="text"
+          onChange={handleText}
+          value={text}
           style={inputStyle}
           placeholder="Type your message here..."
         />
-        <button style={buttonStyle}>Send</button>
-      </div> */}
+        <button style={buttonStyle} onClick={handleSend}>Send</button>
+      </div>
     </>
   )
 }
