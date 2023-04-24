@@ -1,4 +1,14 @@
-export default function SignUp() {
+import React, {useState, useEffect} from 'react';
+
+import axios from 'axios';
+
+
+
+export default function SignUp() {const [username, setUsername] = useState('');
+const [password, setPassword] = useState('');
+const [email, setEmail] = useState('');
+const [message, setMessage] = useState(''); const [species, setSpecies] = useState('');
+
   const styles = {
     container: {
       display: "flex",
@@ -38,6 +48,7 @@ export default function SignUp() {
     button: {
       width: "100%",
       padding: "12px 24px",
+
       backgroundColor: "#2A303C",
       color: "white",
       borderRadius: "4px",
@@ -45,23 +56,51 @@ export default function SignUp() {
       cursor: "pointer",
     },
   }
+  const signupHandler = async () => { console.log(username, password, email, 'Login Info')
+
+    let obj = {username: username, password: password, email: email, species: species};
+
+    await axios.post('http://localhost:8080/signup', obj).then((res) => {setEmail(''); setUsername(''); setPassword(''); window.location = '/join'}).catch((res) => { setMessage(res.data); window.location = '/signup';})
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
 
   return (
     <div style={styles.container}>
       <div style={styles.loginBox}>
         <h2 style={{ marginBottom: "10px" }}>Sign Up</h2>
         <form style={styles.form}>
-          <input type="email" placeholder="Email" style={styles.input} />
-          <input type="password" placeholder="Password" style={styles.input} />
-          <input type="text" placeholder="Username" style={styles.input} />
+          <input type="email" value= {email} placeholder="Email" style={styles.input} onChange={(e) => {setEmail(e.target.value)}}/>
+          <input type="password" value={password} onChange={(e) => {setPassword(e.target.value)}} placeholder="Password" style={styles.input} />
+          <input type="text" placeholder="Username" value={username} onChange={(e) => {setUsername(e.target.value)}} style={styles.input} />
+
+          <label for="species">Choose a Species:</label>
+          <select name="species" id="species" form="speciesform" onChange={(e) => {setSpecies(e.target.value)}}>
+            <option value="blank"></option>
+            <option value="Human">Human</option>
+            <option value="Werewolf">Werewolf</option>
+          </select>
+          {/* <input type="text" placeholder="w.e. you want" style={styles.input} />
           <input type="text" placeholder="w.e. you want" style={styles.input} />
-          <input type="text" placeholder="w.e. you want" style={styles.input} />
-          <input type="text" placeholder="w.e. you want" style={styles.input} />
-          <button className="signButton" type="submit" style={styles.button}>
+          <input type="text" placeholder="w.e. you want" style={styles.input} /> */}
+          <button type="submit" style={styles.button} onClick={(e) => {e.preventDefault(); signupHandler();}}>
             Login
           </button>
         </form>
       </div>
     </div>
+
+
   )
 }
