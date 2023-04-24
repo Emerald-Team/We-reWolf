@@ -29,7 +29,7 @@ const PlayerList = ({ count }) => {
         </h1>
         <div style={playerListGrid}>
           <div style={playerItemStyles}>BadBill</div>
-          <div style={playerItemStyles}>ZachAttack</div>
+          <div style={playerItemStyles}>ZackAttack</div>
           <div style={playerItemStyles}>Chordata</div>
           <div style={playerItemStyles}>PopeShaq</div>
           <div style={playerItemStyles}>theRealJae</div>
