@@ -2,6 +2,7 @@ import { useMemo } from "react"
 import { createAvatar } from "@dicebear/core"
 import { lorelei } from "@dicebear/collection"
 import Image from "next/image"
+import Chat from './chat.js'
 
 export default function Game() {
   var insideChat = [{ username: "User1", text: "HAHA EASY GAME" }]
@@ -86,7 +87,9 @@ export default function Game() {
             Werewolves: user1, user2
           </small>
         </div>
-        <div style={chatContainerStyle}>
+        {/* hardcoded for testing, will work properly with proper props */}
+        <Chat username={'someGuyWithATuba'} gameID={'1234'}/>
+        {/* <div style={chatContainerStyle}>
           <div style={chatContentContainerStyle}>
             {insideChat.map((chat) => {
               return (
@@ -96,16 +99,16 @@ export default function Game() {
               )
             })}
           </div>
-        </div>
+        </div> */}
       </div>
-      <div style={inputContainerStyle}>
+      {/* <div style={inputContainerStyle}>
         <input
           type="text"
           style={inputStyle}
           placeholder="Type your message here..."
         />
         <button style={buttonStyle}>Send</button>
-      </div>
+      </div> */}
     </>
   )
 }

@@ -19,7 +19,7 @@ const messageSchema = new mongoose.Schema({
 })
 
 const db = {
-  Message: mongoose.models.Message,
+  Message: mongoose.models.Message || mongoose.model('Message', messageSchema)
 }
 
 export default db

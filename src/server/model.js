@@ -12,8 +12,6 @@ const model = {
 
   },
   getMessages: (gameID) => {
-    console.log(gameID, 'gameID')
-    console.log(db.Message, 'db.Message')
     return db.Message.find({ gameID: gameID })
   },
   postMessage: async (gameID, message) => {
