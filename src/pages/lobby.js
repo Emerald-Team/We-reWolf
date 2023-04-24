@@ -34,7 +34,8 @@ export default function Lobby() {
             <PlayerList count={count} />
           </div>
           <div style={listStyle}>
-            <h2 style={listHeaderStyle}>Role List</h2>
+            <h2 s
+            tyle={listHeaderStyle}>Role List</h2>
             <GameSettings
               count={count}
               buttonDisabled={buttonDisabled}
