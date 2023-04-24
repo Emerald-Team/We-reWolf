@@ -152,6 +152,7 @@ var gameContainerStyleNight = {
   justifyContent: "flex-start",
   alignItems: "center",
   position: "relative",
+  overflowY: "auto",
 }
 
 var boxContainerStyle = {
