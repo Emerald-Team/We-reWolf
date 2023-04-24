@@ -2,6 +2,8 @@ import { useMemo } from "react"
 import { createAvatar } from "@dicebear/core"
 import { lorelei } from "@dicebear/collection"
 import Image from "next/image"
+import {store} from '../redux/stores'
+import {Provider} from 'react-redux'
 
 export default function Game() {
   var insideChat = [{ username: "User1", text: "HAHA EASY GAME" }]

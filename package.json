@@ -12,6 +12,7 @@
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/material": "^5.12.1",
+    "@reduxjs/toolkit": "^1.9.5",
     "autoprefixer": "10.4.14",
     "dicebear": "^6.0.2",
     "eslint": "8.38.0",
