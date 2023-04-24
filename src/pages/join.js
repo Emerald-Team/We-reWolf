@@ -7,13 +7,20 @@ const Join = () => {
   const [gameCode, setGameCode] = useState("")
   const [showJoinModal, setJoinModal] = useState(false)
 
+
+  function hostHandler() {
+    document.cookie = `isHost = true`
+  }
+  function joinHandler() {
+    document.cookie = `isHost = false`
+  }
+
   const containerStyle = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     height: "80vh",
   }
-
   const leftBoxStyle = {
     width: "30%",
     height: "40%",
@@ -25,7 +32,6 @@ const Join = () => {
     justifyContent: "center",
     alignItems: "center",
   }
-
   const rightBoxStyle = {
     width: "40%",
     height: "80%",
@@ -33,7 +39,6 @@ const Join = () => {
     padding: "1rem",
     color: "white",
   }
-
   const buttonStyle1 = {
     border: "0.5px solid black",
     borderRadius: "50px",
@@ -50,7 +55,6 @@ const Join = () => {
     fontSize: "2rem",
     backgroundColor: "#ffbd03",
   }
-
   const inputStyle = {
     display: "block",
     width: "100%",
@@ -65,8 +69,9 @@ const Join = () => {
     <>
       <div style={containerStyle}>
         <div style={leftBoxStyle}>
-          <Link href="/lobby">
-            <button className="hostButton" style={buttonStyle1}>
+          <Link
+          href="/lobby">
+            <button className="hostButton" onClick = {hostHandler} style={buttonStyle1}>
               Host Game
             </button>
           </Link>
@@ -84,7 +89,10 @@ const Join = () => {
           <p>This is the text section with the title </p>
         </div>
       </div>
-      <JoinModal open={showJoinModal} onClose={() => setJoinModal(false)} />
+      <JoinModal
+      open={showJoinModal}
+      onClose={() => setJoinModal(false)}
+      setCookie = {joinHandler} />
     </>
   )
 }

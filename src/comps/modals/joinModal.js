@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import Link from "next/link"
-const JoinModal = ({ open, onClose }) => {
+const JoinModal = ({ open, onClose, setCookie }) => {
   if (!open) return null
 
   const overlay = {
@@ -63,7 +63,9 @@ const JoinModal = ({ open, onClose }) => {
         <br></br>
         <input style={inputStyle} placeholder="enter game code here" />
         <Link href="/lobby">
-          <button style={buttonStyle}>Join</button>
+          <button
+          onClick = {setCookie}
+          style={buttonStyle}>Join</button>
         </Link>
       </div>
     </>
