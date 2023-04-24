@@ -29,6 +29,7 @@ const Counter = ({ count, setCount }) => {
 
   return (
     <>
+<<<<<<< HEAD
       {count > 0 && (
         <button
           style={buttonStyle}
@@ -49,6 +50,9 @@ const Counter = ({ count, setCount }) => {
           -
         </button>
       )}
+=======
+      {count > 0 && <button onClick={() => adjustCount(-1)}>-</button>}
+>>>>>>> 330e131 (idk)
       <span>{count}</span>
       <button
         style={buttonStyle}
