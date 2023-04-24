@@ -10,7 +10,7 @@ export default function Home() {
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      height: "100vh",
+      height: "80vh",
     },
     loginBox: {
       width: "400px",
@@ -64,7 +64,7 @@ export default function Home() {
         <form style={styles.form}>
           <input type="text" placeholder="Username" style={styles.input} />
           <input type="password" placeholder="Password" style={styles.input} />
-          <button type="submit" style={styles.button}>
+          <button className="loginButton" type="submit" style={styles.button}>
             Login
           </button>
         </form>

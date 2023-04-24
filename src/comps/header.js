@@ -19,6 +19,7 @@ const Header = ({ changeTheme, buttonName }) => {
         </Link>
       </div>
       <button
+        className="changeTheme"
         style={{
           backgroundColor: "gray",
           hover: "gray",

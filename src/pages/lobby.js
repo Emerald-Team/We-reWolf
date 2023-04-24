@@ -7,11 +7,18 @@ export default function Lobby() {
   const [playersConnected, setPlayersConnected] = useState([])
   useEffect(() => {}, [count])
   const [gameLobbyText, setGameLobbyText] = useState("")
+  const [copy, setCopy] = useState(false)
+  const [copyWord, setCopyWord] = useState("Copy To Clipboard")
 
   function gameLobbyChangeHandler(event) {
     setGameLobbyText(event.target.value)
   }
 
+  let copyClick = () => {
+    navigator.clipboard.writeText(gameLobbyText)
+    setCopy(true)
+    setCopyWord("Copied !")
+  }
   return (
     <div style={containerStyle}>
       <div style={boxStyle}>
@@ -27,18 +34,19 @@ export default function Lobby() {
           </div>
         </div>
         <div style={footerStyle}>
+          <button
+            onClick={copyClick}
+            style={copy ? clickedButtonStyle : buttonStyle}
+          >
+            {copyWord}
+          </button>
           <input
             style={inputStyle}
             onChange={gameLobbyChangeHandler}
             value={gameLobbyText}
           ></input>
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(gameLobbyText)
-            }}
-            style={buttonStyle}
-          >
-            Copy To Clipboard
+          <button className="startButton" style={buttonStyle2}>
+            Start Game
           </button>
         </div>
       </div>
@@ -99,6 +107,7 @@ const inputStyle = {
   backgroundColor: "white",
   border: "1px solid black",
   borderRadius: "50px",
+  marginLeft: "10px",
 }
 
 const buttonStyle = {
@@ -108,4 +117,23 @@ const buttonStyle = {
   color: "#fff",
   border: "none",
   cursor: "pointer",
+}
+
+const clickedButtonStyle = {
+  marginLeft: "10px",
+  padding: "8px 16px",
+  backgroundColor: "#2A303C",
+  color: "white",
+  border: "none",
+  cursor: "pointer",
+}
+
+const buttonStyle2 = {
+  marginLeft: "10px",
+  padding: "8px 16px",
+  backgroundColor: "#ffbd03",
+  color: "#fff",
+  border: "none",
+  cursor: "pointer",
+  borderRadius: "5px",
 }

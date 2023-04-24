@@ -40,7 +40,7 @@ const GameSettings = ({ count, setCount }) => {
   const updateSelected = (e) => {
     e.preventDefault()
     console.log(e.target.innerHTML)
-    setSelected([...selected, event.target.innerHTML])
+    setSelected([...selected, event.target.innerText])
   }
 
   useEffect(() => {
@@ -61,6 +61,7 @@ const GameSettings = ({ count, setCount }) => {
         <div style={gridItemStyle}>
           <h2>Pool of Roles</h2>
           <button
+            className="seerButton"
             onClick={updateSelected}
             style={{
               ...buttonStyle,
@@ -68,9 +69,10 @@ const GameSettings = ({ count, setCount }) => {
               color: "white",
             }}
           >
-            Seer
+            <span> Seer </span>
           </button>
           <button
+            className="doctorButton"
             onClick={updateSelected}
             style={{
               ...buttonStyle,
@@ -78,9 +80,10 @@ const GameSettings = ({ count, setCount }) => {
               color: "white",
             }}
           >
-            Doctor
+            <span> Doctor </span>
           </button>
           <button
+            className="villagerButton"
             onClick={updateSelected}
             style={{
               ...buttonStyle,
@@ -88,9 +91,10 @@ const GameSettings = ({ count, setCount }) => {
               color: "black",
             }}
           >
-            Villager
+            <span> Villager </span>
           </button>
           <button
+            className="wolfButton"
             onClick={updateSelected}
             style={{
               ...buttonStyle,
@@ -98,7 +102,7 @@ const GameSettings = ({ count, setCount }) => {
               color: "white",
             }}
           >
-            Wolf
+            <span> Wolf </span>
           </button>
         </div>
         <div style={gridItemStyle}>
