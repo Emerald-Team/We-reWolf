@@ -27,11 +27,6 @@ export default function Lobby() {
           </div>
         </div>
         <div style={footerStyle}>
-          <input
-            style={inputStyle}
-            onChange={gameLobbyChangeHandler}
-            value={gameLobbyText}
-          ></input>
           <button
             onClick={() => {
               navigator.clipboard.writeText(gameLobbyText)
@@ -40,6 +35,12 @@ export default function Lobby() {
           >
             Copy To Clipboard
           </button>
+          <input
+            style={inputStyle}
+            onChange={gameLobbyChangeHandler}
+            value={gameLobbyText}
+          ></input>
+          <button style={buttonStyle}>Start Game</button>
         </div>
       </div>
     </div>

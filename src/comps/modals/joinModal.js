@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, { useState } from "react"
 import Link from "next/link"
-const JoinModal = ({ open, onClose}) => {
-  if (!open) return null;
+const JoinModal = ({ open, onClose }) => {
+  if (!open) return null
 
   const overlay = {
     position: "fixed",
@@ -14,30 +14,60 @@ const JoinModal = ({ open, onClose}) => {
     zIndex: "1000",
   }
   const joinStyle = {
-      position: "fixed",
-      top: "50%",
-      left: "50%",
-      transform:" translate(-50%, -50%)",
-      backgroundColor: "white",
-      padding:" 50px",
-      zIndex:" 1000"
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: " translate(-50%, -50%)",
+    backgroundColor: "white",
+    padding: " 50px",
+    zIndex: " 1000",
+  }
+  const inputStyle = {
+    flex: "1",
+    padding: "8px",
+    backgroundColor: "white",
+    border: "1px solid black",
+    borderRadius: "50px",
   }
 
+  const buttonStyle = {
+    marginLeft: "10px",
+    padding: "8px 16px",
+    backgroundColor: "#007bff",
+    color: "#fff",
+    border: "none",
+    cursor: "pointer",
+  }
+
+  const buttonStyleX = {
+    marginLeft: "10px",
+    padding: "8px 16px",
+    backgroundColor: "transparent",
+    color: "black",
+    border: "none",
+    cursor: "pointer",
+    position: "absolute",
+    right: "1rem",
+    top: "1rem",
+  }
 
   return (
     <>
-      <div style ={overlay}/>
-        <div style ={joinStyle}>
-          THIS IS A JOIN modals
-          <br>
-          </br><button onClick = {onClose}>Close Button</button><br></br>
-          <input placeholder= "enter game code here"/>
-          <Link href="/lobby">
-          <button>Join</button>
-          </Link>
-       </div>
+      <div style={overlay} />
+      <div style={joinStyle}>
+        Input Game Code
+        <br></br>
+        <button style={buttonStyleX} onClick={onClose}>
+          X
+        </button>
+        <br></br>
+        <input style={inputStyle} placeholder="enter game code here" />
+        <Link href="/lobby">
+          <button style={buttonStyle}>Join</button>
+        </Link>
+      </div>
     </>
-  );
+  )
 }
 
-export default JoinModal;
+export default JoinModal
