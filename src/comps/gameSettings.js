@@ -1,51 +1,51 @@
-import React, { useState, useEffect } from "react"
-import Counter from "./counter.js"
+import React, { useState, useEffect } from "react";
+import Counter from "./counter.js";
 
 const gameSettingsStyle = {
   display: "grid",
   gridTemplateColumns: "1fr 1fr",
   gap: "1rem",
-}
+};
 
 const gridItemStyle = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-}
+};
 
 const buttonStyle = {
   margin: "0.5rem 0.25rem",
   padding: "0.5rem 1rem",
   borderRadius: "5px",
   cursor: "pointer",
-}
+};
 
 const selectedStyle = {
   margin: "0.2rem 0.25rem",
   padding: "0.5rem",
   borderRadius: "5px",
   backgroundColor: "darkGray",
-}
+};
 
 const selectedRoleGrid = {
   textAlign: "center",
   display: "grid",
   gridTemplateColumns: "repeat(2, auto)",
   gap: "2px",
-}
+};
 
-const GameSettings = ({ count, setCount }) => {
-  const [selected, setSelected] = useState([])
+const GameSettings = ({ count, setCount, buttonDisabled }) => {
+  const [selected, setSelected] = useState([]);
 
   const updateSelected = (e) => {
-    e.preventDefault()
-    console.log(e.target.innerHTML)
-    setSelected([...selected, event.target.innerHTML])
-  }
+    e.preventDefault();
+    console.log(e.target.innerHTML);
+    setSelected([...selected, event.target.innerHTML]);
+  };
 
   useEffect(() => {
-    console.log(selected)
-  }, [selected])
+    console.log(selected);
+  }, [selected]);
 
   return (
     <>
@@ -54,13 +54,17 @@ const GameSettings = ({ count, setCount }) => {
           <b>Game Settings</b>
         </h1>
         <h2>
-          Max Players <Counter count={count} setCount={setCount} />
+          Max Players <Counter
+          count={count}
+          buttonDisabled = {buttonDisabled}
+          setCount={setCount} />
         </h2>
       </div>
       <div style={gameSettingsStyle}>
         <div style={gridItemStyle}>
           <h2>Pool of Roles</h2>
           <button
+            disabled={buttonDisabled}
             onClick={updateSelected}
             style={{
               ...buttonStyle,
@@ -71,6 +75,7 @@ const GameSettings = ({ count, setCount }) => {
             Seer
           </button>
           <button
+            disabled={buttonDisabled}
             onClick={updateSelected}
             style={{
               ...buttonStyle,
@@ -81,6 +86,7 @@ const GameSettings = ({ count, setCount }) => {
             Doctor
           </button>
           <button
+            disabled={buttonDisabled}
             onClick={updateSelected}
             style={{
               ...buttonStyle,
@@ -91,6 +97,7 @@ const GameSettings = ({ count, setCount }) => {
             Villager
           </button>
           <button
+            disabled={buttonDisabled}
             onClick={updateSelected}
             style={{
               ...buttonStyle,
@@ -115,7 +122,7 @@ const GameSettings = ({ count, setCount }) => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default GameSettings
+export default GameSettings;

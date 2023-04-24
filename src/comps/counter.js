@@ -1,7 +1,7 @@
 import React from "react"
 import { useState } from "react"
 
-const Counter = ({ count, setCount }) => {
+const Counter = ({ count, setCount, buttonDisabled }) => {
   function adjustCount(amount) {
     setCount((currentCount) => {
       return currentCount + amount
@@ -45,6 +45,7 @@ const Counter = ({ count, setCount }) => {
             e.target.style.backgroundColor = buttonStyle.backgroundColor
           }}
           onClick={() => adjustCount(-1)}
+          disabled = {buttonDisabled}
         >
           -
         </button>
@@ -65,6 +66,7 @@ const Counter = ({ count, setCount }) => {
           e.target.style.backgroundColor = buttonStyle.backgroundColor
         }}
         onClick={() => adjustCount(1)}
+        disabled = {buttonDisabled}
       >
         +
       </button>

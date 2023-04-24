@@ -1,16 +1,28 @@
-import React, { useState, useEffect } from "react"
-import GameSettings from "../comps/gameSettings"
-import PlayerList from "../comps/playerList"
+import React, { useState, useEffect } from "react";
+import GameSettings from "../comps/gameSettings";
+import PlayerList from "../comps/playerList";
 
 export default function Lobby() {
-  const [count, setCount] = useState(0)
-  const [playersConnected, setPlayersConnected] = useState([])
-  useEffect(() => {}, [count])
-  const [gameLobbyText, setGameLobbyText] = useState("")
+  const [count, setCount] = useState(0);
+  const [playersConnected, setPlayersConnected] = useState([]);
+  const [gameLobbyText, setGameLobbyText] = useState("");
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   function gameLobbyChangeHandler(event) {
-    setGameLobbyText(event.target.value)
+    setGameLobbyText(event.target.value);
   }
+  function getCookie(name) {
+    let value = `; ${document.cookie}`;
+    let parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  }
+
+  useEffect(() => {}, [count]);
+  useEffect(() => {
+    if (getCookie("isHost") === 'false') {
+      setButtonDisabled(true);
+    }
+  }, []);
 
   return (
     <div style={containerStyle}>
@@ -23,13 +35,17 @@ export default function Lobby() {
           </div>
           <div style={listStyle}>
             <h2 style={listHeaderStyle}>Role List</h2>
-            <GameSettings count={count} setCount={setCount} />
+            <GameSettings
+              count={count}
+              buttonDisabled={buttonDisabled}
+              setCount={setCount}
+            />
           </div>
         </div>
         <div style={footerStyle}>
           <button
             onClick={() => {
-              navigator.clipboard.writeText(gameLobbyText)
+              navigator.clipboard.writeText(gameLobbyText);
             }}
             style={buttonStyle}
           >
@@ -40,11 +56,13 @@ export default function Lobby() {
             onChange={gameLobbyChangeHandler}
             value={gameLobbyText}
           ></input>
-          <button style={buttonStyle}>Start Game</button>
+          <button disabled={buttonDisabled} style={buttonStyle}>
+            Start Game
+          </button>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 const containerStyle = {
@@ -52,7 +70,7 @@ const containerStyle = {
   justifyContent: "center",
   alignItems: "center",
   height: "80vh",
-}
+};
 
 const boxStyle = {
   width: "60vw",
@@ -62,18 +80,18 @@ const boxStyle = {
   borderRadius: "4px",
   boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
   marginTop: "50px",
-}
+};
 
 const titleStyle = {
   fontSize: "24px",
   fontWeight: "bold",
   marginBottom: "20px",
   textAlign: "center",
-}
+};
 
 const contentStyle = {
   display: "flex",
-}
+};
 
 const listStyle = {
   flex: "1",
@@ -82,17 +100,17 @@ const listStyle = {
   borderRadius: "4px",
   padding: "10px",
   marginRight: "20px",
-}
+};
 
 const listHeaderStyle = {
   marginBottom: "10px",
-}
+};
 
 const footerStyle = {
   marginTop: "20px",
   display: "flex",
   alignItems: "center",
-}
+};
 
 const inputStyle = {
   flex: "1",
@@ -100,7 +118,7 @@ const inputStyle = {
   backgroundColor: "white",
   border: "1px solid black",
   borderRadius: "50px",
-}
+};
 
 const buttonStyle = {
   marginLeft: "10px",
@@ -109,4 +127,4 @@ const buttonStyle = {
   color: "#fff",
   border: "none",
   cursor: "pointer",
-}
+};
