@@ -1,6 +1,8 @@
 import Image from "next/image"
 import { Inter } from "next/font/google"
 import App from "./_app"
+import { store } from '../redux/stores'
+import { Provider } from 'react-redux'
 
 const inter = Inter({ subsets: ["latin"] })
 
