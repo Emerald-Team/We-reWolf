@@ -1,6 +1,12 @@
-import React from "react"
+import React, { useState } from "react"
+import Link from "next/link"
+import JoinModal from "../comps/modals/joinModal.js"
 
 const Join = () => {
+  //state variables
+  const [gameCode, setGameCode] = useState("")
+  const [showJoinModal, setJoinModal] = useState(false)
+
   const containerStyle = {
     display: "flex",
     justifyContent: "center",
@@ -29,20 +35,20 @@ const Join = () => {
   }
 
   const buttonStyle1 = {
-    border: "1px solid black",
+    border: "0.5px solid black",
     borderRadius: "50px",
-    marginBottom: "0.5rem", // Add margin-bottom for spacing
+    marginBottom: "0.5rem",
     padding: "1rem",
     fontSize: "2rem",
-    backgroundColor: "yellowGreen",
+    backgroundColor: "#5adbb5",
   }
   const buttonStyle2 = {
-    border: "1px solid black",
+    border: "0.5px solid black",
     borderRadius: "50px",
-    marginBottom: "0.5rem", // Add margin-bottom for spacing
+    marginBottom: "0.5rem",
     padding: "1rem",
     fontSize: "2rem",
-    backgroundColor: "violet",
+    backgroundColor: "#ffbd03",
   }
 
   const inputStyle = {
@@ -56,17 +62,30 @@ const Join = () => {
   }
 
   return (
-    <div style={containerStyle}>
-      <div style={leftBoxStyle}>
-        <button style={buttonStyle1}>Host Game</button>
-        <button style={buttonStyle2}>Join Game</button>
-        <input type="text" placeholder="Lobby Code" style={inputStyle} />
+    <>
+      <div style={containerStyle}>
+        <div style={leftBoxStyle}>
+          <Link href="/lobby">
+            <button className="hostButton" style={buttonStyle1}>
+              Host Game
+            </button>
+          </Link>
+
+          <button
+            className="joinButton"
+            onClick={() => setJoinModal(true)}
+            style={buttonStyle2}
+          >
+            Join Game
+          </button>
+        </div>
+        <div style={rightBoxStyle}>
+          <h1>RULES</h1>
+          <p>This is the text section with the title </p>
+        </div>
       </div>
-      <div style={rightBoxStyle}>
-        <h1>RULES</h1>
-        <p>This is the text section with the title </p>
-      </div>
-    </div>
+      <JoinModal open={showJoinModal} onClose={() => setJoinModal(false)} />
+    </>
   )
 }
 
