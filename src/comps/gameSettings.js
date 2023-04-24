@@ -34,8 +34,7 @@ const selectedRoleGrid = {
   gap: "2px",
 };
 
-const GameSettings = ({ count, setCount, buttonDisabled }) => {
-  const [selected, setSelected] = useState([]);
+const GameSettings = ({ count, setCount, buttonDisabled,selected, setSelected }) => {
 
   const updateSelected = (e) => {
     e.preventDefault()

@@ -7,68 +7,70 @@ export default function Lobby() {
   const [playersConnected, setPlayersConnected] = useState([]);
   const [gameLobbyText, setGameLobbyText] = useState("");
   const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [copy, setCopy] = useState(false)
-  const [copyWord, setCopyWord] = useState("Copy To Clipboard")
-
+  const [copy, setCopy] = useState(false);
+  const [copyWord, setCopyWord] = useState("Copy To Clipboard");
+  const [selected, setSelected] = useState([]);
 
   let fakePlayers = [
-    {userName: "BadBill",
-    rank: 1,
-    role: null
-    },
-    {userName: "theRealJae",
-    rank: 1,
-    role: null
-    },
-    {userName: "PopShaq",
-    rank: 1,
-    role: null
-    },
-    {userName: "Chrodatta",
-    rank: 1,
-    role: null
-    },
-    {userName: "ZacKattack",
-    rank: 1,
-    role: null
-    },
-    {userName: "jlane20",
-    rank: 1,
-    role: null
-    },
-    {userName: "Romulus",
-    rank: 1,
-    role: null
-    },
+    { userName: "BadBill", rank: 1, role: null },
+    { userName: "theRealJae", rank: 1, role: null },
+    { userName: "PopShaq", rank: 1, role: null },
+    { userName: "Chrodatta", rank: 1, role: null },
+    { userName: "ZacKattack", rank: 1, role: null },
+    { userName: "jlane20", rank: 1, role: null },
+    { userName: "Romulus", rank: 1, role: null },
+    { userName: "Remus", rank: 1, role: null },
+    //greater than 8 test
+    { userName: "Bumi", rank: 1, role: null },
+    { userName: "Chance", rank: 1, role: null },
+    { userName: "Bandi", rank: 1, role: null },
+    //12 or more test
+    { userName: "Axel", rank: 1, role: null },
   ];
 
-function assignRoles(arrayOfPlayers){
-  let rankArray = arrayOfPlayers.map(player => {
-    if(player.rank == 1){
-      return {...player, rank: player.rank * Math.floor(Math.random() * 20)}
-    }
-    return player;
-  });
-  let sortedArray = rankArray.sort((a, b) => a.rank - b.rank);
-
-if(sortedArray.length <= 8) {
-  for(let i = 0; i < sortedArray.length; i++){
-    if(i = 0){
-      sortedArray[i].role = 'Wolf'
-    } else if(i = 1) {
-      sortedArray[i].role = 'Doctor'
-    } else if(i = 2) {
-      sortedArray[i].role = 'Seer'
+  function assignRoles(arrayOfPlayers) {
+    let rankArray = arrayOfPlayers.map((player) => {
+      if (player.rank == 1) {
+        return {
+          ...player,
+          rank: player.rank * Math.floor(Math.random() * 20),
+          role: "Villager",
+        };
+      }
+      return player;
+    });
+    let sortedArray = rankArray.sort((a, b) => a.rank - b.rank);
+    if (sortedArray.length <= 8) {
+      sortedArray[0].role = "Wolf";
+      if(selected.includes('Doctor')){
+        sortedArray[sortedArray.length - 1].role = 'Doctor'
+      }
+      if(selected.includes('Seer')){
+        sortedArray[sortedArray.length - 2].role = 'Seer'
+      }
+    } else if (sortedArray.length > 8 && sortedArray.length < 12) {
+      sortedArray[0].role = "Wolf";
+      sortedArray[1].role = "Wolf";
+      if(selected.includes('Doctor')){
+        sortedArray[sortedArray.length - 1].role = 'Doctor'
+      }
+      if(selected.includes('Seer')){
+        sortedArray[sortedArray.length - 2].role = 'Seer'
+      }
     } else {
-      sortedArray[i].role = 'Villager'
+      sortedArray[0].role = "Wolf";
+      sortedArray[1].role = "Wolf";
+      sortedArray[2].role = "Wolf";
+      if(selected.includes('Doctor')){
+        sortedArray[sortedArray.length - 1].role = 'Doctor'
+      }
+      if(selected.includes('Seer')){
+        sortedArray[sortedArray.length - 2].role = 'Seer'
+      }
     }
   }
-}
 
-console.log(sortedArray)
 
-}
-console.log('roles assignment test', assignRoles(fakePlayers));
 
   function gameLobbyChangeHandler(event) {
     setGameLobbyText(event.target.value);
@@ -81,17 +83,16 @@ console.log('roles assignment test', assignRoles(fakePlayers));
 
   useEffect(() => {}, [count]);
   useEffect(() => {
-    if (getCookie("isHost") === 'false') {
+    if (getCookie("isHost") === "false") {
       setButtonDisabled(true);
     }
   }, []);
 
-
   let copyClick = () => {
-    navigator.clipboard.writeText(gameLobbyText)
-    setCopy(true)
-    setCopyWord("Copied !")
-  }
+    navigator.clipboard.writeText(gameLobbyText);
+    setCopy(true);
+    setCopyWord("Copied !");
+  };
   return (
     <div style={containerStyle}>
       <div style={boxStyle}>
@@ -104,6 +105,8 @@ console.log('roles assignment test', assignRoles(fakePlayers));
           <div style={listStyle}>
             <h2 style={listHeaderStyle}>Role List</h2>
             <GameSettings
+              selected={selected}
+              setSelected={setSelected}
               count={count}
               buttonDisabled={buttonDisabled}
               setCount={setCount}
@@ -122,10 +125,13 @@ console.log('roles assignment test', assignRoles(fakePlayers));
             onChange={gameLobbyChangeHandler}
             value={gameLobbyText}
           ></input>
-          <button className="startButton" disabled={buttonDisabled} style={buttonStyle2}>
-
+          <button
+            className="startButton"
+            disabled={buttonDisabled}
+            style={buttonStyle2}
+            onClick={assignRoles(fakePlayers)}
+          >
             Start Game
-
           </button>
         </div>
       </div>
@@ -205,7 +211,7 @@ const clickedButtonStyle = {
   color: "white",
   border: "none",
   cursor: "pointer",
-}
+};
 
 const buttonStyle2 = {
   marginLeft: "10px",
@@ -215,4 +221,4 @@ const buttonStyle2 = {
   border: "none",
   cursor: "pointer",
   borderRadius: "5px",
-}
+};
