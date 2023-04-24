@@ -4,7 +4,7 @@ export default function SignUp() {
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      height: "100vh",
+      height: "80vh",
     },
     loginBox: {
       width: "400px",
@@ -57,7 +57,7 @@ export default function SignUp() {
           <input type="text" placeholder="w.e. you want" style={styles.input} />
           <input type="text" placeholder="w.e. you want" style={styles.input} />
           <input type="text" placeholder="w.e. you want" style={styles.input} />
-          <button type="submit" style={styles.button}>
+          <button className="signButton" type="submit" style={styles.button}>
             Login
           </button>
         </form>

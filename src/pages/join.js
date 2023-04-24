@@ -35,20 +35,20 @@ const Join = () => {
   }
 
   const buttonStyle1 = {
-    border: "1px solid black",
+    border: "0.5px solid black",
     borderRadius: "50px",
-    marginBottom: "0.5rem", // Add margin-bottom for spacing
+    marginBottom: "0.5rem",
     padding: "1rem",
     fontSize: "2rem",
-    backgroundColor: "yellowGreen",
+    backgroundColor: "#5adbb5",
   }
   const buttonStyle2 = {
-    border: "1px solid black",
+    border: "0.5px solid black",
     borderRadius: "50px",
-    marginBottom: "0.5rem", // Add margin-bottom for spacing
+    marginBottom: "0.5rem",
     padding: "1rem",
     fontSize: "2rem",
-    backgroundColor: "violet",
+    backgroundColor: "#ffbd03",
   }
 
   const inputStyle = {
@@ -66,10 +66,16 @@ const Join = () => {
       <div style={containerStyle}>
         <div style={leftBoxStyle}>
           <Link href="/lobby">
-            <button style={buttonStyle1}>Host Game</button>
+            <button className="hostButton" style={buttonStyle1}>
+              Host Game
+            </button>
           </Link>
 
-          <button onClick={() => setJoinModal(true)} style={buttonStyle2}>
+          <button
+            className="joinButton"
+            onClick={() => setJoinModal(true)}
+            style={buttonStyle2}
+          >
             Join Game
           </button>
         </div>
