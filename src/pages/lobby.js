@@ -10,6 +10,66 @@ export default function Lobby() {
   const [copy, setCopy] = useState(false)
   const [copyWord, setCopyWord] = useState("Copy To Clipboard")
 
+
+  let fakePlayers = [
+    {userName: "BadBill",
+    rank: 1,
+    role: null
+    },
+    {userName: "theRealJae",
+    rank: 1,
+    role: null
+    },
+    {userName: "PopShaq",
+    rank: 1,
+    role: null
+    },
+    {userName: "Chrodatta",
+    rank: 1,
+    role: null
+    },
+    {userName: "ZacKattack",
+    rank: 1,
+    role: null
+    },
+    {userName: "jlane20",
+    rank: 1,
+    role: null
+    },
+    {userName: "Romulus",
+    rank: 1,
+    role: null
+    },
+  ];
+
+function assignRoles(arrayOfPlayers){
+  let rankArray = arrayOfPlayers.map(player => {
+    if(player.rank == 1){
+      return {...player, rank: player.rank * Math.floor(Math.random() * 20)}
+    }
+    return player;
+  });
+  let sortedArray = rankArray.sort((a, b) => a.rank - b.rank);
+
+if(sortedArray.length <= 8) {
+  for(let i = 0; i < sortedArray.length; i++){
+    if(i = 0){
+      sortedArray[i].role = 'Wolf'
+    } else if(i = 1) {
+      sortedArray[i].role = 'Doctor'
+    } else if(i = 2) {
+      sortedArray[i].role = 'Seer'
+    } else {
+      sortedArray[i].role = 'Villager'
+    }
+  }
+}
+
+console.log(sortedArray)
+
+}
+console.log('roles assignment test', assignRoles(fakePlayers));
+
   function gameLobbyChangeHandler(event) {
     setGameLobbyText(event.target.value);
   }
