@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import GameSettings from "../comps/gameSettings";
-import PlayerList from "../comps/playerList";
+import GameSettings from "../../comps/gameSettings";
+import PlayerList from "../../comps/playerList";
 
 export default function Lobby() {
   const [count, setCount] = useState(0);
@@ -11,6 +11,9 @@ export default function Lobby() {
   const [copyWord, setCopyWord] = useState("Copy To Clipboard");
   const [selected, setSelected] = useState([]);
 
+
+  let urlCode = window.location.pathname.split('/')
+  console.log(urlCode[urlCode.length -1])
   let fakePlayers = [
     { userName: "BadBill", rank: 1, role: null },
     { userName: "theRealJae", rank: 1, role: null },
@@ -86,6 +89,7 @@ export default function Lobby() {
     if (getCookie("isHost") === "false") {
       setButtonDisabled(true);
     }
+    setGameLobbyText(urlCode[urlCode.length -1])
   }, []);
 
   let copyClick = () => {
