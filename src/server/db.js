@@ -14,6 +14,7 @@ const messageSchema = new mongoose.Schema({
   visibleTo: {
     all: Boolean,
     werewolves: Boolean,
+    dead: Boolean,
     direct: String
   }
 })

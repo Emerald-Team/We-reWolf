@@ -6,7 +6,7 @@ import axios from 'axios'
 
 export default function Game() {
 
-  const username = "Snarls Barkley"
+  const username = "Romulous"
   const gameID = "1234"
 
   const [messages, setMessages] = useState([])
@@ -80,7 +80,7 @@ export default function Game() {
   }
 
   useEffect(() => {
-    getMessages()
+    setInterval(getMessages, 1000)
   }, [])
 
 
