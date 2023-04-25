@@ -6,8 +6,15 @@ const model = {
     return 'chickens'
   },
   getGameState: async (gameID) => {
-
+    try {
+      const gameState = await db.GameState.findOne({gameId: gameID})
+      return gameState
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
   },
+
   updateGame: async (gameID, gameState) => {
 
   },

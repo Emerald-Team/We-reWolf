@@ -1,10 +1,22 @@
 const mongoose = require('mongoose')
 
 const uri = 'mongodb+srv://werewolf:awooo@testcluster.j05r1cq.mongodb.net/?retryWrites=true&w=majority';
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}
 
-mongoose.connect(uri);
+mongoose.connect(uri, options);
 
 const database = mongoose.connection;
+
+database.on('error', (error) => {
+  console.error('Error connecting to MongoDB Atlas Database: ', error)
+})
+
+database.once('open', () => {
+  console.log('Connected to MongoDB Atlas Database! ')
+})
 
 const messageSchema = new mongoose.Schema({
   gameID: String,
@@ -18,8 +30,25 @@ const messageSchema = new mongoose.Schema({
   }
 })
 
+const gameStateSchema = new mongoose.Schema({
+  gameId: String,
+  username: String,
+  users: [{
+    username: String,
+    role: String,
+    isAlive: Boolean,
+    markedForDeath: String,
+    votes: Number
+  }],
+  phase: {
+    type: String,
+    enum: ['night', 'day']
+  }
+})
+
 const db = {
   Message: mongoose.models.Message || mongoose.model('Message', messageSchema)
+  GameState: mongoose.models.GameState || mongoose.model('GameState', gameStateSchema)
 }
 
-export default db
+export default db  //pls? :) pls what pls share server on liveshare? oh lol one sec should be workng now thank you thank you
