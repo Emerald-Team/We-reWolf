@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
-import JoinModal from "../comps/modals/joinModal.js"
+import JoinModal from "../../comps/modals/joinModal.js"
 
 const Join = () => {
   //state variables
@@ -16,9 +16,11 @@ const Join = () => {
   function joinHandler() {
     document.cookie = `isHost = false`
   }
+
 useEffect(() => {
   setGameCode(getRandomInt(1000));
 }, [])
+
   const containerStyle = {
     display: "flex",
     justifyContent: "center",
