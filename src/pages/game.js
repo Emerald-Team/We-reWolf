@@ -1,24 +1,88 @@
-import { useMemo } from "react"
-import { createAvatar } from "@dicebear/core"
-import { lorelei } from "@dicebear/collection"
-import Image from "next/image"
+import { useMemo, useEffect, useState } from "react";
+import { createAvatar } from "@dicebear/core";
+import { lorelei } from "@dicebear/collection";
+import Image from "next/image";
+import axios from 'axios'
 
 export default function Game() {
-  var insideChat = [{ username: "User1", text: "HAHA EASY GAME" }]
+
+  const username = "Snarls Barkley"
+  const gameID = "1234"
+
+  const [messages, setMessages] = useState([])
+  const [text, setText] = useState('')
+  const [timeLeft, setTimeLeft] = useState(0);
 
   const avatar = useMemo(() => {
     return createAvatar(lorelei, {
       size: 100,
       seed: "John",
-    }).toDataUriSync()
-  }, [])
-
+    }).toDataUriSync();
+  }, []);
   const avatar1 = useMemo(() => {
     return createAvatar(lorelei, {
       size: 100,
       seed: "Amy",
-    }).toDataUriSync()
+    }).toDataUriSync();
+  }, []);
+
+  // const toggleTimeOfDay = () => {
+  //   const next = timeOfDay === "day" ? "night" : "day";
+  //   dispatch(setTimeOfDay(next));
+  // };
+  // dispatch(setTimeOfDay("night"));
+
+  useEffect(() => {
+    setTimeLeft(10); // set initial time left to 10 seconds
+    const intervalId = setInterval(() => {
+      setTimeLeft((timeLeft) => timeLeft - 1);
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const getMessages = () => {
+
+    const options = {
+      method: "GET",
+      url: `api/messages/${gameID}`
+    }
+    axios(options)
+      .then(res => {
+        setMessages(res.data)
+      })
+      .catch(console.log)
+
+  }
+
+  const handleText = (e) => {
+    setText(e.target.value)
+  }
+
+  const handleSend = () => {
+    const payload = {
+      user: username,
+      body: text,
+      visibleTo: {
+        all: true
+      }
+    }
+    const options = {
+      method: 'POST',
+      url: `api/messages/${gameID}`,
+      data: payload
+    }
+    axios(options)
+      .then(res => {
+        setText('')
+        setMessages(res.data)
+      })
+      .catch(console.log)
+  }
+
+  useEffect(() => {
+    getMessages()
   }, [])
+
 
   return (
     <>
@@ -32,8 +96,10 @@ export default function Game() {
               <p>1:58</p>
             </div>
             <div style={dayStyleNight}>
-              <p>Night 🌙</p>
-              {/* Day 🔆 */}
+              <p>Night
+</p>
+              {/* Day
+ */}
             </div>
           </div>
           <div className="players" style={playerContainerNight}>
@@ -88,10 +154,10 @@ export default function Game() {
         </div>
         <div style={chatContainerStyle}>
           <div style={chatContentContainerStyle}>
-            {insideChat.map((chat) => {
+            {messages.map((chat) => {
               return (
-                <p style={textStyle}>
-                  {chat.username}: {chat.text}
+                <p style={textStyle} key={chat._id}>
+                  {chat.user}: {chat.body}
                 </p>
               )
             })}
@@ -101,15 +167,16 @@ export default function Game() {
       <div style={inputContainerStyle}>
         <input
           type="text"
+          onChange={handleText}
+          value={text}
           style={inputStyle}
           placeholder="Type your message here..."
         />
-        <button style={buttonStyle}>Send</button>
+        <button style={buttonStyle} onClick={handleSend}>Send</button>
       </div>
     </>
   )
 }
-
 var textStyle = {
   color: "white",
   textAlign: "left",

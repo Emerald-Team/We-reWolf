@@ -112,7 +112,7 @@ export default function End() {
           <div style={chatContentContainerStyle}>
             {insideChat.map((chat) => {
               return (
-                <p style={textStyle}>
+                <p key={chat.username} style={textStyle}>
                   {chat.username}: {chat.text}
                 </p>
               )
