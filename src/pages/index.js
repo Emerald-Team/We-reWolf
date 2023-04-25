@@ -1,8 +1,7 @@
 import Image from "next/image"
 import { Inter } from "next/font/google"
 import App from "./_app"
-import { store } from '../redux/stores'
-import { Provider } from 'react-redux'
+
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -66,7 +65,7 @@ export default function Home() {
         <form style={styles.form}>
           <input type="text" placeholder="Username" style={styles.input} />
           <input type="password" placeholder="Password" style={styles.input} />
-          <button className="loginButton" type="submit" style={styles.button}>
+          <button type="submit" style={styles.button}>
             Login
           </button>
         </form>
