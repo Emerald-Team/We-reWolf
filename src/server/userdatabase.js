@@ -30,7 +30,7 @@ const userSchema = new Schema({
 })
 
 
-const Users = mongoose.model('users', userSchema);
+const Users = mongoose.models.users || mongoose.model('users', userSchema);
 
 const checkUsername = async (username) => {
 
@@ -60,10 +60,10 @@ const checkEmail = async (email) => {
 }
 const newAccount = async (obj) => {
 
-  await Users.create(obj).then(() => 'Success!').catch((err) => { return err;})
+  return Users.create(obj) //.then(() => 'Success Mongoose!').catch((err) => { return err;})
 
 
-  
+
 }
 
 

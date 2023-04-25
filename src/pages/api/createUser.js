@@ -1,8 +1,8 @@
-const saltHash = require("password-salt-and-hash");
+const saltHash = require("password-salt-and-hash"); import {useRouter} from 'next/navigation'; const userDatabase = require('../../server/userdatabase.js');
 
 
 
-const Handler = async (req, res) => {
+export default async function handler(req, res){ //const router = useRouter();
   console.log("req got here:", req.body);
   let userDetails = req.body;
   let usernameTaken = await userDatabase.checkUsername(req.body.username);
@@ -13,17 +13,17 @@ const Handler = async (req, res) => {
     let passwordHash = saltHash.generateSaltHash(req.body.password);
     req.body.password = passwordHash;
     let user;
-
     await userDatabase
+    
       .newAccount(req.body)
-      .then((msg) => {
-        if (msg === "Success!") {
-          req.session.user = req.body.username;
-          res.redirect("/lobby");
-        }
+      .then((data) => {
+
+
+          res.send('Success');
+
       })
       .catch((err) => {
-        res.redirect("/signup");
+        res.send(err);
       });
   }
   if (usernameTaken) {
@@ -35,3 +35,7 @@ const Handler = async (req, res) => {
     return;
   }
 };
+
+
+// export default CreateHandler
+
