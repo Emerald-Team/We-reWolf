@@ -65,8 +65,13 @@ const exampleGameData = {
 
 export default function Game() {
 
+<<<<<<< HEAD
   // const username = "TheBigBadBill"
   // const gameID = "1234"
+=======
+  const username = "Remus"
+  const gameID = "1234"
+>>>>>>> 741227e (idk)
 
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
@@ -163,7 +168,7 @@ export default function Game() {
   }
   useEffect(() => {
     getMessages()
-  }, [])
+  })
 
   return (
     <>
