@@ -11,12 +11,7 @@ const messageSchema = new mongoose.Schema({
   user: String,
   body: String,
   sentAt: { type: Date, default: Date.now },
-  visibleTo: {
-    all: Boolean,
-    werewolves: Boolean,
-    dead: Boolean,
-    direct: String
-  }
+  visibleTo: [{ type: String }]
 })
 
 const db = {
