@@ -15,9 +15,24 @@ const model = {
     }
   },
 
-  updateGame: async (gameID, gameState) => {
+  createGame: async ({, users, phase}) => {
+    try {
+      const gameId = new mongoose.Types.ObjectId()
 
+      const gameState = new db.GameState({
+        gameId: gameId,
+        users: users,
+        phase: phase
+      })
+
+      await gameState.save()
+      return gameState
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
   },
+
   getMessages: (gameID) => {
     return db.Message.find({ gameID: gameID })
   },

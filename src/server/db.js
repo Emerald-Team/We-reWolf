@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
 
 const uri = 'mongodb+srv://werewolf:awooo@testcluster.j05r1cq.mongodb.net/?retryWrites=true&w=majority';
 const options = {
@@ -32,12 +32,10 @@ const messageSchema = new mongoose.Schema({
 
 const gameStateSchema = new mongoose.Schema({
   gameId: String,
-  username: String,
   users: [{
     username: String,
     role: String,
     isAlive: Boolean,
-    markedForDeath: String,
     votes: Number
   }],
   phase: {
@@ -47,8 +45,8 @@ const gameStateSchema = new mongoose.Schema({
 })
 
 const db = {
-  Message: mongoose.models.Message || mongoose.model('Message', messageSchema)
+  Message: mongoose.models.Message || mongoose.model('Message', messageSchema),
   GameState: mongoose.models.GameState || mongoose.model('GameState', gameStateSchema)
 }
 
-export default db  //pls? :) pls what pls share server on liveshare? oh lol one sec should be workng now thank you thank you
+export default db

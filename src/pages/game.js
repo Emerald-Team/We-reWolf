@@ -9,6 +9,7 @@ import db from '../server/db'
 
 const interval = 10;
 const phases = ['night', 'day'];
+
 const exampleGameData = {
   gameID: '1234',
   username: 'TheBigBadBill',
@@ -65,7 +66,21 @@ const exampleGameData = {
   phase: 'night',
 };
 
+const createNewGame = async (users, phase) => {
+  try {
+    const gameState = await axios.post(`/api/createGame/createGame`, {
+      users,
+      phase
+    })
+    return gameState.data
+  } catch (error) {
+    console.error('ERROR CREATING GAME: ', error)
+    throw error
+  }
+}
+
 export default function Game() {
+  const [gameStarted, setGameStarted] = useState(false)
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
   const [timeLeft, setTimeLeft] = useState(interval); //dont need
@@ -75,6 +90,18 @@ export default function Game() {
   const [player, setPlayer] = useState(exampleGameData.users.filter(user => user.username === exampleGameData.username)[0])
   const [isWerewolf, setIsWerewolf] = useState(player.role === 'werewolf')
   const [selected, setSelected] = useState(null);
+  const [lastSelected, setLastSelected] = useState(null);
+
+  useEffect(() => {
+    if (gameStarted === false) {
+      createNewGame(exampleGameData.users, exampleGameData.phase)
+        .then((gameState) => {
+          setGameId(gameState.gameId)
+          setGameStarted(true)
+        })
+        .catch((err) => console.error(err))
+    }
+  }, [gameStarted])
 
   const handleEndPhase = function(phaseEnded) {
     console.log('handling phase end, ', phaseEnded);
@@ -194,7 +221,11 @@ export default function Game() {
             </div>
           </div>
           <div className="players" style={phase === 'night' ? playerContainerNight : playerContainer}>
-            {players.map((player, i) => <Avatar key={i} player={player} selected={selected} setSelected={setSelected} />)}
+            {players.map(
+              (player, i) =>
+                <Avatar key={i} player={player} selected={selected} setSelected={setSelected} setLastSelected={setLastSelected} />
+              )
+            }
           </div>
           <small style={phase === 'night' ? werewolfTextContainerNight : werewolfTextContainer}>
             Werewolves: {players.map(player => {

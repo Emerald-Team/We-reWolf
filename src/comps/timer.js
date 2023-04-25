@@ -4,7 +4,7 @@ import {useState, useEffect} from 'react';
 const TIMER_DURATION = 6
 
 export default function Timer() {
-  const [time, setTime] = useState()
+  const [time, setTime] = useState(TIMER_DURATION)
 
   function step() {
     const timestamp = Date.now() / 1000;
@@ -15,10 +15,11 @@ export default function Timer() {
   }
 
   useEffect(() => {
+    console.log('running step on load')
     step();
   }, []);
 
   return (
-    <div>{time}</div>
+    <div>TIMER: {time}</div>
   );
 }
