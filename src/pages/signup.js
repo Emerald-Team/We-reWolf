@@ -60,7 +60,7 @@ const [message, setMessage] = useState(''); const [species, setSpecies] = useSta
 
     let obj = {username: username, password: password, email: email, species: species};
 
-    await axios.post('http://localhost:8080/signup', obj).then((res) => {setEmail(''); setUsername(''); setPassword(''); window.location = '/join'}).catch((res) => { setMessage(res.data); window.location = '/signup';})
+    await axios.post('http://localhost:8080/signup', obj).then((res) => {setEmail(''); setUsername(''); setPassword(''); setSpecies('');}).catch((res) => { setMessage(res.data); window.location = '/signup';})
 
 
 
@@ -94,8 +94,8 @@ const [message, setMessage] = useState(''); const [species, setSpecies] = useSta
           {/* <input type="text" placeholder="w.e. you want" style={styles.input} />
           <input type="text" placeholder="w.e. you want" style={styles.input} />
           <input type="text" placeholder="w.e. you want" style={styles.input} /> */}
-          <button type="submit" style={styles.button} onClick={(e) => {e.preventDefault(); signupHandler();}}>
-            Login
+          <button className="signButton" type="submit" style={styles.button} onClick={(e) => {e.preventDefault(); signupHandler();}}>
+            Sign-Up
           </button>
         </form>
       </div>
