@@ -1,3 +1,4 @@
+<<<<<<< HEAD:src/pages/game.js
 import { useMemo, useState, useEffect } from "react"
 import { createAvatar } from "@dicebear/core"
 import { lorelei } from "@dicebear/collection"
@@ -8,25 +9,97 @@ import axios from 'axios'
 export default function Game() {
   //hardcoded for testing
   const username = "Snarls Barkley"
+=======
+import { useMemo, useEffect, useState } from "react";
+import { createAvatar } from "@dicebear/core";
+import { lorelei } from "@dicebear/collection";
+import Image from "next/image";
+import axios from 'axios'
+
+export default function Game() {
+
+  const username = "Romulous"
+>>>>>>> main:src/pages/game/[gameID].js
   const gameID = "1234"
 
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
+<<<<<<< HEAD:src/pages/game.js
+=======
+  const [timeLeft, setTimeLeft] = useState(0);
+>>>>>>> main:src/pages/game/[gameID].js
 
   const avatar = useMemo(() => {
     return createAvatar(lorelei, {
       size: 100,
       seed: "John",
-    }).toDataUriSync()
-  }, [])
-
+    }).toDataUriSync();
+  }, []);
   const avatar1 = useMemo(() => {
     return createAvatar(lorelei, {
       size: 100,
       seed: "Amy",
-    }).toDataUriSync()
+    }).toDataUriSync();
+  }, []);
+
+  // const toggleTimeOfDay = () => {
+  //   const next = timeOfDay === "day" ? "night" : "day";
+  //   dispatch(setTimeOfDay(next));
+  // };
+  // dispatch(setTimeOfDay("night"));
+
+  useEffect(() => {
+    setTimeLeft(10); // set initial time left to 10 seconds
+    const intervalId = setInterval(() => {
+      setTimeLeft((timeLeft) => timeLeft - 1);
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const getMessages = () => {
+
+    const options = {
+      method: "GET",
+      url: `api/messages/${gameID}`
+    }
+    axios(options)
+      .then(res => {
+        setMessages(res.data)
+      })
+      .catch(console.log)
+
+  }
+
+  const handleText = (e) => {
+    setText(e.target.value)
+  }
+
+  const handleSend = () => {
+    const payload = {
+      user: username,
+      body: text,
+      visibleTo: {
+        all: true
+      }
+    }
+    const options = {
+      method: 'POST',
+      url: `api/messages/${gameID}`,
+      data: payload
+    }
+    axios(options)
+      .then(res => {
+        setText('')
+        setMessages(res.data)
+      })
+      .catch(console.log)
+  }
+
+  useEffect(() => {
+    setInterval(getMessages, 1000)
   }, [])
 
+<<<<<<< HEAD:src/pages/game.js
   const getMessages = () => {
 
     const options = {
@@ -69,6 +142,8 @@ export default function Game() {
   useEffect(() => {
     getMessages()
   })
+=======
+>>>>>>> main:src/pages/game/[gameID].js
 
   return (
     <>
@@ -82,8 +157,10 @@ export default function Game() {
               <p>1:58</p>
             </div>
             <div style={dayStyleNight}>
-              <p>Night 🌙</p>
-              {/* Day 🔆 */}
+              <p>Night
+</p>
+              {/* Day
+ */}
             </div>
           </div>
           <div className="players" style={playerContainerNight}>
@@ -161,7 +238,6 @@ export default function Game() {
     </>
   )
 }
-
 var textStyle = {
   color: "white",
   textAlign: "left",
