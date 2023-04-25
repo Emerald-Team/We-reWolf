@@ -1,4 +1,4 @@
-import Image from "next/image"
+import Image from "next/image"; import React, {useState, useEffect} from 'react'; import axios from 'axios';
 import { Inter } from "next/font/google"
 import App from "./_app"
 
@@ -58,18 +58,44 @@ export default function Home() {
     },
   }
 
+
+  const [username, setUsername] = useState('');
+
+  const [password, setPassword] = useState(''); const [showing, setShowing] = useState(false); const [email, setEmail] = useState('');
+
+
+
+const loginHandler = async () => {
+  let obj = {username: username, password: password, email: email};
+  await axios.post('http://localhost:8080/login', obj).then((res) => {setEmail(''); setUsername(''); setPassword(''); res.sendFile()}).catch((res) => { window.location = '/login';})
+
+
+
+
+
+}
+
+
   return (
     <div style={styles.container}>
       <div style={styles.loginBox}>
         <h2 style={{ marginBottom: "10px" }}>Login</h2>
         <form style={styles.form}>
+<<<<<<< HEAD
           <input type="text" placeholder="Username" style={styles.input} />
           <input type="password" placeholder="Password" style={styles.input} />
           <button type="submit" style={styles.button}>
+=======
+          <input type="text" placeholder="Username" value ={username} style={styles.input} onChange={(e) => {setUsername(e.target.value)}}/>
+          <input type="password" value={password} placeholder="Password" style={styles.input} onChange={(e) => {setPassword(e.target.value)}}/>
+
+          <input type="text" placeholder="E-mail" value={email} style={{visibility: `${showing ? 'visible' : 'hidden'}`}} onChange={(e) => {setEmail(e.target.value)}}/>
+          <button className="loginButton" type="submit" style={styles.button} onClick={(e) => {e.preventDefault(); loginHandler();}}>
+>>>>>>> local branch changes
             Login
           </button>
         </form>
-        <p style={styles.text}>Move to sign up logic here</p>
+        <a onClick={(e) => {e.preventDefault(); setShowing(!showing)}}>Click here to sign in with an email address</a>
       </div>
       <div style={styles.imageBox}>
         <Image
