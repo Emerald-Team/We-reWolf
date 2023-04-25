@@ -1,6 +1,8 @@
-const saltHash = require("password-salt-and-hash");
+const saltHash = require("password-salt-and-hash"); import {useRouter} from 'next/navigation';
+const userDatabase = require('../../server/userdatabase.js');
 
-const Handler = async (req, res) => {
+
+export default async function handler(req, res){ //const router = useRouter();
   //console.log('req got here', req.body)
 
   let userDetails = req.body;
@@ -29,10 +31,14 @@ const Handler = async (req, res) => {
 
       if (isValid) {
         // req.session.user = user
-        res.redirect("/lobby");
+       res.redirect("/lobby");
       } else {
         res.status(400).send("invalid credentials");
       }
     }
   }
+
 };
+
+
+//export default VerifyHandler
