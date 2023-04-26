@@ -1,14 +1,10 @@
-import React, { useState } from "react";
-import Link from "next/link";
-
-
-
+import React, { useState } from "react"
+import Link from "next/link"
 
 const JoinModal = ({ open, onClose, setCookie }) => {
+  const [gameCode, setGameCode] = useState(0)
 
-  const [gameCode, setGameCode] = useState(0);
-
-  if (!open) return null;
+  if (!open) return null
   const overlay = {
     position: "fixed",
     top: "0",
@@ -56,7 +52,7 @@ const JoinModal = ({ open, onClose, setCookie }) => {
     right: "1rem",
     top: "1rem",
   }
-  function joinHandler(e){
+  function joinHandler(e) {
     setGameCode(e.target.value)
   }
 
@@ -71,15 +67,15 @@ const JoinModal = ({ open, onClose, setCookie }) => {
         </button>
         <br></br>
         <input
-        style={inputStyle}
-        placeholder="enter game code here"
-        onChange = {joinHandler}
-        value = {gameCode}/>
-
+          style={inputStyle}
+          placeholder="enter game code here"
+          onChange={joinHandler}
+          value={gameCode}
+        />
         <Link href={`/joinGameLobby/${gameCode}`}>
-          <button
-          onClick = {setCookie}
-          style={buttonStyle}>Join</button>
+          <button className="modalJoin" onClick={setCookie} style={buttonStyle}>
+            Join
+          </button>
         </Link>
       </div>
     </>

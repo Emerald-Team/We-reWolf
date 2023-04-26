@@ -44,6 +44,8 @@ const Join = () => {
     backgroundColor: "rgba(64, 66, 64, 0.7)",
     padding: "1rem",
     color: "white",
+    textAlign: "center",
+    overflowY: "auto",
   }
   const buttonStyle1 = {
     border: "0.5px solid black",
@@ -70,6 +72,20 @@ const Join = () => {
     border: "1px solid black",
     borderRadius: "5px",
   }
+  const rulesStyle = {
+    fontSize: "200%",
+    fontWeight: "bold",
+    textDecorationLine: "underline",
+  }
+  const change = {
+    marginTop: "20px",
+    fontSize: "150%",
+    fontWeight: "bold",
+  }
+  const roleRulesStyle = {
+    marginLeft: "20px",
+    textAlign: "left",
+  }
 
   return (
     <>
@@ -94,8 +110,74 @@ const Join = () => {
           </button>
         </div>
         <div style={rightBoxStyle}>
-          <h1>RULES</h1>
-          <p>This is the text section with the title </p>
+          <h1 style={rulesStyle}>RULES</h1>
+          <div style={roleRulesStyle}>
+            <h2 style={change}>Objective: </h2>
+            <p>
+              For the Villagers, Doctor, and Seer: Identify and vote out the
+              Werewolves to save the village.
+            </p>
+            <p>
+              For the Werewolves: Eliminate all Villagers and other opposing
+              roles.
+            </p>
+            <h2 style={change}>Roles:</h2>
+            <p>
+              Werewolves: Typically, there are 2 or more players who are
+              designated as Werewolves. They work together to eliminate other
+              players during the game. The Werewolves know each others identity
+              and can communicate secretly to plan their strategy.
+            </p>
+            <p>
+              Villagers: The majority of players are Villagers. They do not have
+              any special abilities other than trying to identify and vote out
+              the Werewolves during the game.
+            </p>
+            <p>
+              Doctor: The Doctor is a special role on the side of the Villagers.
+              The Doctor has the ability to protect one player each night from
+              being eliminated by the Werewolves. The Doctors goal is to save as
+              many Villagers as possible.
+            </p>
+            <p>
+              Seer: The Seer is another special role on the side of the
+              Villagers. The Seer has the ability to investigate one players
+              identity each night to determine if they are a Villager or a
+              Werewolf. The Seers goal is to gather information and use it to
+              help the Villagers identify the Werewolves.
+            </p>
+            <h2 style={change}>GamePlay: </h2>
+            <p>
+              1. The game is played in rounds, with each round consisting of two
+              phases: Day and Night.
+            </p>
+            <p>
+              2. During the Day phase, all players, including the Villagers,
+              Doctor, and Seer, openly discuss and vote on who they think is a
+              Werewolf. Players can use their observations, deductions, and any
+              special abilities they may have to make their case.
+            </p>
+            <p>
+              3. At the end of the Day phase, the player with the most votes
+              against them is dead and eliminated from the game. If there is a
+              tie, no one is dead.
+            </p>
+            <p>
+              4. During the Night phase, the Werewolves secretly choose a player
+              to eliminate from the game. The Doctor can choose a player to
+              protect, and the Seer can investigate a players identity.
+            </p>
+            <p>
+              5. The next Day phase begins, and the cycle continues until either
+              all Werewolves are eliminated, or the Werewolves outnumber the
+              Villagers.
+            </p>
+            <p>
+              6. The game continues until one of the win conditions is met:
+              either the Werewolves are all eliminated, or the Werewolves
+              outnumber the Villagers.
+            </p>
+          </div>
         </div>
       </div>
       <JoinModal
