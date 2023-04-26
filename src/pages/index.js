@@ -56,9 +56,6 @@ export default function Home() {
       objectFit: "cover",
       borderRadius: "4px",
     },
-<<<<<<< HEAD
-  }
-=======
   };
   useEffect(() => {if (localStorage.getItem('user')) {router.push('/joinGameLobby')}}, [])
 
@@ -85,7 +82,6 @@ export default function Home() {
        router.push("/login");
       });
   };
->>>>>>> main
 
   return (
     <div style={styles.container}>

@@ -219,7 +219,7 @@ export default function Game() {
 
   const handleSend = () => {
     let visibleTo = 'all'
-    if(timeOfDay === 'night' && userRole === 'werewolf'){
+    if(phase === 'night' && userRole === 'werewolf'){
       visibleTo = 'werewolf'
     } else if(userRole === 'dead'){
       visibleTo = 'dead'
