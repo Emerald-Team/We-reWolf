@@ -63,7 +63,7 @@ export default function Home() {
   useEffect(() => {if (localStorage.getItem('user')) {router.push('/joinGameLobby')}}, [])
 
 
-  
+
   const [username, setUsername] = useState("");
 
   const [password, setPassword] = useState("");
