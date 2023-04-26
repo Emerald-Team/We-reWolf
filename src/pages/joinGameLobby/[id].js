@@ -27,6 +27,12 @@ export default function Lobby() {
     })
     .catch(console.log)
   }, [])
+
+  function getUserName () {
+    let userName = window.localStorage.user;
+    console.log('USERNAME', userName)
+  }
+
   let fakePlayers = [
     { userName: "BadBill", rank: 1, role: null },
     { userName: "theRealJae", rank: 1, role: null },
@@ -103,6 +109,7 @@ export default function Lobby() {
       setButtonDisabled(true);
     }
     setGameLobbyText(urlCode[urlCode.length -1])
+    getUserName();
   }, []);
 
   let copyClick = () => {
