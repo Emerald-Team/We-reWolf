@@ -15,7 +15,6 @@ const model = {
       throw error
     }
   },
-
   createGame: async ({users, phase}) => {
     console.log('creating game...')
     try {
@@ -35,6 +34,11 @@ const model = {
     }
   },
 
+  createLobby: async (gameID, user) => {
+    let newLobby = new db.Lobby({
+
+    })
+  },
   getMessages: (gameID) => {
     return db.Message.find({ gameID: gameID })
   },

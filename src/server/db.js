@@ -8,6 +8,7 @@ const uri = 'mongodb+srv://werewolf:awooo@testcluster.j05r1cq.mongodb.net/?retry
 
 // console.log(mongoose)
 // console.log(mongoose.connect)
+
 mongoose.connect(uri)
   // .then(result => {
   //   console.log('result', result)
@@ -31,11 +32,7 @@ const messageSchema = new mongoose.Schema({
   user: String,
   body: String,
   sentAt: { type: Date, default: Date.now },
-  visibleTo: {
-    all: Boolean,
-    werewolves: Boolean,
-    direct: String
-  }
+  visibleTo: String
 })
 
 const gameStateSchema = new mongoose.Schema({
@@ -52,9 +49,19 @@ const gameStateSchema = new mongoose.Schema({
   }
 })
 
+const lobbySchema = new mongoose.Schema({
+  gameID: String,
+  users: [{
+    userName: String,
+    rank: {type: Number, default: 1},
+    role: String
+  }]
+})
+
 const db = {
   Message: mongoose.models.Message || mongoose.model('Message', messageSchema),
-  GameState: mongoose.models.GameState || mongoose.model('GameState', gameStateSchema)
+  GameState: mongoose.models.GameState || mongoose.model('GameState', gameStateSchema),
+  Lobby: mongoose.models.Lobby || mongoose.model('Lobby', lobbySchema)
 }
 
 module.exports = db

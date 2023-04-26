@@ -14,6 +14,7 @@ const handler = async (req, res) => {
   } else if (req.method === 'GET'){
     await model.getMessages(gameID)
     .then(data => {
+
       return res.status(200).send(data)
     })
     .catch(err => {
