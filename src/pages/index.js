@@ -1,11 +1,4 @@
-<<<<<<< HEAD
-import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useRouter } from "next/router";
-import { Inter } from "next/font/google";
-import App from "./_app";
-=======
+
 import Image from "next/image"
 import { Inter } from "next/font/google"
 import App from "./_app"
@@ -13,7 +6,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import axios from 'axios'
->>>>>>> main
+
 
 
 const inter = Inter({ subsets: ["latin"] })
@@ -74,11 +67,6 @@ export default function Home() {
  //console.log('in index file') // useEffect(() => {if (localStorage.getItem('user')) {router.push('/joinGameLobby')}}, [])
 
 
-
-<<<<<<< HEAD
-=======
-
->>>>>>> main
   const [username, setUsername] = useState("");
 
   const [password, setPassword] = useState("");
