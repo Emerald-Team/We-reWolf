@@ -1,12 +1,20 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const uri = 'mongodb+srv://werewolf:awooo@testcluster.j05r1cq.mongodb.net/?retryWrites=true&w=majority';
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}
+// const options = {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true
+// }
 
-mongoose.connect(uri, options);
+// console.log(mongoose)
+// console.log(mongoose.connect)
+mongoose.connect(uri)
+  // .then(result => {
+  //   console.log('result', result)
+  // })
+  // .catch(err => {
+  //   console.log('error',err)
+  // });
 
 const database = mongoose.connection;
 
@@ -49,4 +57,4 @@ const db = {
   GameState: mongoose.models.GameState || mongoose.model('GameState', gameStateSchema)
 }
 
-export default db
+module.exports = db

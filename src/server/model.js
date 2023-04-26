@@ -1,4 +1,5 @@
 import db from './db.js'
+const mongoose = require('mongoose');
 
 const model = {
 
@@ -15,21 +16,21 @@ const model = {
     }
   },
 
-  createGame: async ({, users, phase}) => {
+  createGame: async ({users, phase}) => {
+    console.log('creating game...')
     try {
       const gameId = new mongoose.Types.ObjectId()
-
       const gameState = new db.GameState({
         gameId: gameId,
         users: users,
         phase: phase
       })
-
       await gameState.save()
       return gameState
     } catch (error) {
       console.error(error)
       throw error
+      console.error('SERVER ERROR: ', error.response.data.error)
     }
   },
 

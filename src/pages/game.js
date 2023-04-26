@@ -5,7 +5,6 @@ import Image from "next/image";
 import Avatar from "/src/comps/avatar.js"
 import Timer from "/src/comps/timer.js"
 import axios from 'axios'
-import db from '../server/db'
 
 const interval = 10;
 const phases = ['night', 'day'];
@@ -67,6 +66,7 @@ const exampleGameData = {
 };
 
 const createNewGame = async (users, phase) => {
+  console.log('creating new game.......... ')
   try {
     const gameState = await axios.post(`/api/createGame/createGame`, {
       users,
@@ -91,17 +91,19 @@ export default function Game() {
   const [isWerewolf, setIsWerewolf] = useState(player.role === 'werewolf')
   const [selected, setSelected] = useState(null);
   const [lastSelected, setLastSelected] = useState(null);
+  const [gameId, setGameId] = useState('0')
 
   useEffect(() => {
     if (gameStarted === false) {
       createNewGame(exampleGameData.users, exampleGameData.phase)
         .then((gameState) => {
+          console.log(gameState)
           setGameId(gameState.gameId)
           setGameStarted(true)
         })
         .catch((err) => console.error(err))
     }
-  }, [gameStarted])
+  }, [])
 
   const handleEndPhase = function(phaseEnded) {
     console.log('handling phase end, ', phaseEnded);
