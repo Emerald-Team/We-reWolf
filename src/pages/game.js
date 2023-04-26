@@ -3,10 +3,12 @@ import { createAvatar } from "@dicebear/core";
 import { lorelei } from "@dicebear/collection";
 import Image from "next/image";
 import Avatar from "/src/comps/avatar.js"
+import Timer from "/src/comps/timer.js"
 import axios from 'axios'
 
 const interval = 10;
 const phases = ['night', 'day'];
+
 const exampleGameData = {
   gameID: '1234',
   username: 'TheBigBadBill',
@@ -63,23 +65,62 @@ const exampleGameData = {
   phase: 'night',
 };
 
+const createNewGame = async (users, phase) => {
+  console.log('creating new game.......... ')
+  try {
+    const gameState = await axios.post(`/api/createGame/createGame`, {
+      users,
+      phase
+    })
+    return gameState.data
+  } catch (error) {
+    console.error('ERROR CREATING GAME: ', error)
+    throw error
+  }
+}
+
 export default function Game() {
-
-  // const username = "TheBigBadBill"
-  // const gameID = "1234"
-
+  const [gameStarted, setGameStarted] = useState(false)
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
-  const [timeLeft, setTimeLeft] = useState(interval);
+  const [timeLeft, setTimeLeft] = useState(interval); //dont need
   const [phaseIndex, setPhaseIndex] = useState(0)
   const [phase, setPhase] = useState(phases[phaseIndex])
   const [players, setPlayers] = useState(exampleGameData.users)
   const [player, setPlayer] = useState(exampleGameData.users.filter(user => user.username === exampleGameData.username)[0])
   const [isWerewolf, setIsWerewolf] = useState(player.role === 'werewolf')
   const [selected, setSelected] = useState(null);
+  const [lastSelected, setLastSelected] = useState(null);
+  const [gameId, setGameId] = useState('0')
+
+  useEffect(() => {
+    if (gameStarted === false) {
+      createNewGame(exampleGameData.users, exampleGameData.phase)
+        .then((gameState) => {
+          console.log(gameState)
+          setGameId(gameState.gameId)
+          setGameStarted(true)
+        })
+        .catch((err) => console.error(err))
+    }
+  }, [])
 
   const handleEndPhase = function(phaseEnded) {
-    console.log('handling phase end, ', phaseEnded)
+    console.log('handling phase end, ', phaseEnded);
+    if (!player.isAlive) {
+      console.log('too dead, sry');
+      return;
+    }
+    switch (phaseEnded) {
+      case 'night':
+        console.log('The night has ended. Here is the result:\n');
+        break;
+      case 'day':
+        console.log('The day has ended. Here is the result:\n');
+        break;
+      default:
+        console.log(`Sorry, we are out of ${phaseEnded}.`);
+    }
     // if (phaseEnded === 'night') {
     //   console.log('night votes', players.reduce((accum, player) => {
     //     if (player.votes > 0) {
@@ -91,7 +132,7 @@ export default function Game() {
     // } else if (phaseEnded === 'day') {
     //   console.log('day votes', )
     // } else {
-
+    //
     // }
   }
   useEffect(() => {
@@ -114,17 +155,17 @@ export default function Game() {
   }, [phase])
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (timeLeft < 1) {
-        setTimeLeft(interval); // set initial time left to 10 seconds
-        setPhaseIndex((phaseIndex + 1) % phases.length)
-        console.log('phase index', phaseIndex)
-      } else {
-        console.log(timeLeft)
-        setTimeLeft(timeLeft - 1);
-      }
-    }, 1000);
-    return () => clearInterval(intervalId);
+    // const intervalId = setInterval(() => {
+    //   if (timeLeft < 1) {
+    //     setTimeLeft(interval); // set initial time left to 10 seconds
+    //     setPhaseIndex((phaseIndex + 1) % phases.length)
+    //     console.log('phase index', phaseIndex)
+    //   } else {
+    //     console.log(timeLeft)
+    //     setTimeLeft(timeLeft - 1);
+    //   }
+    // }, 1000);
+    // return () => clearInterval(intervalId);
   }, [timeLeft]);
 
   const getMessages = () => {
@@ -163,7 +204,7 @@ export default function Game() {
   }
   useEffect(() => {
     getMessages()
-  }, [])
+  })
 
   return (
     <>
@@ -174,7 +215,7 @@ export default function Game() {
               <p>{player.role}</p>
             </div>
             <div style={phase === 'night' ? timerStyleNight : timerStyle}>
-              <p>{timeLeft}</p>
+              <Timer />
             </div>
             <div style={dayStyleNight}>
               <p>{phase}</p>
@@ -182,7 +223,11 @@ export default function Game() {
             </div>
           </div>
           <div className="players" style={phase === 'night' ? playerContainerNight : playerContainer}>
-            {players.map((player, i) => <Avatar key={i} player={player} selected={selected} setSelected={setSelected} />)}
+            {players.map(
+              (player, i) =>
+                <Avatar key={i} player={player} selected={selected} setSelected={setSelected} setLastSelected={setLastSelected} />
+              )
+            }
           </div>
           <small style={phase === 'night' ? werewolfTextContainerNight : werewolfTextContainer}>
             Werewolves: {players.map(player => {
