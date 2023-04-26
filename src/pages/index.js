@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useRouter } from "next/router";
-import { Inter } from "next/font/google";
-import App from "./_app";
-=======
 import Image from "next/image"
 import { Inter } from "next/font/google"
 import App from "./_app"
@@ -13,7 +5,6 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import axios from 'axios'
->>>>>>> main
 
 
 const inter = Inter({ subsets: ["latin"] })
@@ -73,12 +64,12 @@ export default function Home() {
   };
  //console.log('in index file') // useEffect(() => {if (localStorage.getItem('user')) {router.push('/joinGameLobby')}}, [])
 
+ useEffect(() => {
+  if (localStorage.getItem("user")) {
+    router.push("/joinGameLobby")
+  }
+}, [])
 
-
-<<<<<<< HEAD
-=======
-
->>>>>>> main
   const [username, setUsername] = useState("");
 
   const [password, setPassword] = useState("");
@@ -110,12 +101,12 @@ export default function Home() {
         <h2 style={{ marginBottom: "10px" }}>Login</h2>
         <form style={styles.form}>
           <input type="text" placeholder="Username" style={styles.input} />
-          <input type="password" placeholder="Password" style={styles.input} />
+          <input type="password" placeholder="Password" style={styles.input} required/>
           <button type="submit" style={styles.button}>
             Login
           </button>
         </form>
-        <Link href='/signup' style={styles.text}>Sign Up</Link>
+        <Link href='/signup' style={styles.text}>Sign-Up</Link>
       </div>
       <div style={styles.imageBox}>
         <Image

@@ -110,7 +110,7 @@ export default function SignUp() {
             onChange={(e) => {
               setEmail(e.target.value)
             }}
-          />
+          required/>
           <input
             type="password"
             value={password}
@@ -119,7 +119,7 @@ export default function SignUp() {
             }}
             placeholder="Password"
             style={styles.input}
-          />
+          required/>
           <input
             type="text"
             placeholder="Username"
@@ -128,7 +128,7 @@ export default function SignUp() {
               setUsername(e.target.value)
             }}
             style={styles.input}
-          />
+          required/>
 
           <label for="species">Choose a Species:</label>
           <select
@@ -139,7 +139,7 @@ export default function SignUp() {
             onChange={(e) => {
               setSpecies(e.target.value)
             }}
-          >
+          required>
             <option value="Human">Human</option>
             <option value="Werewolf">Werewolf</option>
           </select>
