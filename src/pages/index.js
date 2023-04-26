@@ -83,29 +83,3 @@ export default function Home() {
     </div>
   )
 }
-
-  return (
-    <div style={styles.container}>
-      <div style={styles.loginBox}>
-        <h2 style={{ marginBottom: "10px" }}>Login</h2>
-        <form style={styles.form}>
-          <input type="text" placeholder="Username" onChange={handleUsername} style={styles.input} />
-          <input type="password" placeholder="Password" onChange={handlePassword} style={styles.input} />
-          <button type="submit" style={styles.button} onClick={handleLogin}>
-            Login
-          </button>
-        </form>
-        <p style={styles.text}>Move to sign up logic here</p>
-      </div>
-      <div style={styles.imageBox}>
-        <Image
-          src="/wold2.gif"
-          alt="Login"
-          style={styles.image}
-          width={150}
-          height={60}
-        />
-      </div>
-    </div>
-  )
-}
