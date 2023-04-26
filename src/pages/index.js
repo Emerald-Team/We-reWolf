@@ -60,7 +60,10 @@ export default function Home() {
       borderRadius: "4px",
     },
   };
+  useEffect(() => {if (localStorage.getItem('user')) {router.push('/joinGameLobby')}}, [])
 
+
+  
   const [username, setUsername] = useState("");
 
   const [password, setPassword] = useState("");

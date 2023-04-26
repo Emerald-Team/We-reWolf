@@ -8,9 +8,11 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-  const [species, setSpecies] = useState("");
 
+  const [species, setSpecies] = useState("");
+  const [id, setId] = useState({})
   const router = useRouter();
+  useEffect(() => {if (localStorage.getItem('user')) {router.push('/joinGameLobby')}}, [])
 
   const styles = {
     container: {
@@ -72,7 +74,7 @@ export default function SignUp() {
 
       .post("api/createUser", obj)
       .then((res) => { console.log('response data :', res.data);
-        window.localStorage.setItem( 'user', obj.username);
+        localStorage.setItem( 'user', obj.username);
         setEmail("");
         setUsername("");
         setPassword("");
