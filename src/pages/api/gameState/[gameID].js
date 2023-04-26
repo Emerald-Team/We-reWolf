@@ -1,10 +1,6 @@
 import model from '../../../server/model'
 
 const handler = async (req, res) => {
-<<<<<<< HEAD
-  
-=======
->>>>>>> main
   const {gameID} = req.query;
   if (req.method === 'GET') {
     try {
