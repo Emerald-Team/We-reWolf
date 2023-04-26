@@ -105,7 +105,7 @@ export default function End() {
     <>
       <div style={containerStyle}>
         <div style={imageContainerStyle}>
-          <Image src="/giphy-1.gif" alt="Your Image" width="400" height="600" />
+          <Image src="/giphy.gif" alt="Your Image" width="400" height="600" />
           <p style={imageStyle}>Villagers WIN!</p>
         </div>
         <div style={chatContainerStyle}>

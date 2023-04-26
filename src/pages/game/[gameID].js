@@ -8,7 +8,7 @@ import axios from 'axios'
 import * as _ from "lodash"
 import { useRouter } from 'next/router';
 
-const interval = 10;
+const PHASE_LENGTH = 10;
 const phases = ['night', 'day'];
 
 
@@ -17,7 +17,6 @@ export default function Game() {
 
   const [gameData, setGameData] = useState({
     gameID: '1234',
-    username: 'TheBigBadBill',
     users: [
        {
         username: 'TheBigBadBill',
@@ -76,7 +75,7 @@ export default function Game() {
   const [user, setUser] = useState('')
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
-  const [timeLeft, setTimeLeft] = useState(interval); //dont need
+  // const [timeLeft, setTimeLeft] = useState(interval); //dont need
   const [phaseIndex, setPhaseIndex] = useState(0)
   const [phase, setPhase] = useState('nights')
   const [players, setPlayers] = useState([])
@@ -132,7 +131,7 @@ useEffect(() => {
     if (gameData !== null) {
      setPlayers(gameData.users)
      setPhase(gameData.phase)
-     setGameID(gameData.gameId)
+     setGameID('1234')
      setThisPlayer(gameData.users.filter(user => user.username === gameData.users[0].username)[0])
     }
   }, [gameData])
@@ -210,7 +209,11 @@ useEffect(() => {
   }, [phase])
 
   // useEffect(() => {
+<<<<<<< HEAD
   //   const intervalId = setInterval(() => {
+=======
+  //   // const intervalId = setInterval(() => {
+>>>>>>> 19d8193 (added vote resetting)
   //     if (timeLeft < 1) {
   //   //     setTimeLeft(interval); // set initial time left to 10 seconds
   //       setPhaseIndex((phaseIndex + 1) % phases.length)
@@ -218,8 +221,14 @@ useEffect(() => {
   //       console.log(timeLeft)
   //       setTimeLeft(timeLeft - 1);
   //     }
+<<<<<<< HEAD
   //   return () => clearInterval(intervalId);
   // }, [timeLeft])});
+=======
+  //   // }, 1000);
+  //   // return () => clearInterval(intervalId);
+  // }, [timeLeft]);
+>>>>>>> 19d8193 (added vote resetting)
 
   //hardcodes for testing
   let userPermissions = [user, 'all', 'werewolf', 'dead']
@@ -335,6 +344,25 @@ useEffect(() => {
       .catch(console.log)
   }
 
+  const onNextPhase = async function() {
+    const response = await fetch(`/api/resetVotes/${gameID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application.json'
+      }
+    })
+
+    if (!response.ok) {
+      console.error(`Error reseting votes: ${response.statusText}`)
+    } else {
+      const updatedGameState = await response.json()
+      console.log(updatedGameState, '----UPDATED GAME STATE-------')
+    }
+
+    setPhaseIndex((phaseIndex + 1) % phases.length)
+    console.log('phase index', phaseIndex)
+  }
+
   return (
     <>
       <div style={containerStyle}>
@@ -344,7 +372,7 @@ useEffect(() => {
               <p>{thisPlayer.role}</p>
             </div>
             <div style={phase === 'night' ? timerStyleNight : timerStyle}>
-              <Timer phaseIndex={phaseIndex} setPhaseIndex={setPhaseIndex} phases={phases}/>
+              <Timer period={PHASE_LENGTH} callback={onNextPhase} />
             </div>
             <div style={dayStyleNight}>
               <p>{phase}</p>
@@ -352,9 +380,17 @@ useEffect(() => {
             </div>
           </div>
           <div className="players" style={phase === 'night' ? playerContainerNight : playerContainer}>
-            {players !== [] && players.map(
+            {players.map(
               (player, i) =>
-                <Avatar key={i} player={player} thisPlayerCanSelect={thisPlayer.isAlive} selected={selected} setSelected={setSelected} setLastSelected={setLastSelected} gameID={gameID} />
+                <Avatar
+                  key={i}
+                  player={player}
+                  thisPlayerCanSelect={thisPlayer.isAlive}
+                  selected={selected}
+                  setSelected={setSelected}
+                  setLastSelected={setLastSelected}
+                  gameID={gameID}
+                />
               )
             }
           </div>

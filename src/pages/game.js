@@ -126,7 +126,8 @@ useEffect(() => {
     if (gameData !== null) {
      setPlayers(gameData.users)
      setPhase(gameData.phase)
-     setGameID(gameData.gameId)
+     //setGameID(gameData.gameId)
+     setGameID('1234')
      setThisPlayer(gameData.users.filter(user => user.username === gameData.users[0].username)[0])
     }
   }, [gameData])
@@ -285,7 +286,7 @@ useEffect(() => {
           <div className="players" style={phase === 'night' ? playerContainerNight : playerContainer}>
             {players !== [] && players.map(
               (player, i) =>
-                <Avatar key={i} player={player} thisPlayerCanSelect={thisPlayer.isAlive} selected={selected} setSelected={setSelected} setLastSelected={setLastSelected} gameID={gameID} />
+                <Avatar key={i} player={player} thisPlayerCanSelect={thisPlayer.isAlive} selected={selected} setSelected={setSelected} lastSelected={lastSelected} setLastSelected={setLastSelected} gameID={gameID} />
               )
             }
           </div>

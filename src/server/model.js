@@ -25,7 +25,7 @@ const model = {
         phase: phase
       })
       await gameState.save()
-      console.log(gameState, '------GAMESTATE IN MODEL-------')
+      // console.log(gameState, '------GAMESTATE IN MODEL-------')
       return gameState
     } catch (error) {
       console.error(error)
@@ -67,7 +67,7 @@ const model = {
     return db.Message.find({ gameID: gameID })
   },
 
-  voteForUser: async(username, gameID) => {
+  voteForUser: async(username, previousUsername, gameID) => {
     try {
       const gameState = await db.GameState.findOne({gameId: gameID})
 
@@ -75,11 +75,38 @@ const model = {
         throw new Error('Game not found')
       }
 
+      if (previousUsername) {
+        const previousUser = gameState.users.find(user => user.username === previousUsername)
+        if (previousUser, '--------USERNAME-------') {
+          previousUser.votes -= 1
+        }
+      }
+
       const user = gameState.users.find(user => user.username === username)
       if (!user) {
         throw new Error('User not found')
       }
       user.votes += 1
+      console.log(previousUser)
+      await gameState.save()
+      return gameState
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
+  },
+
+  resetVotes: async (gameID) => {
+    try {
+      const gameState = await db.GameState.findOne({gameId: gameID})
+      console.log(gameState)
+      if (!gameState) {
+        throw new Error('Game not found')
+      }
+      gameState.users.forEach((users) => {
+        user.votes = 0
+        console.log(user)
+      })
 
       await gameState.save()
       return gameState
