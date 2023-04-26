@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from 'axios';
 import GameSettings from "../../comps/gameSettings";
 import PlayerList from "../../comps/playerList";
 
@@ -16,7 +17,15 @@ export default function Lobby() {
     let newUrlCode = window.location.pathname.split('/')
     setUrlCode(newUrlCode)
     console.log(urlCode[urlCode.length -1])
-
+    const options = {
+      method:"POST",
+      url: `http://localhost:3000/api/lobby/${newUrlCode[-1]}`
+    }
+    axios(options)
+    .then(data => {
+      setPlayersConnected(data)
+    })
+    .catch(console.log)
   }, [])
   let fakePlayers = [
     { userName: "BadBill", rank: 1, role: null },

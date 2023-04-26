@@ -1,5 +1,5 @@
 import db from './db.js'
-const userDatabase = require('/userdatabase.js')
+const userDatabase = require('./userdatabase.js')
 const mongoose = require('mongoose');
 
 const model = {
