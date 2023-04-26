@@ -11,23 +11,6 @@ const interval = 10;
 const phases = ['night', 'day'];
 
 
-
-async function getGameState(gameID) {
-  const response = await fetch(`/api/gameState/${gameID}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Error: ${response.statusText}`);
-  }
-
-  const gameState = await response.json();
-  return gameState;
-}
-
 export default function Game() {
   const [gameData, setGameData] = useState({
     gameID: '1234',
@@ -113,6 +96,25 @@ const createNewGame = async (users, phase) => {
   }
 }
 
+async function getGameState(gameID) {
+  const response = await fetch(`/api/gameState/${gameID}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error: ${response.statusText}`);
+  }
+
+  const gameState = await response.json();
+  return gameState;
+}
+
+useEffect(() => {
+  console.log(gameID)
+}, [gameID])
 const createNewGameOnce = _.once(createNewGame);
 
 useEffect(() => {
@@ -124,7 +126,7 @@ useEffect(() => {
     if (gameData !== null) {
      setPlayers(gameData.users)
      setPhase(gameData.phase)
-     setGameID(gameData.gameID)
+     setGameID(gameData.gameId)
      setThisPlayer(gameData.users.filter(user => user.username === gameData.users[0].username)[0])
     }
   }, [gameData])

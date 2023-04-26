@@ -26,6 +26,7 @@ const model = {
         phase: phase
       })
       await gameState.save()
+      console.log(gameState, '------GAMESTATE IN MODEL-------')
       return gameState
     } catch (error) {
       console.error(error)

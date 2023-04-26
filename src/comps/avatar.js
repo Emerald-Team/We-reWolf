@@ -46,9 +46,13 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
     }).toDataUriSync();
   }, []);
 
+  useEffect(() => {
+    console.log(gameID)
+  }, [gameID])
+
   // vote to kill
   async function voteForUser(username, gameID) {
-    const response = await fetch (`/api/voteToKill/${gameID}`, {
+    const response = await fetch(`/api/voteToKill/${gameID}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
