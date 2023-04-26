@@ -12,21 +12,33 @@ export default function Lobby() {
   const [copy, setCopy] = useState(false);
   const [copyWord, setCopyWord] = useState("Copy To Clipboard");
   const [selected, setSelected] = useState([]);
-  const [urlCode, setUrlCode] = useState([])
   const router = useRouter()
 
-  useState(() => {
-    let gameID = router.query.id
-    const options = {
-      method:"POST",
-      url: `http://localhost:3000/api/lobby/${gameID}`
-    }
-    axios(options)
-    .then(data => {
-      setPlayersConnected(data)
-    })
-    .catch(console.log)
-  }, [])
+
+  function getUserNames(gamecode) {
+    axios.get(`http://localhost:3000/api/lobby/${gamecode}`).then((res) => console.log('RES from GetUserNames', res)).catch((err)=> console.log(err))
+  }
+  function hostLobby(gamecode) {
+    axios.post(`http://localhost:3000/api/lobby/${gamecode}`, {userName:window.localStorage.user}).then((res) => console.log('RES from HostLobby POST Req',res)).catch((err) => console.log('post req error',err));
+  }
+  function joinLobby(gamecode) {
+    axios.post(`http://localhost:3000/api/lobby/${gamecode}`, {userName:window.localStorage.user}).then((res) => console.log('RES from joinLobby PUT Req',res)).catch((err) => console.log('put req err',err));
+  }
+
+
+
+  // useEffect(() => {
+  //   let gameID = router.query.id
+  //   const options = {
+  //     method:"POST",
+  //     url: `http://localhost:3000/api/lobby/${gameID}`
+  //   }
+  //   axios(options)
+  //   .then(data => {
+  //     setPlayersConnected(data)
+  //   })
+  //   .catch(console.log)
+  // }, [])
 
   function getUserName () {
     let userName = window.localStorage.user;
@@ -93,7 +105,6 @@ export default function Lobby() {
   }
 
 
-
   function gameLobbyChangeHandler(event) {
     setGameLobbyText(event.target.value);
   }
@@ -105,11 +116,21 @@ export default function Lobby() {
 
   useEffect(() => {}, [count]);
   useEffect(() => {
-    if (getCookie("isHost") === "false") {
-      setButtonDisabled(true);
-    }
+    const urlCode = window.location.pathname.split('/');
+    console.log(urlCode[urlCode.length -1])
     setGameLobbyText(urlCode[urlCode.length -1])
-    getUserName();
+    //if they are not Host
+    if (getCookie("isHost") === "false") {
+      //dont' allow user to click butons
+      setButtonDisabled(true);
+      //send put request -PUT
+      joinLobby(gameLobbyText);
+    } else{
+      //create a lobby for others to join - POST
+      hostLobby(gameLobbyText);
+    }
+
+    // getUserName();
   }, []);
 
   let copyClick = () => {
