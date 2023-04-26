@@ -1,4 +1,5 @@
 import db from './db.js'
+const mongoose = require('mongoose');
 
 const model = {
 
@@ -6,11 +7,33 @@ const model = {
     return 'chickens'
   },
   getGameState: async (gameID) => {
-
+    try {
+      const gameState = await db.GameState.findOne({gameId: gameID})
+      return gameState
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
   },
-  updateGame: async (gameID, gameState) => {
 
+  createGame: async ({users, phase}) => {
+    console.log('creating game...')
+    try {
+      const gameId = new mongoose.Types.ObjectId()
+      const gameState = new db.GameState({
+        gameId: gameId,
+        users: users,
+        phase: phase
+      })
+      await gameState.save()
+      return gameState
+    } catch (error) {
+      console.error(error)
+      throw error
+      console.error('SERVER ERROR: ', error.response.data.error)
+    }
   },
+
   getMessages: (gameID) => {
     return db.Message.find({ gameID: gameID })
   },
