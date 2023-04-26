@@ -8,6 +8,7 @@ const uri = 'mongodb+srv://werewolf:awooo@testcluster.j05r1cq.mongodb.net/?retry
 
 // console.log(mongoose)
 // console.log(mongoose.connect)
+
 mongoose.connect(uri)
   // .then(result => {
   //   console.log('result', result)
@@ -31,7 +32,7 @@ const messageSchema = new mongoose.Schema({
   user: String,
   body: String,
   sentAt: { type: Date, default: Date.now },
-  visibleTo: [{ type: String }]
+  visibleTo: String
 })
 
 const gameStateSchema = new mongoose.Schema({

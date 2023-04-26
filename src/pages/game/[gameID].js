@@ -4,30 +4,165 @@ import { lorelei } from "@dicebear/collection";
 import { useRouter } from 'next/router';
 import Image from "next/image";
 import axios from 'axios'
+import Avatar from "../../comps/avatar.js"
+
+const interval = 10;
+const phases = ['night', 'day'];
+const exampleGameData = {
+  gameID: '1234',
+  users: [
+     {
+      username: 'TheBigBadBill',
+      role: 'werewolf',
+      isAlive: true,
+      votes: 0
+    },
+    {
+      username: 'TheRealJae',
+      role: 'villager',
+      isAlive: true,
+      votes: 0
+    },
+    {
+      username: 'SnarlsBarkley',
+      role: 'werewolf',
+      isAlive: true,
+      votes: 0
+    },
+    {
+      username: 'ZackAttack',
+      role: 'villager',
+      isAlive: true,
+      votes: 0
+    },
+    {
+      username: 'GuyWithTuba',
+      role: 'villager',
+      isAlive: true,
+      votes: 0
+    },
+    {
+      username: 'Tr3nB@cy',
+      role: 'villager',
+      isAlive: true,
+      votes: 0
+    },
+    {
+      username: 'Chordata',
+      role: 'villager',
+      isAlive: true,
+      votes: 0
+    },
+    {
+      username: 'CoachLaner',
+      role: 'villager',
+      isAlive: true,
+      votes: 0
+    }
+  ],
+  phase: 'night',
+};
 
 export default function Game() {
 
-  const [gameData, setGameData] = useState({ user: { name: "idk" } })
+  const [gameData, setGameData] = useState(exampleGameData)
+  const [user, setUser] = useState('')
+  const [messages, setMessages] = useState([])
+  const [text, setText] = useState('')
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [phaseIndex, setPhaseIndex] = useState(0)
+  const [phase, setPhase] = useState(phases[phaseIndex])
+  const [players, setPlayers] = useState(exampleGameData.users)
+  const [player, setPlayer] = useState(exampleGameData.users.filter(user => user.username === exampleGameData.username)[0] || {role: "default"})
+  const [isWerewolf, setIsWerewolf] = useState(false)
+  const [selected, setSelected] = useState(null);
 
   const router = useRouter();
   const [gameID, setGameID] = useState(router.query.gameID)
 
-  //console.log(gameID, 'gameID in state')
+  const handleEndPhase = function(phaseEnded) {
+    console.log('handling phase end, ', phaseEnded)
+    // if (phaseEnded === 'night') {
+    //   console.log('night votes', players.reduce((accum, player) => {
+    //     if (player.votes > 0) {
+    //       return player.votes > accum.votes ? player : accum
+    //     } else {
+    //       return null
+    //     }
+    //   }))
+    // } else if (phaseEnded === 'day') {
+    //   console.log('day votes', )
+    // } else {
+
+    // }
+  }
+  useEffect(() => {
+    setPlayers(players.map(player => {
+      if (player === selected) {
+        player.votes++
+        return player
+      } else {
+        return player;
+      }
+    }
+  ))
+  }, [selected])
+  useEffect(() => {
+    setPhase(phases[phaseIndex]);
+  }, [phaseIndex])
+  useEffect(() => {
+    console.log('phase', phase)
+    handleEndPhase(phases[(phaseIndex - 1) % phases.length])
+  }, [phase])
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (timeLeft < 1) {
+        setTimeLeft(interval); // set initial time left to 10 seconds
+        setPhaseIndex((phaseIndex + 1) % phases.length)
+        console.log('phase index', phaseIndex)
+      } else {
+        console.log(timeLeft)
+        setTimeLeft(timeLeft - 1);
+      }
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, [timeLeft]);
+
+  //hardcodes for testing
+  let userPermissions = [user, 'all', 'werewolf', 'dead']
+  let timeOfDay = 'night'
+  let userRole = 'werewolf'
+
+  useEffect(() => {
+    let storedUser = window.localStorage.getItem('user')
+    setUser(storedUser)
+    //setPlayer(gameData.users.filter(user => (user.username === storedUser))[0])
+    setPlayers(gameData.users)
+
+  }, [])
+
+  useEffect(() => {
+    let options = {
+      method: 'GET',
+      url: `http://localhost:3000/api/gameState/${gameID}`
+    }
+    axios(options)
+    .then(res => setGameData(res.data))
+  }, [gameID])
 
   useEffect(() => {
     if (!router.isReady) {
       return
     }
+    console.log('setting gameID to ', router.query.gameID)
     setGameID(router.query.gameID)
-    getMessages(0)
+    getMessages(router.query.gameID)
   }, [router.isReady])
-  const userInfo = gameData.user
-  const username = userInfo.name
+  // const userInfo = gameData.user
+  // const username = userInfo.name
 
 
-  const [messages, setMessages] = useState([])
-  const [text, setText] = useState('')
-  const [timeLeft, setTimeLeft] = useState(0);
 
   const avatar = useMemo(() => {
     return createAvatar(lorelei, {
@@ -56,11 +191,12 @@ export default function Game() {
     return () => clearInterval(intervalId);
   }, []);
 
-  const getMessages = () => {
-    if (!!gameID) {
+  const getMessages = (inputID) => {
+    inputID = inputID || gameID
+    if (!!inputID) {
       const options = {
         method: "GET",
-        url: `http://localhost:3000/api/messages/${gameID}`
+        url: `http://localhost:3000/api/messages/${inputID}`
       }
       axios(options)
         .then(res => {
@@ -82,12 +218,17 @@ export default function Game() {
   }
 
   const handleSend = () => {
+    let visibleTo = 'all'
+    if(timeOfDay === 'night' && userRole === 'werewolf'){
+      visibleTo = 'werewolf'
+    } else if(userRole === 'dead'){
+      visibleTo = 'dead'
+    }
+
     const payload = {
-      user: username,
+      user: user,
       body: text,
-      visibleTo: {
-        all: true
-      }
+      visibleTo: visibleTo
     }
     const options = {
       method: 'POST',
@@ -106,80 +247,49 @@ export default function Game() {
   return (
     <>
       <div style={containerStyle}>
-        <div style={gameContainerStyleNight}>
+        <div style={phase === 'night' ? gameContainerStyleNight : gameContainerStyle}>
           <div style={boxContainerStyle}>
-            <div style={roleStyleNight}>
-              <p>Werewolf</p>
+            <div style={phase === 'night' ? roleStyleNight : roleStyle}>
+              <p>{player.role}</p>
             </div>
-            <div style={timerStyleNight}>
-              <p>1:58</p>
+            <div style={phase === 'night' ? timerStyleNight : timerStyle}>
+              <p>{timeLeft}</p>
             </div>
             <div style={dayStyleNight}>
-              <p>Night
-              </p>
-              {/* Day
- */}
+              <p>{phase}</p>
+              {/* Day*/}
             </div>
           </div>
-          <div className="players" style={playerContainerNight}>
-            <div style={player}>
-              <Image src={avatar} alt="Avatar" width="100" height="100" />
-              <small>user1</small>
-            </div>
-            <div style={player}>
-              <Image src={avatar1} alt="Avatar" width="100" height="100" />
-              <small>user2</small>
-            </div>
-            <div style={player}>
-              <Image src={avatar} alt="Avatar" width="100" height="100" />
-              <small>user1</small>
-            </div>
-            <div style={player}>
-              <Image src={avatar1} alt="Avatar" width="100" height="100" />
-              <small>user2 Vote:2</small>
-            </div>
-            <div style={player}>
-              <Image src={avatar} alt="Avatar" width="100" height="100" />
-              <small>user1</small>
-            </div>
-            <div style={player}>
-              <Image src={avatar1} alt="Avatar" width="100" height="100" />
-              <small>user2</small>
-            </div>
-            <div style={player}>
-              <Image src={avatar} alt="Avatar" width="100" height="100" />
-              <small>user1</small>
-            </div>
-            <div style={player}>
-              <Image src={avatar1} alt="Avatar" width="100" height="100" />
-              <small>user2</small>
-            </div>
-            <div style={player}>
-              <Image src={avatar} alt="Avatar" width="100" height="100" />
-              <small>user1</small>
-            </div>
-            <div style={player}>
-              <Image src={avatar1} alt="Avatar" width="100" height="100" />
-              <small>user2</small>
-            </div>
-            <div style={player}>
-              <Image src={avatar1} alt="Avatar" width="100" height="100" />
-              <small>user2</small>
-            </div>
+          <div className="players" style={phase === 'night' ? playerContainerNight : playerContainer}>
+            {players.map((player, i) => <Avatar key={i} player={player} selected={selected} setSelected={setSelected} />)}
           </div>
-          <small style={werewolfTextContainerNight}>
-            Werewolves: user1, user2
-          </small>
+        {isWerewolf &&<small style={phase === 'night' ? werewolfTextContainerNight : werewolfTextContainer}>
+            Werewolves: {players.map(player => {
+              if (isWerewolf && player.role === 'werewolf' && phase === 'night') {
+                return player.username + ' '
+              } else {
+                return ''
+              }
+            })}
+          </small>}
         </div>
         <div style={chatContainerStyle}>
           <div style={chatContentContainerStyle}>
-            {messages.filter(message => (message.visibleTo.all)).map((chat) => {
+            {messages.filter(message => (userPermissions.includes(message.visibleTo))).map((message) => {
+              let textColor = 'text-slate-300'
+              if(message.visibleTo === 'werewolf'){
+                textColor = 'text-blue-700'
+              } else if(message.visibleTo === 'dead'){
+                textColor = 'text-zinc-500'
+              } else if(message.visibleTo === user){
+                textColor = 'text-pink-700'
+              }
               return (
-                <p style={textStyle} key={chat._id}>
-                  {chat.user}: {chat.body}
+                <p className={`text-2xl ${textColor}`} key={message._id}>
+                  {message.user}{message.visibleTo === user ? '(direct)' : ''}: {message.body}
                 </p>
-              )
-            })}
+              )}
+            )}
           </div>
         </div>
       </div>
@@ -195,11 +305,6 @@ export default function Game() {
       </div>
     </>
   )
-}
-var textStyle = {
-  color: "white",
-  textAlign: "left",
-  fontSize: "24px",
 }
 
 var containerStyle = {
