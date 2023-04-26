@@ -209,17 +209,17 @@ useEffect(() => {
     handleEndPhase(phases[(phaseIndex - 1) % phases.length])
   }, [phase])
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (timeLeft < 1) {
-    //     setTimeLeft(interval); // set initial time left to 10 seconds
-        setPhaseIndex((phaseIndex + 1) % phases.length)
-      } else {
-        console.log(timeLeft)
-        setTimeLeft(timeLeft - 1);
-      }
-    return () => clearInterval(intervalId);
-  }, [timeLeft])});
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     if (timeLeft < 1) {
+  //   //     setTimeLeft(interval); // set initial time left to 10 seconds
+  //       setPhaseIndex((phaseIndex + 1) % phases.length)
+  //     } else {
+  //       console.log(timeLeft)
+  //       setTimeLeft(timeLeft - 1);
+  //     }
+  //   return () => clearInterval(intervalId);
+  // }, [timeLeft])});
 
   //hardcodes for testing
   let userPermissions = [user, 'all', 'werewolf', 'dead']
