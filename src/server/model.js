@@ -16,10 +16,9 @@ const model = {
       throw error
     }
   },
-  createGame: async ({users, phase}) => {
+  createGame: async ({gameId, users, phase}) => {
     console.log('creating game...')
     try {
-      const gameId = new mongoose.Types.ObjectId()
       const gameState = new db.GameState({
         gameId: gameId,
         users: users,

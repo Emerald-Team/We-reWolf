@@ -6,12 +6,15 @@ import Avatar from "/src/comps/avatar.js"
 import Timer from "/src/comps/timer.js"
 import axios from 'axios'
 import * as _ from "lodash"
+import { useRouter } from 'next/router';
 
 const interval = 10;
 const phases = ['night', 'day'];
 
 
 export default function Game() {
+  const router = useRouter()
+
   const [gameData, setGameData] = useState({
     gameID: '1234',
     username: 'TheBigBadBill',
@@ -67,7 +70,10 @@ export default function Game() {
     ],
     phase: 'night',
   })
+
+
   const [gameStarted, setGameStarted] = useState(false)
+  const [user, setUser] = useState('')
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
   const [timeLeft, setTimeLeft] = useState(interval); //dont need
@@ -79,7 +85,7 @@ export default function Game() {
   const [isWerewolf, setIsWerewolf] = useState(thisPlayer.role === 'werewolf')
   const [selected, setSelected] = useState(null);
   const [lastSelected, setLastSelected] = useState(null);
-  const [gameID, setGameID] = useState('0')
+  const [gameID, setGameID] = useState(router.query.gameID)
 
 
 const createNewGame = async (users, phase) => {
@@ -146,18 +152,6 @@ useEffect(() => {
     }
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
-        const fetchedGameState = await getGameState(gameID)
-        setGameData(fetchedGameState)
-      } catch (err) {
-        console.error(err)
-      }
-    }, 5000)
-    return () => clearInterval(interval)
-  }, [])
-
   const handleEndPhase = function(phaseEnded) {
     console.log('handling phase end, ', phaseEnded);
     if (!thisPlayer.isAlive) {
@@ -216,7 +210,7 @@ useEffect(() => {
   }, [phase])
 
   useEffect(() => {
-    // const intervalId = setInterval(() => {
+    const intervalId = setInterval(() => {
       if (timeLeft < 1) {
     //     setTimeLeft(interval); // set initial time left to 10 seconds
         setPhaseIndex((phaseIndex + 1) % phases.length)
@@ -225,7 +219,7 @@ useEffect(() => {
         setTimeLeft(timeLeft - 1);
       }
     return () => clearInterval(intervalId);
-  }, [timeLeft]);
+  }, [timeLeft])});
 
   //hardcodes for testing
   let userPermissions = [user, 'all', 'werewolf', 'dead']
@@ -364,9 +358,9 @@ useEffect(() => {
               )
             }
           </div>
-          {<small style={phase === 'night' ? werewolfTextContainerNight : werewolfTextContainer}>
+          {isWerewolf && <small style={phase === 'night' ? werewolfTextContainerNight : werewolfTextContainer}>
             Werewolves: {players.map(player => {
-              if (isWerewolf && player.role === 'werewolf' && phase === 'night') {
+              if (isWerewolf && player.role === 'werewolf') {
                 return player.username + ' '
               } else {
                 return ''
