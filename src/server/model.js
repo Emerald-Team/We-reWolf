@@ -1,4 +1,5 @@
 import db from './db.js'
+const userDatabase = require('/userdatabase.js')
 const mongoose = require('mongoose');
 
 const model = {
@@ -32,11 +33,25 @@ const model = {
       console.error('SERVER ERROR: ', error.response.data.error)
     }
   },
-
   createLobby: async (gameID, user) => {
+    const userFile = await userDatabase.Users.find({username: user})[0]
     let newLobby = new db.Lobby({
-
+      username: userFile.username,
+      role: "in lobby"
     })
+    return newLobby.save()
+  },
+  updateLobby: async (gameID, user) => {
+    const lobbyOccupants = await db.Lobby.find({
+      gameID: gameID
+    })[0][users]
+    const userFile = await userDatabase.Users.find({username: user})[0]
+    lobbyOccupants.push({
+      username: userfile.username,
+      rank: 1,
+      role: "in lobby"
+    })
+    return db.Lobby.findOneAndUpdate({ gameID: gameID }, { users: lobbyOccupants }, { new: true })
   },
   getMessages: (gameID) => {
     return db.Message.find({ gameID: gameID })
