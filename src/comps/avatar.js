@@ -33,11 +33,11 @@ var voteStyle = {
   color: "white",
 }
 
-const Avatar = ({ player, selected, setSelected, setLastSelected, gameID }) => {
+const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSelected, gameID }) => {
   const [style, setStyle] = useState(playerStyle);
   const [votes, setVotes] = useState(player.votes);
   const [canHover, setCanHover] = useState(player.isAlive);
-  const [canSelect, setCanSelect] = useState(player.isAlive);
+  const [canSelect, setCanSelect] = useState(player.isAlive && thisPlayerCanSelect);
   const [isSelected, setIsSelected] = useState(player === selected);
   const avatar = useMemo(() => {
     return createAvatar(lorelei, {
@@ -48,7 +48,7 @@ const Avatar = ({ player, selected, setSelected, setLastSelected, gameID }) => {
 
   // vote to kill
   async function voteForUser(username, gameID) {
-    const response = await fetch ('/api/vote', {
+    const response = await fetch (`/api/voteToKill/${gameID}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ const Avatar = ({ player, selected, setSelected, setLastSelected, gameID }) => {
       body: JSON.stringify({username, gameID})
     })
     if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`)
+      console.error(`Error: ${response.statusText}`)
     }
     const updatedGameState = await response.json()
     console.log(updatedGameState, '--------UPDATED GAME STATE-------')
@@ -65,12 +65,14 @@ const Avatar = ({ player, selected, setSelected, setLastSelected, gameID }) => {
 
   // if player is dead, render dead style [TODO: bugged]
   useEffect(() => {
-    if (!player.isAlive) {
-      setStyle(playerStyleDead);
+    if (!player.isAlive || !thisPlayerCanSelect) {
+      if (!player.isAlive) {
+        setStyle(playerStyleDead);
+      }
       setCanHover(false);
       setCanSelect(false);
     }
-  }, [player]);
+  }, [player, canSelect]);
 
   // if player is not currently selected, set style to unselected
   useEffect(() => {
@@ -103,6 +105,7 @@ const Avatar = ({ player, selected, setSelected, setLastSelected, gameID }) => {
     setStyle(playerStyleHover)
     setSelected(player)
     setLastSelected(player)
+    voteForUser(player.username, gameID)
   }
   // if not the current selection:
   //   set style to hover style,
