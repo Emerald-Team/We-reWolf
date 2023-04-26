@@ -8,18 +8,18 @@ const Join = () => {
   const [showJoinModal, setJoinModal] = useState(false)
 
   function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
+    return Math.floor(Math.random() * max)
   }
   function hostHandler() {
-    document.cookie = `isHost = true`;
+    document.cookie = `isHost = true`
   }
   function joinHandler() {
     document.cookie = `isHost = false`
   }
 
-useEffect(() => {
-  setGameCode(getRandomInt(1000));
-}, [])
+  useEffect(() => {
+    setGameCode(getRandomInt(1000))
+  }, [])
 
   const containerStyle = {
     display: "flex",
@@ -75,9 +75,12 @@ useEffect(() => {
     <>
       <div style={containerStyle}>
         <div style={leftBoxStyle}>
-          <Link
-          href={`/joinGameLobby/${gameCode}`}>
-            <button className="hostButton" onClick = {hostHandler} style={buttonStyle1}>
+          <Link href={`/joinGameLobby/${gameCode}`}>
+            <button
+              className="hostButton"
+              onClick={hostHandler}
+              style={buttonStyle1}
+            >
               Host Game
             </button>
           </Link>
@@ -85,7 +88,8 @@ useEffect(() => {
           <button
             className="joinButton"
             onClick={() => setJoinModal(true)}
-            style={buttonStyle2}>
+            style={buttonStyle2}
+          >
             Join Game
           </button>
         </div>
@@ -95,9 +99,10 @@ useEffect(() => {
         </div>
       </div>
       <JoinModal
-      open={showJoinModal}
-      onClose={() => setJoinModal(false)}
-      setCookie = {joinHandler} />
+        open={showJoinModal}
+        onClose={() => setJoinModal(false)}
+        setCookie={joinHandler}
+      />
     </>
   )
 }
