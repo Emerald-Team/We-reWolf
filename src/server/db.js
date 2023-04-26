@@ -49,9 +49,19 @@ const gameStateSchema = new mongoose.Schema({
   }
 })
 
+const lobbySchema = new mongoose.Schema({
+  gameID: String,
+  users: [{
+    userName: String,
+    rank: {type: Number, default: 1},
+    role: String
+  }]
+})
+
 const db = {
   Message: mongoose.models.Message || mongoose.model('Message', messageSchema),
-  GameState: mongoose.models.GameState || mongoose.model('GameState', gameStateSchema)
+  GameState: mongoose.models.GameState || mongoose.model('GameState', gameStateSchema),
+  Lobby: mongoose.models.Lobby || mongoose.model('Lobby', lobbySchema)
 }
 
 module.exports = db

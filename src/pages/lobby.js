@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from "react"
+import { useRouter } from 'next/router';
 import GameSettings from "../comps/gameSettings"
 import PlayerList from "../comps/playerList"
 
 export default function Lobby() {
   const [count, setCount] = useState(0)
-  const [playersConnected, setPlayersConnected] = useState([])
+  const [playersConnected, setPlayersConnected] = useState([fakePlayers])
   const [gameLobbyText, setGameLobbyText] = useState("")
   const [buttonDisabled, setButtonDisabled] = useState(false)
   const [copy, setCopy] = useState(false)
   const [copyWord, setCopyWord] = useState("Copy To Clipboard")
   const [selected, setSelected] = useState([])
+
+  useState(() => {
+
+  }[])
 
   let fakePlayers = [
     { userName: "BadBill", rank: 1, role: null },

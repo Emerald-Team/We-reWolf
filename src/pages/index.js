@@ -1,11 +1,15 @@
 import Image from "next/image"
 import { Inter } from "next/font/google"
 import App from "./_app"
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/router';
 
 
 const inter = Inter({ subsets: ["latin"] })
 
 export default function Home() {
+  const router = useRouter()
   const styles = {
     container: {
       display: "flex",
@@ -94,7 +98,7 @@ export default function Home() {
             Login
           </button>
         </form>
-        <p style={styles.text}>Move to sign up logic here</p>
+        <Link href='/signup' style={styles.text}>Sign Up</Link>
       </div>
       <div style={styles.imageBox}>
         <Image
