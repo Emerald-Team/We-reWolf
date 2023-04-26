@@ -1,41 +1,46 @@
-import React, { useState, useEffect } from "react";
-import Counter from "./counter.js";
+import React, { useState, useEffect } from "react"
+import Counter from "./counter.js"
 
 const gameSettingsStyle = {
   display: "grid",
   gridTemplateColumns: "1fr 1fr",
   gap: "1rem",
-};
+}
 
 const gridItemStyle = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-};
+}
 
 const buttonStyle = {
   margin: "0.5rem 0.25rem",
   padding: "0.5rem 1rem",
   borderRadius: "5px",
   cursor: "pointer",
-};
+}
 
 const selectedStyle = {
   margin: "0.2rem 0.25rem",
   padding: "0.5rem",
   borderRadius: "5px",
   backgroundColor: "darkGray",
-};
+}
 
 const selectedRoleGrid = {
   textAlign: "center",
   display: "grid",
   gridTemplateColumns: "repeat(2, auto)",
   gap: "2px",
-};
+}
 
-const GameSettings = ({ count, setCount, buttonDisabled,selected, setSelected }) => {
-
+const GameSettings = ({
+  count,
+  setCount,
+  buttonDisabled,
+  selected,
+  setSelected,
+}) => {
   const updateSelected = (e) => {
     e.preventDefault()
     console.log(e.target.innerHTML)
@@ -43,8 +48,8 @@ const GameSettings = ({ count, setCount, buttonDisabled,selected, setSelected })
   }
 
   useEffect(() => {
-    console.log(selected);
-  }, [selected]);
+    console.log(selected)
+  }, [selected])
 
   return (
     <>
@@ -53,10 +58,12 @@ const GameSettings = ({ count, setCount, buttonDisabled,selected, setSelected })
           <b>Game Settings</b>
         </h1>
         <h2>
-          Max Players <Counter
-          count={count}
-          buttonDisabled = {buttonDisabled}
-          setCount={setCount} />
+          Max Players{" "}
+          <Counter
+            count={count}
+            buttonDisabled={buttonDisabled}
+            setCount={setCount}
+          />
         </h2>
       </div>
       <div style={gameSettingsStyle}>
@@ -125,7 +132,7 @@ const GameSettings = ({ count, setCount, buttonDisabled,selected, setSelected })
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default GameSettings;
+export default GameSettings

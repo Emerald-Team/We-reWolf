@@ -56,7 +56,36 @@ export default function Home() {
       objectFit: "cover",
       borderRadius: "4px",
     },
+<<<<<<< HEAD
   }
+=======
+  };
+  useEffect(() => {if (localStorage.getItem('user')) {router.push('/joinGameLobby')}}, [])
+
+
+
+  const [username, setUsername] = useState("");
+
+  const [password, setPassword] = useState("");
+  const [showing, setShowing] = useState(false);
+  const [email, setEmail] = useState("");
+
+  const loginHandler = async () => {
+    let obj = { username: username, password: password, email: email };
+    await axios
+      .post("api/verifyUser", obj)
+      .then((res) => {
+        window.localStorage.setItem('user', obj.username)
+        setEmail("");
+        setUsername("");
+        setPassword("");
+        router.push('/lobby')
+      })
+      .catch((res) => { console.log('fjksdla;fksa;')
+       router.push("/login");
+      });
+  };
+>>>>>>> main
 
   return (
     <div style={styles.container}>

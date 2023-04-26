@@ -1,18 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { useRouter, redirect } from "next/router";
+import React, { useState, useEffect } from "react"
+import { useRouter, redirect } from "next/router"
 
-import axios from "axios";
+import axios from "axios"
 
 export default function SignUp() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("")
+  const [message, setMessage] = useState("")
 
-  const [species, setSpecies] = useState("");
+  const [species, setSpecies] = useState("")
   const [id, setId] = useState({})
-  const router = useRouter();
-  useEffect(() => {if (localStorage.getItem('user')) {router.push('/joinGameLobby')}}, [])
+  const router = useRouter()
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      router.push("/joinGameLobby")
+    }
+  }, [])
 
   const styles = {
     container: {
@@ -60,35 +64,38 @@ export default function SignUp() {
       border: "none",
       cursor: "pointer",
     },
-  };
+    selectStyle: {
+      marginBottom: "20px",
+    },
+  }
   const signupHandler = async () => {
-    console.log(username, password, email, "Login Info");
+    console.log(username, password, email, "Login Info")
 
     let obj = {
       username: username,
       password: password,
       email: email,
       species: species,
-    };
+    }
     await axios
 
       .post("api/createUser", obj)
-      .then((res) => { console.log('response data :', res.data);
-        localStorage.setItem( 'user', obj.username);
-        setEmail("");
-        setUsername("");
-        setPassword("");
-        setSpecies("");
-        router.push("/joinGameLobby");
+      .then((res) => {
+        console.log("response data :", res.data)
+        localStorage.setItem("user", obj.username)
+        setEmail("")
+        setUsername("")
+        setPassword("")
+        setSpecies("")
+        router.push("/joinGameLobby")
       })
       .catch((res) => {
         //setMessage(res.data);
-        router.push("/signup");
-      });
+        router.push("/signup")
+      })
 
-
-      //router.push("/lobby");
-  };
+    //router.push("/lobby");
+  }
 
   return (
     <div style={styles.container}>
@@ -101,14 +108,14 @@ export default function SignUp() {
             placeholder="Email"
             style={styles.input}
             onChange={(e) => {
-              setEmail(e.target.value);
+              setEmail(e.target.value)
             }}
           />
           <input
             type="password"
             value={password}
             onChange={(e) => {
-              setPassword(e.target.value);
+              setPassword(e.target.value)
             }}
             placeholder="Password"
             style={styles.input}
@@ -118,21 +125,21 @@ export default function SignUp() {
             placeholder="Username"
             value={username}
             onChange={(e) => {
-              setUsername(e.target.value);
+              setUsername(e.target.value)
             }}
             style={styles.input}
           />
 
           <label for="species">Choose a Species:</label>
           <select
+            style={styles.selectStyle}
             name="species"
             id="species"
             form="speciesform"
             onChange={(e) => {
-              setSpecies(e.target.value);
+              setSpecies(e.target.value)
             }}
           >
-            <option value="blank"></option>
             <option value="Human">Human</option>
             <option value="Werewolf">Werewolf</option>
           </select>
@@ -144,8 +151,8 @@ export default function SignUp() {
             type="submit"
             style={styles.button}
             onClick={(e) => {
-              e.preventDefault();
-              signupHandler();
+              e.preventDefault()
+              signupHandler()
             }}
           >
             Sign-Up
@@ -153,5 +160,5 @@ export default function SignUp() {
         </form>
       </div>
     </div>
-  );
+  )
 }
