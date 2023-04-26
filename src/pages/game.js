@@ -16,7 +16,7 @@ const exampleGameData = {
      {
       username: 'TheBigBadBill',
       role: 'werewolf',
-      isAlive: true,
+      isAlive: false,
       votes: 0
     },
     {
@@ -40,7 +40,7 @@ const exampleGameData = {
     {
       username: 'GuyWithTuba',
       role: 'villager',
-      isAlive: true,
+      isAlive: false,
       votes: 0
     },
     {
@@ -136,10 +136,18 @@ export default function Game() {
     // }
   }
   useEffect(() => {
+    console.log('players', players)
+  }, [players])
+  useEffect(() => {
     setPlayers(players.map(player => {
       if (player === selected) {
         player.votes++
+        console.log(player)
         return player
+      } else if (selected !== lastSelected) {
+        player.votes--
+        console.log(player)
+        return player;
       } else {
         return player;
       }
@@ -156,14 +164,14 @@ export default function Game() {
 
   useEffect(() => {
     // const intervalId = setInterval(() => {
-    //   if (timeLeft < 1) {
+      if (timeLeft < 1) {
     //     setTimeLeft(interval); // set initial time left to 10 seconds
-    //     setPhaseIndex((phaseIndex + 1) % phases.length)
-    //     console.log('phase index', phaseIndex)
-    //   } else {
-    //     console.log(timeLeft)
-    //     setTimeLeft(timeLeft - 1);
-    //   }
+        setPhaseIndex((phaseIndex + 1) % phases.length)
+        console.log('phase index', phaseIndex)
+      } else {
+        console.log(timeLeft)
+        setTimeLeft(timeLeft - 1);
+      }
     // }, 1000);
     // return () => clearInterval(intervalId);
   }, [timeLeft]);
@@ -215,7 +223,7 @@ export default function Game() {
               <p>{player.role}</p>
             </div>
             <div style={phase === 'night' ? timerStyleNight : timerStyle}>
-              <Timer />
+              <Timer phaseIndex={phaseIndex} setPhaseIndex={setPhaseIndex} phases={phases}/>
             </div>
             <div style={dayStyleNight}>
               <p>{phase}</p>
