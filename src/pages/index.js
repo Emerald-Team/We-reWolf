@@ -1,14 +1,16 @@
-import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import { Inter } from "next/font/google";
-import App from "./_app";
+import Image from "next/image"
+import { Inter } from "next/font/google"
+import App from "./_app"
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import axios from 'axios'
 
-const inter = Inter({ subsets: ["latin"] });
+
+const inter = Inter({ subsets: ["latin"] })
 
 export default function Home() {
-  const router = useRouter();
+  const router = useRouter()
   const styles = {
     container: {
       display: "flex",
@@ -63,7 +65,7 @@ export default function Home() {
   useEffect(() => {if (localStorage.getItem('user')) {router.push('/joinGameLobby')}}, [])
 
 
-  
+
   const [username, setUsername] = useState("");
 
   const [password, setPassword] = useState("");
@@ -91,55 +93,13 @@ export default function Home() {
       <div style={styles.loginBox}>
         <h2 style={{ marginBottom: "10px" }}>Login</h2>
         <form style={styles.form}>
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            style={styles.input}
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
-          />
-          <input
-            type="password"
-            value={password}
-            placeholder="Password"
-            style={styles.input}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
-
-          <input
-            type="text"
-            placeholder="E-mail"
-            value={email}
-            style={{ visibility: `${showing ? "visible" : "hidden"}` }}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
-          <button
-            className="loginButton"
-            type="submit"
-            style={styles.button}
-            onClick={(e) => {
-              e.preventDefault();
-              loginHandler();
-            }}
-          >
+          <input type="text" placeholder="Username" style={styles.input} />
+          <input type="password" placeholder="Password" style={styles.input} />
+          <button type="submit" style={styles.button}>
             Login
-
           </button>
         </form>
-        <a
-          onClick={(e) => {
-            e.preventDefault();
-            setShowing(!showing);
-          }}
-        >
-          Click here to sign in with an email address
-        </a>
+        <Link href='/signup' style={styles.text}>Sign Up</Link>
       </div>
       <div style={styles.imageBox}>
         <Image
@@ -151,5 +111,5 @@ export default function Home() {
         />
       </div>
     </div>
-  );
+  )
 }

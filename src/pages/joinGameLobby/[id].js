@@ -10,10 +10,14 @@ export default function Lobby() {
   const [copy, setCopy] = useState(false);
   const [copyWord, setCopyWord] = useState("Copy To Clipboard");
   const [selected, setSelected] = useState([]);
+  const [urlCode, setUrlCode] = useState([])
 
+  useState(() => {
+    let newUrlCode = window.location.pathname.split('/')
+    setUrlCode(newUrlCode)
+    console.log(urlCode[urlCode.length -1])
 
-  let urlCode = window.location.pathname.split('/')
-  console.log(urlCode[urlCode.length -1])
+  }, [])
   let fakePlayers = [
     { userName: "BadBill", rank: 1, role: null },
     { userName: "theRealJae", rank: 1, role: null },

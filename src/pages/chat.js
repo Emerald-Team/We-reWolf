@@ -18,8 +18,6 @@ export default function Chat({ gameID, username }) {
         setMessages(res.data)
       })
       .catch(console.log)
-    //refresh chat every 500ms
-    //setTimeout(getMessages, 5000)
 
   }
 
