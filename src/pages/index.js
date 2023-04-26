@@ -1,18 +1,11 @@
 import Image from "next/image"
 import { Inter } from "next/font/google"
 import App from "./_app"
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+
 
 const inter = Inter({ subsets: ["latin"] })
 
 export default function Home() {
-
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-
-  const router = useRouter()
-
   const styles = {
     container: {
       display: "flex",
@@ -65,23 +58,31 @@ export default function Home() {
     },
   }
 
-  const handleUsername = (e) => {
-    setUsername(e.target.value)
-  }
-
-  const handlePassword = (e) => {
-    setPassword(e.target.value)
-  }
-
-  const handleLogin = (e) => {
-    e.preventDefault()
-    if(username === 'admin' && password === 'password'){
-      console.log(username, password)
-      router.push('/lobby')
-    } else {
-      console.log('sorrie, charlie')
-    }
-  }
+  return (
+    <div style={styles.container}>
+      <div style={styles.loginBox}>
+        <h2 style={{ marginBottom: "10px" }}>Login</h2>
+        <form style={styles.form}>
+          <input type="text" placeholder="Username" style={styles.input} />
+          <input type="password" placeholder="Password" style={styles.input} />
+          <button type="submit" style={styles.button}>
+            Login
+          </button>
+        </form>
+        <p style={styles.text}>Move to sign up logic here</p>
+      </div>
+      <div style={styles.imageBox}>
+        <Image
+          src="/wold2.gif"
+          alt="Login"
+          style={styles.image}
+          width={150}
+          height={60}
+        />
+      </div>
+    </div>
+  )
+}
 
   return (
     <div style={styles.container}>
