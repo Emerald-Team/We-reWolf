@@ -44,7 +44,7 @@ const Avatar = ({ player, selected, setSelected, setLastSelected }) => {
     }).toDataUriSync();
   }, []);
 
-  // if player is dead, render dead style
+  // if player is dead, render dead style [TODO: bugged]
   useEffect(() => {
     if (!player.isAlive) {
       setStyle(playerStyleDead);
@@ -75,6 +75,15 @@ const Avatar = ({ player, selected, setSelected, setLastSelected }) => {
     }
   }
 
+  const select = function() {
+    setStyle(playerStyleHover)
+    setSelected(player)
+    setLastSelected(player)
+  }
+  const unselect = function() {
+    setStyle(playerStyle)
+    setSelected(null)
+  }
   // if not the current selection:
   //   set style to hover style,
   //   set selected and last selected to player
@@ -82,15 +91,14 @@ const Avatar = ({ player, selected, setSelected, setLastSelected }) => {
   //   set style to normal style,
   //   set selected to null
   const handleSelect = function(e) {
-    if (!isSelected) {
-      setStyle(playerStyleHover)
-      setSelected(player)
-      setLastSelected(player)
+    if (isSelected) { // i need to swtich to main real quick to keep it updated okie doke
+      unselect();
     } else {
-      setStyle(playerStyle)
-      setSelected(null)
+      select();
     }
   }
+
+
   return (
     <div style={style} onMouseOver={handleHoverIn} onMouseLeave={handleHoverOut} onClick={handleSelect}>
       <div style={{position: 'relative'}} ><div style={voteStyle}>{votes + (isSelected ? 1 : 0)}</div></div>
