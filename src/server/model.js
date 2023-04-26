@@ -47,9 +47,29 @@ const model = {
     await newMessage.save()
     return db.Message.find({ gameID: gameID })
   },
-  voteForUser: async ({ userID, count }, gameID) => {
 
+  voteForUser: async(username, gameID) => {
+    try {
+      const gameState = await db.GameState.findOne({gameId: gameID})
+
+      if (!gameState) {
+        throw new Error('Game not found')
+      }
+
+      const user = gameState.users.find(user => user.username === username)
+      if (!user) {
+        throw new Error('User not found')
+      }
+      user.votes += 1
+
+      await gameState.save()
+      return gameState
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
   },
+
   toggleDead: async ({ userID }, gameID) => {
 
   },

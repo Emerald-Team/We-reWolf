@@ -33,9 +33,11 @@ var voteStyle = {
   color: "white",
 }
 
-const Avatar = ({ player, selected, setSelected, setLastSelected }) => {
+const Avatar = ({ player, selected, setSelected, setLastSelected, gameID }) => {
   const [style, setStyle] = useState(playerStyle);
   const [votes, setVotes] = useState(player.votes);
+  const [canHover, setCanHover] = useState(player.isAlive);
+  const [canSelect, setCanSelect] = useState(player.isAlive);
   const [isSelected, setIsSelected] = useState(player === selected);
   const avatar = useMemo(() => {
     return createAvatar(lorelei, {
@@ -44,10 +46,29 @@ const Avatar = ({ player, selected, setSelected, setLastSelected }) => {
     }).toDataUriSync();
   }, []);
 
+  // vote to kill
+  async function voteForUser(username, gameID) {
+    const response = await fetch ('/api/vote', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({username, gameID})
+    })
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`)
+    }
+    const updatedGameState = await response.json()
+    console.log(updatedGameState, '--------UPDATED GAME STATE-------')
+    return updatedGameState
+  }
+
   // if player is dead, render dead style [TODO: bugged]
   useEffect(() => {
     if (!player.isAlive) {
       setStyle(playerStyleDead);
+      setCanHover(false);
+      setCanSelect(false);
     }
   }, [player]);
 
@@ -65,39 +86,44 @@ const Avatar = ({ player, selected, setSelected, setLastSelected }) => {
 
   // if player is alive and not currently selected, highlight on hover
   const handleHoverIn = function(e) {
-    if (!isSelected && player.isAlive) {
+    if (!isSelected && canHover) {
       setStyle(playerStyleHover)
     }
   }
   const handleHoverOut = function(e) {
-    if (!isSelected && player.isAlive) {
+    if (!isSelected && canHover) {
       setStyle(playerStyle)
     }
   }
 
+  // if current selection:
+  //   set style to normal style,
+  //   set selected to null
   const select = function() {
     setStyle(playerStyleHover)
     setSelected(player)
     setLastSelected(player)
   }
-  const unselect = function() {
-    setStyle(playerStyle)
-    setSelected(null)
-  }
   // if not the current selection:
   //   set style to hover style,
   //   set selected and last selected to player
-  // if current selection:
-  //   set style to normal style,
-  //   set selected to null
+  const unselect = function() {
+    setStyle(playerStyle)
+    setSelected(null)
+    setLastSelected(selected)
+  }
+  // if selected: unselect
+  // else: select
   const handleSelect = function(e) {
-    if (isSelected) { // i need to swtich to main real quick to keep it updated okie doke
+    if(!canSelect) {
+      return;
+    }
+    if (isSelected) {
       unselect();
     } else {
       select();
     }
   }
-
 
   return (
     <div style={style} onMouseOver={handleHoverIn} onMouseLeave={handleHoverOut} onClick={handleSelect}>

@@ -11,7 +11,6 @@ const phases = ['night', 'day'];
 
 const exampleGameData = {
   gameID: '1234',
-  username: 'TheBigBadBill',
   users: [
      {
       username: 'TheBigBadBill',
@@ -87,8 +86,8 @@ export default function Game() {
   const [phaseIndex, setPhaseIndex] = useState(0)
   const [phase, setPhase] = useState(phases[phaseIndex])
   const [players, setPlayers] = useState(exampleGameData.users)
-  const [player, setPlayer] = useState(exampleGameData.users.filter(user => user.username === exampleGameData.username)[0])
-  const [isWerewolf, setIsWerewolf] = useState(player.role === 'werewolf')
+  const [thisPlayer, setThisPlayer] = useState(exampleGameData.users.filter(user => user.username === exampleGameData.username)[0])
+  const [isWerewolf, setIsWerewolf] = useState(thisPlayer.role === 'werewolf')
   const [selected, setSelected] = useState(null);
   const [lastSelected, setLastSelected] = useState(null);
   const [gameId, setGameId] = useState('0')
@@ -158,7 +157,7 @@ export default function Game() {
     setPhase(phases[phaseIndex]);
   }, [phaseIndex])
   useEffect(() => {
-    console.log('phase', phase)
+    // console.log('phase', phase)
     handleEndPhase(phases[(phaseIndex - 1) % phases.length])
   }, [phase])
 
@@ -167,7 +166,7 @@ export default function Game() {
       if (timeLeft < 1) {
     //     setTimeLeft(interval); // set initial time left to 10 seconds
         setPhaseIndex((phaseIndex + 1) % phases.length)
-        console.log('phase index', phaseIndex)
+        // console.log('phase index', phaseIndex)
       } else {
         console.log(timeLeft)
         setTimeLeft(timeLeft - 1);
@@ -220,7 +219,7 @@ export default function Game() {
         <div style={phase === 'night' ? gameContainerStyleNight : gameContainerStyle}>
           <div style={boxContainerStyle}>
             <div style={phase === 'night' ? roleStyleNight : roleStyle}>
-              <p>{player.role}</p>
+              <p>{thisPlayer.role}</p>
             </div>
             <div style={phase === 'night' ? timerStyleNight : timerStyle}>
               <Timer phaseIndex={phaseIndex} setPhaseIndex={setPhaseIndex} phases={phases}/>
@@ -233,7 +232,7 @@ export default function Game() {
           <div className="players" style={phase === 'night' ? playerContainerNight : playerContainer}>
             {players.map(
               (player, i) =>
-                <Avatar key={i} player={player} selected={selected} setSelected={setSelected} setLastSelected={setLastSelected} />
+                <Avatar key={i} player={player} canSelect={thisPlayer.isAlive} selected={selected} setSelected={setSelected} setLastSelected={setLastSelected} gameID={gameId} />
               )
             }
           </div>
