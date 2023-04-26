@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { Inter } from "next/font/google";
 import App from "./_app";
 
@@ -60,10 +60,10 @@ export default function Home() {
       borderRadius: "4px",
     },
   };
-  useEffect(() => {if (localStorage.getItem('user')) {router.push('/joinGameLobby')}}, [])
+ //console.log('in index file') // useEffect(() => {if (localStorage.getItem('user')) {router.push('/joinGameLobby')}}, [])
 
 
-  
+
   const [username, setUsername] = useState("");
 
   const [password, setPassword] = useState("");
@@ -75,14 +75,17 @@ export default function Home() {
     await axios
       .post("api/verifyUser", obj)
       .then((res) => {
-        window.localStorage.setItem('user', obj.username)
+        if (!window.localStorage.getItem('user')) {
+
+         window.localStorage.setItem('user', username)
+        };
         setEmail("");
         setUsername("");
         setPassword("");
-        router.push('/lobby')
+        router.push('/joinGameLobby')
       })
-      .catch((res) => { console.log('fjksdla;fksa;')
-       router.push("/login");
+      .catch((res) => { setEmail(''); setUsername(''); setPassword('');
+       router.push("/");
       });
   };
 

@@ -1,7 +1,8 @@
 import db from '../../../server/db'
 
 const handler = async (req, res) => {
-  const {game ID} = req.query;
+  
+  const {gameID} = req.query;
   if (req.method === 'GET') {
     try {
       const gameState = await db.getGameState(gameID)

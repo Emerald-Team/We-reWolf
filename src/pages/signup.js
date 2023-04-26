@@ -11,7 +11,7 @@ export default function SignUp() {
 
   const [species, setSpecies] = useState("")
   const [id, setId] = useState({})
-  const router = useRouter()
+  const router = useRouter();
   useEffect(() => {
     if (localStorage.getItem("user")) {
       router.push("/joinGameLobby")
@@ -69,7 +69,7 @@ export default function SignUp() {
     },
   }
   const signupHandler = async () => {
-    console.log(username, password, email, "Login Info")
+    console.log(username, password, email, "Login Info");
 
     let obj = {
       username: username,

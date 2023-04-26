@@ -3,18 +3,18 @@ const saltHash = require("password-salt-and-hash"); import {useRouter} from 'nex
 
 
 export default async function handler(req, res){ //const router = useRouter();
-  console.log("req got here:", req.body);
+
   let userDetails = req.body;
   let usernameTaken = await userDatabase.checkUsername(req.body.username);
   let emailTaken = await userDatabase.checkEmail(req.body.email);
-  console.log("usernameTaken :", usernameTaken, "emailTaken:", emailTaken);
+  //console.log("usernameTaken :", usernameTaken, "emailTaken:", emailTaken);
 
   if (!usernameTaken && !emailTaken) {
     let passwordHash = saltHash.generateSaltHash(req.body.password);
     req.body.password = passwordHash;
     let user;
     await userDatabase
-    
+
       .newAccount(req.body)
       .then((data) => {
 
