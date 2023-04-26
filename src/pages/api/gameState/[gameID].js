@@ -1,11 +1,14 @@
-import db from '../../../server/db'
+import model from '../../../server/model'
 
 const handler = async (req, res) => {
+<<<<<<< HEAD
   
+=======
+>>>>>>> main
   const {gameID} = req.query;
   if (req.method === 'GET') {
     try {
-      const gameState = await db.getGameState(gameID)
+      const gameState = await model.getGameState(gameID)
       return res.status(200).json(gameState)
     } catch (error) {
       console.error(error)

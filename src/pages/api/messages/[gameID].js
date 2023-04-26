@@ -1,6 +1,7 @@
 import model from '../../../server/model.js'
 
 const handler = async (req, res) => {
+  // console.log('messages!')
   const { gameID } = req.query
   if(req.method === 'POST'){
     await model.postMessage(gameID, req.body)
@@ -13,6 +14,7 @@ const handler = async (req, res) => {
   } else if (req.method === 'GET'){
     await model.getMessages(gameID)
     .then(data => {
+
       return res.status(200).send(data)
     })
     .catch(err => {

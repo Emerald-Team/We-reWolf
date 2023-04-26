@@ -6,12 +6,15 @@ import Avatar from "/src/comps/avatar.js"
 import Timer from "/src/comps/timer.js"
 import axios from 'axios'
 import * as _ from "lodash"
+import { useRouter } from 'next/router';
 
 const interval = 10;
 const phases = ['night', 'day'];
 
 
 export default function Game() {
+  const router = useRouter()
+
   const [gameData, setGameData] = useState({
     gameID: '1234',
     username: 'TheBigBadBill',
@@ -67,7 +70,10 @@ export default function Game() {
     ],
     phase: 'night',
   })
+
+
   const [gameStarted, setGameStarted] = useState(false)
+  const [user, setUser] = useState('')
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
   const [timeLeft, setTimeLeft] = useState(interval); //dont need
@@ -79,7 +85,7 @@ export default function Game() {
   const [isWerewolf, setIsWerewolf] = useState(thisPlayer.role === 'werewolf')
   const [selected, setSelected] = useState(null);
   const [lastSelected, setLastSelected] = useState(null);
-  const [gameID, setGameID] = useState('0')
+  const [gameID, setGameID] = useState(router.query.gameID)
 
 
 const createNewGame = async (users, phase) => {
@@ -146,18 +152,6 @@ useEffect(() => {
     }
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
-        const fetchedGameState = await getGameState(gameID)
-        setGameData(fetchedGameState)
-      } catch (err) {
-        console.error(err)
-      }
-    }, 5000)
-    return () => clearInterval(interval)
-  }, [])
-
   const handleEndPhase = function(phaseEnded) {
     console.log('handling phase end, ', phaseEnded);
     if (!thisPlayer.isAlive) {
@@ -215,44 +209,122 @@ useEffect(() => {
     handleEndPhase(phases[(phaseIndex - 1) % phases.length])
   }, [phase])
 
-  useEffect(() => {
-    // const intervalId = setInterval(() => {
-      if (timeLeft < 1) {
-    //     setTimeLeft(interval); // set initial time left to 10 seconds
-        setPhaseIndex((phaseIndex + 1) % phases.length)
-      } else {
-        console.log(timeLeft)
-        setTimeLeft(timeLeft - 1);
-      }
-    // }, 1000);
-    // return () => clearInterval(intervalId);
-  }, [timeLeft]);
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     if (timeLeft < 1) {
+  //   //     setTimeLeft(interval); // set initial time left to 10 seconds
+  //       setPhaseIndex((phaseIndex + 1) % phases.length)
+  //     } else {
+  //       console.log(timeLeft)
+  //       setTimeLeft(timeLeft - 1);
+  //     }
+  //   return () => clearInterval(intervalId);
+  // }, [timeLeft])});
 
-  const getMessages = () => {
-    const options = {
-      method: "GET",
-      url: `api/messages/${gameID}`
+  //hardcodes for testing
+  let userPermissions = [user, 'all', 'werewolf', 'dead']
+  let timeOfDay = 'night'
+  let userRole = 'werewolf'
+
+  useEffect(() => {
+    let storedUser = window.localStorage.getItem('user')
+    setUser(storedUser)
+    //setPlayer(gameData.users.filter(user => (user.username === storedUser))[0])
+    setPlayers(gameData.users)
+
+  }, [])
+
+  useEffect(() => {
+    let options = {
+      method: 'GET',
+      url: `http://localhost:3000/api/gameState/${gameID}`
     }
     axios(options)
-      .then(res => {
-        setMessages(res.data)
-      })
-      .catch(console.log)
+    .then(res => setGameData(res.data))
+  }, [gameID])
+
+  useEffect(() => {
+    if (!router.isReady) {
+      return
+    }
+    console.log('setting gameID to ', router.query.gameID)
+    setGameID(router.query.gameID)
+    getMessages(router.query.gameID)
+  }, [router.isReady])
+  // const userInfo = gameData.user
+  // const username = userInfo.name
+
+
+
+  const avatar = useMemo(() => {
+    return createAvatar(lorelei, {
+      size: 100,
+      seed: "John",
+    }).toDataUriSync();
+  }, []);
+  const avatar1 = useMemo(() => {
+    return createAvatar(lorelei, {
+      size: 100,
+      seed: "Amy",
+    }).toDataUriSync();
+  }, []);
+
+  // const toggleTimeOfDay = () => {
+  //   const next = timeOfDay === "day" ? "night" : "day";
+  //   dispatch(setTimeOfDay(next));
+  // };
+  // dispatch(setTimeOfDay("night"));
+
+  useEffect(() => {
+    setTimeLeft(10); // set initial time left to 10 seconds
+    const intervalId = setInterval(() => {
+      setTimeLeft((timeLeft) => timeLeft - 1);
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const getMessages = (inputID) => {
+    inputID = inputID || gameID
+    if (!!inputID) {
+      const options = {
+        method: "GET",
+        url: `http://localhost:3000/api/messages/${inputID}`
+      }
+      axios(options)
+        .then(res => {
+          if (!!res.data[0]) {
+            setMessages(res.data)
+            if (!!gameID) {
+              setTimeout(getMessages, 1000)
+            }
+          }
+        })
+        .catch(console.log)
+    } else {
+      setTimeout(getMessages, 3000)
+    }
   }
+
   const handleText = (e) => {
     setText(e.target.value)
   }
+
   const handleSend = () => {
+    let visibleTo = 'all'
+    if(phase === 'night' && userRole === 'werewolf'){
+      visibleTo = 'werewolf'
+    } else if(userRole === 'dead'){
+      visibleTo = 'dead'
+    }
+
     const payload = {
-      user: thisPlayer.username,
+      user: user,
       body: text,
-      visibleTo: {
-        all: true
-      }
+      visibleTo: visibleTo
     }
     const options = {
       method: 'POST',
-      url: `api/messages/${gameID}`,
+      url: `http://localhost:3000/api/messages/${router.query.gameID}`,
       data: payload
     }
     axios(options)
@@ -262,9 +334,6 @@ useEffect(() => {
       })
       .catch(console.log)
   }
-  useEffect(() => {
-    getMessages()
-  })
 
   return (
     <>
@@ -289,25 +358,33 @@ useEffect(() => {
               )
             }
           </div>
-          <small style={phase === 'night' ? werewolfTextContainerNight : werewolfTextContainer}>
+          {isWerewolf && <small style={phase === 'night' ? werewolfTextContainerNight : werewolfTextContainer}>
             Werewolves: {players.map(player => {
-              if (isWerewolf && player.role === 'werewolf' && phase === 'night') {
+              if (isWerewolf && player.role === 'werewolf') {
                 return player.username + ' '
               } else {
                 return ''
               }
             })}
-          </small>
+          </small>}
         </div>
         <div style={chatContainerStyle}>
           <div style={chatContentContainerStyle}>
-            {messages.map((chat) => {
+            {messages.filter(message => (userPermissions.includes(message.visibleTo))).map((message) => {
+              let textColor = 'text-slate-300'
+              if(message.visibleTo === 'werewolf'){
+                textColor = 'text-blue-700'
+              } else if(message.visibleTo === 'dead'){
+                textColor = 'text-zinc-500'
+              } else if(message.visibleTo === user){
+                textColor = 'text-pink-700'
+              }
               return (
-                <p style={textStyle} key={chat._id}>
-                  {chat.user}: {chat.body}
+                <p className={`text-2xl ${textColor}`} key={message._id}>
+                  {message.user}{message.visibleTo === user ? '(direct)' : ''}: {message.body}
                 </p>
-              )
-            })}
+              )}
+            )}
           </div>
         </div>
       </div>
@@ -455,7 +532,6 @@ var playerContainerNight = {
   gap: "20px",
   color: "white",
 }
-
 
 
 var werewolfTextContainer = {

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import axios from 'axios';
 import GameSettings from "../../comps/gameSettings";
 import PlayerList from "../../comps/playerList";
+import { useRouter } from 'next/router';
 
 export default function Lobby() {
   const [count, setCount] = useState(0);
@@ -10,10 +12,21 @@ export default function Lobby() {
   const [copy, setCopy] = useState(false);
   const [copyWord, setCopyWord] = useState("Copy To Clipboard");
   const [selected, setSelected] = useState([]);
+  const [urlCode, setUrlCode] = useState([])
+  const router = useRouter()
 
-
-  let urlCode = window.location.pathname.split('/')
-  console.log(urlCode[urlCode.length -1])
+  useState(() => {
+    let gameID = router.query.id
+    const options = {
+      method:"POST",
+      url: `http://localhost:3000/api/lobby/${gameID}`
+    }
+    axios(options)
+    .then(data => {
+      setPlayersConnected(data)
+    })
+    .catch(console.log)
+  }, [])
   let fakePlayers = [
     { userName: "BadBill", rank: 1, role: null },
     { userName: "theRealJae", rank: 1, role: null },

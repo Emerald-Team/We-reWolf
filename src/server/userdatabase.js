@@ -93,4 +93,4 @@ const verifyUser = async (infoToVerify, indicator) => {
 }
 
 
-module.exports = {dataBase, newAccount, checkUsername, checkEmail, verifyUser}
+module.exports = {dataBase, newAccount, checkUsername, checkEmail, verifyUser, Users}
