@@ -1,54 +1,17 @@
-<<<<<<< HEAD:src/pages/game.js
-import { useMemo, useState, useEffect } from "react"
-import { createAvatar } from "@dicebear/core"
-import { lorelei } from "@dicebear/collection"
-import Image from "next/image"
-import Chat from './chat.js'
-import axios from 'axios'
-
-export default function Game() {
-  //hardcoded for testing
-  const username = "Snarls Barkley"
-=======
 import { useMemo, useEffect, useState } from "react";
 import { createAvatar } from "@dicebear/core";
 import { lorelei } from "@dicebear/collection";
-import { useRouter } from 'next/router';
 import Image from "next/image";
 import axios from 'axios'
 
 export default function Game() {
 
-<<<<<<< HEAD
   const username = "Romulous"
->>>>>>> main:src/pages/game/[gameID].js
   const gameID = "1234"
-=======
-  const [gameData, setGameData] = useState({ user: { name: "idk" } })
-
-  const router = useRouter();
-  const [gameID, setGameID] = useState(router.query.gameID)
-
-  //console.log(gameID, 'gameID in state')
-
-  useEffect(() => {
-    if (!router.isReady) {
-      return
-    }
-    setGameID(router.query.gameID)
-    getMessages(0)
-  }, [router.isReady])
-  const userInfo = gameData.user
-  const username = userInfo.name
-
->>>>>>> main
 
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
-<<<<<<< HEAD:src/pages/game.js
-=======
   const [timeLeft, setTimeLeft] = useState(0);
->>>>>>> main:src/pages/game/[gameID].js
 
   const avatar = useMemo(() => {
     return createAvatar(lorelei, {
@@ -78,24 +41,17 @@ export default function Game() {
   }, []);
 
   const getMessages = () => {
-    if (!!gameID) {
-      const options = {
-        method: "GET",
-        url: `http://localhost:3000/api/messages/${gameID}`
-      }
-      axios(options)
-        .then(res => {
-          if (!!res.data[0]) {
-            setMessages(res.data)
-            if (!!gameID) {
-              setTimeout(getMessages, 1000)
-            }
-          }
-        })
-        .catch(console.log)
-    } else {
-      setTimeout(getMessages, 3000)
+
+    const options = {
+      method: "GET",
+      url: `api/messages/${gameID}`
     }
+    axios(options)
+      .then(res => {
+        setMessages(res.data)
+      })
+      .catch(console.log)
+
   }
 
   const handleText = (e) => {
@@ -112,7 +68,7 @@ export default function Game() {
     }
     const options = {
       method: 'POST',
-      url: `http://localhost:3000/api/messages/${router.query.gameID}`,
+      url: `api/messages/${gameID}`,
       data: payload
     }
     axios(options)
@@ -123,12 +79,10 @@ export default function Game() {
       .catch(console.log)
   }
 
-<<<<<<< HEAD
   useEffect(() => {
     setInterval(getMessages, 1000)
   }, [])
 
-<<<<<<< HEAD:src/pages/game.js
   const getMessages = () => {
 
     const options = {
@@ -171,10 +125,6 @@ export default function Game() {
   useEffect(() => {
     getMessages()
   })
-=======
->>>>>>> main:src/pages/game/[gameID].js
-=======
->>>>>>> main
 
   return (
     <>
@@ -189,7 +139,7 @@ export default function Game() {
             </div>
             <div style={dayStyleNight}>
               <p>Night
-              </p>
+</p>
               {/* Day
  */}
             </div>
@@ -246,7 +196,7 @@ export default function Game() {
         </div>
         <div style={chatContainerStyle}>
           <div style={chatContentContainerStyle}>
-            {messages.filter(message => (message.visibleTo.all)).map((chat) => {
+            {messages.map((chat) => {
               return (
                 <p style={textStyle} key={chat._id}>
                   {chat.user}: {chat.body}
