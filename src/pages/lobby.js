@@ -12,9 +12,9 @@ export default function Lobby() {
   const [copyWord, setCopyWord] = useState("Copy To Clipboard")
   const [selected, setSelected] = useState([])
 
-  useState(() => {
+  const router = useRouter()
 
-  }[])
+
 
   let fakePlayers = [
     { userName: "BadBill", rank: 1, role: null },
