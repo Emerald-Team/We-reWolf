@@ -2,6 +2,8 @@ import React from "react"
 import { useState, useEffect, useMemo } from "react"
 import { createAvatar } from "@dicebear/core";
 import { lorelei } from "@dicebear/collection";
+import { avataaars } from "@dicebear/collection";
+import { micah } from "@dicebear/collection";
 import Image from "next/image";
 
 var playerStyle = {
@@ -45,7 +47,7 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   const [isSelectedLagFrame, setIsSelectedLagFrame] = useState(player === selected);
 
   const avatar = useMemo(() => {
-    return createAvatar(lorelei, {
+    return createAvatar(micah, {
       size: 100,
       seed: player.username,
     }).toDataUriSync();
@@ -85,10 +87,10 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   }
 
   useEffect(() => {
-    // console.log('change in this avatar player: ', player.username, 'votes', player.votes)
+    console.log('change in this avatar player: ', player.username, 'votes', player.votes)
     setVotes(player.votes);
   }, [player])
-  // if player is dead, render dead style [TODO: bugged]
+
   useEffect(() => {
     // setVotes(player.votes);
     if (!player.isAlive || !thisPlayerCanSelect) {
@@ -131,7 +133,8 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
     const newLastSelected = selected;
     setSelected(player)
     setLastSelected(selected)
-    await voteForUser(player.username, newLastSelected ? newLastSelected.username : null, gameID)
+    const response = await voteForUser(player.username, newLastSelected ? newLastSelected.username : null, gameID)
+    console.log('voted for ', player.username, '\nresponse\n', response)
   }
 
   // if not the current selection:

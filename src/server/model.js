@@ -8,7 +8,7 @@ const model = {
   },
   getGameState: async (gameID) => {
     try {
-      const gameState = await db.GameState.findOne({ gameId: gameID });
+      const gameState = await db.GameState.findOne({ gameID: gameID });
       return gameState;
     } catch (error) {
       console.error(error);
@@ -109,6 +109,7 @@ const model = {
       user.votes += 1;
       // console.log('User votes updated:', user)
       await gameState.save();
+      // console.log(gameState, '-----GAMESTATE IN MODEL-----')
       return gameState;
     } catch (error) {
       console.error(error);
