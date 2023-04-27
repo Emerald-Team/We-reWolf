@@ -96,7 +96,6 @@ export default function Home() {
         <h2 style={{ marginBottom: "10px" }}>Login</h2>
         <form style={styles.form}>
           <input type="text" placeholder="Username" style={styles.input} />
-<<<<<<< HEAD
           <input
             type="password"
             placeholder="Password"
@@ -104,10 +103,6 @@ export default function Home() {
             required
           />
           <button type="submit" style={styles.button} onClick={(e) => {e.preventDefault(); loginHandler()}}>
-=======
-          <input type="password" placeholder="Password" style={styles.input} required/>
-          <button type="submit" style={styles.button} onClick={(e)=> {e.preventDefault(); loginHandler()}}>
->>>>>>> 357fd36 (changed button carrot;)
             Login
           </button>
         </form>
