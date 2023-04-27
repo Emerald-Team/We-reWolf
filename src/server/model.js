@@ -36,22 +36,31 @@ const model = {
   createLobby: async (gameID, user) => {
     const userFile = await userDatabase.Users.find({username: user})[0]
     let newLobby = new db.Lobby({
-      username: userFile.username,
-      role: "in lobby"
+
+      gameID: gameID,
+      users: [{
+        userName: user,
+        role: 'in lobby'
+      }]
+
     })
     return newLobby.save()
   },
   updateLobby: async (gameID, user) => {
-    const lobbyOccupants = await db.Lobby.find({
-      gameID: gameID
-    })[0][users]
-    const userFile = await userDatabase.Users.find({username: user})[0]
-    lobbyOccupants.push({
-      username: userfile.username,
+
+    let newUser = {
+      userName: user,
       rank: 1,
-      role: "in lobby"
-    })
-    return db.Lobby.findOneAndUpdate({ gameID: gameID }, { users: lobbyOccupants }, { new: true })
+      role: 'in lobby'
+    }
+    return db.Lobby.findOneAndUpdate({ gameID: gameID },
+      { $push: {users: newUser}},
+      {new: true}
+    )
+  },
+  getLobby: async (gameID) => {
+    return db.Lobby.find({ gameID: gameID })
+
   },
   getMessages: (gameID) => {
     return db.Message.find({ gameID: gameID })
