@@ -4,7 +4,7 @@ const handler = async (req, res) => {
   if (req.method === 'POST') {
 
     console.log("post request received", req.body)
-    const {gameId, users, phase} = req.body
+    const {gameID, users, phase} = req.body
     console.log(gameID, '----GAMEID IN CREATE GAME API ROUTE-----')
     try {
       const gameState = await model.createGame({gameID, users, phase})
