@@ -46,10 +46,10 @@ export default function Chat({ gameID, username }) {
     setText(e.target.value)
   }
 
-  useEffect(() => {
-    getMessages();
+  // useEffect(() => {
+  //   getMessages();
 
-  }, [])
+  // }, [])
 
   return (
     <div>
