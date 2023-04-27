@@ -36,14 +36,20 @@ const messageSchema = new mongoose.Schema({
 })
 
 const gameStateSchema = new mongoose.Schema({
-  gameId: {
+  gameID: {
     type: String,
-    default: '1234'
   },
   users: [{
     username: String,
     role: String,
-    isAlive: Boolean,
+    permissions: {
+      type: [String],
+      default: ['villager']
+    },
+    isAlive: {
+      type: Boolean,
+      default: true
+    },
     votes: {
       type: Number,
       default: 0

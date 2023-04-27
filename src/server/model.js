@@ -8,23 +8,31 @@ const model = {
   },
   getGameState: async (gameID) => {
     try {
-      const gameState = await db.GameState.findOne({ gameId: gameID });
+      const gameState = await db.GameState.findOne({ gameID: gameID });
       return gameState;
     } catch (error) {
       console.error(error);
       throw error;
     }
   },
-  createGame: async ({ gameId, users, phase }) => {
-    console.log("creating game...");
+  createGame: async ({gameID, users, phase}) => {
+    console.log('creating game...')
+    const existingGame = await db.GameState.findOne({gameID: gameID})
+
+    if (existingGame) {
+      throw new Error('A game with the provided gameID already exists')
+      return
+    }
+
     try {
       const gameState = new db.GameState({
-        gameId: gameId,
+        gameID: gameID,
         users: users,
         phase: phase,
       });
       await gameState.save();
       // console.log(gameState, '------GAMESTATE IN MODEL-------')
+      console.log(`game ${gameID} successfully created! `)
       return gameState;
     } catch (error) {
       console.error(error);
@@ -72,10 +80,10 @@ const model = {
     return db.Message.find({ gameID: gameID });
   },
 
-  voteForUser: async (username, previousUsername, gameID) => {
-    console.log(gameID);
+  voteForUser: async(username, previousUsername, gameID) => {
+    console.log('in vote for user model')
     try {
-      const gameState = await db.GameState.findOne({ gameId: gameID });
+      const gameState = await db.GameState.findOne({gameID: gameID})
 
       if (!gameState) {
         throw new Error("Game not found");
@@ -101,16 +109,16 @@ const model = {
       user.votes += 1;
       // console.log('User votes updated:', user)
       await gameState.save();
+      // console.log(gameState, '-----GAMESTATE IN MODEL-----')
       return gameState;
     } catch (error) {
       console.error(error);
       throw error;
     }
   },
-  unvoteForUser: async (username, previousUsername, gameID) => {
-    console.log(gameID);
+  unvoteForUser: async(username, previousUsername, gameID) => {
     try {
-      const gameState = await db.GameState.findOne({ gameId: gameID });
+      const gameState = await db.GameState.findOne({gameID: gameID})
 
       if (!gameState) {
         throw new Error("Game not found");
@@ -132,8 +140,9 @@ const model = {
   },
 
   resetVotes: async (gameID) => {
+     console.log(gameID, 'RESET VOTES')
     try {
-      const gameState = await db.GameState.findOne({ gameId: gameID });
+      const gameState = await db.GameState.findOne({ gameID: gameID });
       // console.log('Game state before resetting votes:', gameState);
 
       if (!gameState) {
@@ -155,9 +164,31 @@ const model = {
     }
   },
 
-  toggleDead: async ({ userID }, gameID) => {},
-  grantPermissions: async ({ userID, permissions }, gameID) => {},
-  advanceGame: async (gameID) => {},
-};
+  killPlayer: async(gameID, username) => {
+    try {
+      const gameState = await db.GameState.findOne({ gameID })
+
+      if (!gameState) {
+        throw new Error('Game not found')
+      }
+
+      const user = gameState.users.find(user => user.username === username)
+
+      if (!user) {
+        throw new Error('User not found')
+      }
+
+      user.isAlive = false;
+
+      await gameState.save()
+      return gameState
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
+  },
+
+}
+
 
 export default model;

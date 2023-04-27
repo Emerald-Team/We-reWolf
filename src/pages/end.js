@@ -1,25 +1,25 @@
 import Image from "next/image"
 
 export default function End() {
-  var textStyle = {
+  var textStyleEnd = {
     color: "white",
     textAlign: "left",
     fontSize: "24px",
   }
 
-  var containerStyle = {
+  var containerStyleEnd = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     height: "80vh",
   }
 
-  var imageContainerStyle = {
+  var imageContainerStyleEnd = {
     marginLeft: "auto",
     marginRight: "auto",
   }
 
-  var imageStyle = {
+  var imageStyleEnd = {
     textAlign: "center",
     marginTop: "16px",
     color: "white",
@@ -27,7 +27,7 @@ export default function End() {
     fontWeight: "bold",
   }
 
-  var chatContainerStyle = {
+  var chatContainerStyleEnd = {
     backgroundColor: "rgba(0, 0, 0, 0.7)",
     width: "35%",
     height: "70vh",
@@ -43,20 +43,20 @@ export default function End() {
     textAlign: "left",
   }
 
-  var chatContentContainerStyle = {
+  var chatContentContainerStyleEnd = {
     flex: "1",
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-end",
   }
 
-  var inputContainerStyle = {
+  var inputContainerStyleEnd = {
     display: "flex",
     justifyContent: "flex-end",
     marginRight: "300px",
   }
 
-  var inputStyle = {
+  var inputStyleEnd = {
     backgroundColor: "grey",
     color: "white",
     border: "none",
@@ -65,7 +65,7 @@ export default function End() {
     maxWidth: "38%",
   }
 
-  var buttonStyle = {
+  var buttonStyleEnd = {
     backgroundColor: "grey",
     color: "white",
     border: "none",
@@ -104,16 +104,16 @@ export default function End() {
   const tomb = "/2869384.png"
   return (
     <>
-      <div style={containerStyle}>
-        <div style={imageContainerStyle}>
+      <div style={containerStyleEnd}>
+        <div style={imageContainerStyleEnd}>
           <Image src="/giphy.gif" alt="Your Image" width="400" height="600" />
-          <p style={imageStyle}>Villagers WIN!</p>
+          <p style={imageStyleEnd}>Villagers WIN!</p>
         </div>
-        <div style={chatContainerStyle}>
-          <div style={chatContentContainerStyle}>
+        <div style={chatContainerStyleEnd}>
+          <div style={chatContentContainerStyleEnd}>
             {insideChat.map((chat) => {
               return (
-                <p key={chat.username} style={textStyle}>
+                <p key={chat.username} style={textStyleEnd}>
                   {chat.username}: {chat.text}
                 </p>
               )
@@ -121,13 +121,13 @@ export default function End() {
           </div>
         </div>
       </div>
-      <div style={inputContainerStyle}>
+      <div style={inputContainerStyleEnd}>
         <input
           type="text"
-          style={inputStyle}
+          style={inputStyleEnd}
           placeholder="Type your message here..."
         />
-        <button style={buttonStyle}>Send</button>
+        <button style={buttonStyleEnd}>Send</button>
       </div>
     </>
   )

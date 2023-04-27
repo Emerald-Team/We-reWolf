@@ -11,65 +11,73 @@ import { useRouter } from 'next/router';
 const PHASE_LENGTH = 10;
 const phases = ['night', 'day'];
 
-const dayStr = 'Day 🔆';
-const nightStr = 'Night 🌙';
+const dayStr = 'Day🔆';
+const nightStr = 'Night🌙';
 
-const wwStr = 'Werewolf 🐺';
-const vilStr = 'Villager 🧑‍🌾';
-const seeStr = 'Seer 🔮';
-const docStr = 'Doctor 🧑‍⚕️';
+const wwStr = 'Werewolf🐺';
+const vilStr = 'Villager🧑‍🌾';
+const seeStr = 'Seer🔮';
+const docStr = 'Doctor🧑‍⚕️';
 
 export default function Game() {
   const router = useRouter()
 
   const [gameData, setGameData] = useState({
-    gameID: '1234',
+    gameID:  router.query.gameID,
     users: [
        {
         username: 'TheBigBadBill',
         role: 'werewolf',
+        permissions: ['day, night'],
         isAlive: true,
         votes: 0
       },
       {
         username: 'TheRealJae',
         role: 'villager',
+        permissions: ['day'],
         isAlive: true,
         votes: 0
       },
       {
         username: 'SnarlsBarkley',
         role: 'werewolf',
+        permissions: ['day, night'],
         isAlive: true,
         votes: 0
       },
       {
         username: 'ZackAttack',
         role: 'villager',
+        permissions: ['day'],
         isAlive: true,
         votes: 0
       },
       {
         username: 'GuyWithTuba',
         role: 'villager',
+        permissions: ['day'],
         isAlive: false,
         votes: 0
       },
       {
         username: 'Tr3nB@cy',
         role: 'villager',
+        permissions: ['day'],
         isAlive: true,
         votes: 0
       },
       {
         username: 'Chordata',
         role: 'villager',
+        permissions: ['day'],
         isAlive: true,
         votes: 0
       },
       {
         username: 'CoachLaner',
         role: 'villager',
+        permissions: ['day'],
         isAlive: true,
         votes: 0
       }
@@ -78,6 +86,7 @@ export default function Game() {
   })
   const [gameID, setGameID] = useState(router.query.gameID)
   const [gameStarted, setGameStarted] = useState(false)
+  const [gameEnded, setGameEnded] = useState(false)
   const [user, setUser] = useState('')
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
@@ -89,6 +98,7 @@ export default function Game() {
   const [isWerewolf, setIsWerewolf] = useState(thisPlayer.role === 'werewolf')
   const [selected, setSelected] = useState(null);
   const [lastSelected, setLastSelected] = useState(null);
+  const [gameDone, setGameDone] = useState(false)
   const roleToStr = function(role) {
     switch(role) {
       case 'werewolf':
@@ -108,7 +118,7 @@ export default function Game() {
     }
   }
   const [roleStr, setRoleStr] = useState(roleToStr(thisPlayer.role));
-  // const [gameID, setGameID] = useState('1234')
+  // const [gameID, setGameID] = useState( router.query.gameID)
 
   const createNewGame = async (gameID, users, phase) => {
     console.log('creating new game.......... ')
@@ -126,6 +136,7 @@ export default function Game() {
   }
 
   const getGameState = async function()  {
+    // console.log('getting game state')
     if (gameID) {
       const response = await fetch(`/api/gameState/${gameID}`, {
         method: 'GET',
@@ -133,80 +144,160 @@ export default function Game() {
           'Content-Type': 'application/json',
         },
       });
+      // console.log('response from fetch gameData:\n', response)
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
+      } else {
+        const gameState = await response.json();
+        console.log('GAME STATE IN getGameState: is this null', gameState)
+        if (gameState !== null) {
+          setGameData(gameState);
+                // return gameState;
+          // setPlayers(gameState.users)
+          // // console.log(gameData, players, '-------IN INIT USEEFFECT------')
+          // // setPhase(gameState.phase)
+          // //  setGameID(gameData.gameID) //should we be setting this here or from router.query line 79
+          // setThisPlayer(gameState.users.filter(user => user.username === gameState.users[0].username)[0])
+        }
       }
-      const gameState = await response.json();
-      setGameData(gameState);
-      // return gameState;
+
 
     }
     setTimeout(getGameState, 1000)
   }
 
+  // useEffect(() => {
+  //   if (gameStarted === false) {
+  //     getGameState()
+  //     setGameStarted(true)
+  //   }
+  // }, [gameID])
+
   const createNewGameOnce = _.once(createNewGame);
 
   useEffect(() => {
+    // console.log('in gameData useEffect: is this null?\n', gameData)
     if (gameData !== null) {
-     setPlayers(gameData.users)
-     setPhase(gameData.phase)
-     setGameID(gameData.gameId)
-     setThisPlayer(gameData.users.filter(user => user.username === gameData.users[0].username)[0])
+      setPlayers(gameData.users)
+      // console.log(gameData, players, '-------IN INIT USEEFFECT------')
+      setPhase(gameData.phase)
+      //  setGameID(gameData.gameID) //should we be setting this here or from router.query line 79
+      setThisPlayer(gameData.users.filter(user => user.username === gameData.users[0].username)[0])
     }
   }, [gameData])
 
   useEffect(() => {
-    setIsWerewolf(thisPlayer.role === 'werewolf')
-    console.log(thisPlayer)
-    console.log('am i alive? ', thisPlayer.isAlive)
-    setRoleStr(roleToStr(thisPlayer.role));
+    if(gameStarted) {
+      setIsWerewolf(thisPlayer.role === 'werewolf')
+      // console.log(thisPlayer)
+      // console.log('am i alive? ', thisPlayer.isAlive)
+      setRoleStr(roleToStr(thisPlayer.role));
+    }
   }, [thisPlayer])
 
-
   const werewolvesHaveWon = function () {
-    const numWerewolves = players.filter(user => user.role === 'werewolf').length;
-    const numVillagers = players.filter(user => user.role !== 'werewolf').length;
+    const numWerewolves = players.filter(user => user.role === 'werewolf' && user.isAlive).length;
+    const numVillagers = players.filter(user => user.role !== 'werewolf' && user.isAlive).length;
+    console.log('have werewolves won? checking werewolves', numWerewolves, 'to villagers', numVillagers, numWerewolves === numVillagers)
     return numWerewolves === numVillagers;
   }
   const villagersHaveWon = function () {
-    const numWerewolves = players.filter(user => user.role === 'werewolf').length;
+    const numWerewolves = players.filter(user => user.role === 'werewolf' && user.isAlive).length;
+    console.log('have villagers won? checking werewolves', numWerewolves, numWerewolves === 0)
     return numWerewolves === 0;
   }
-  const handleEndPhase = function(phaseEnded) {
-    console.log('handling phase end, ', phaseEnded);
-    switch (phaseEnded) {
-      case 'night':
-        console.log('The night has ended. Here is the result:\n');
-        if (werewolvesHaveWon()) {
-          //route to ww end screen
-          console.log('Werewolves Win!\n');
+
+  const findPlayersWithMostVotes = function(users) {
+    let maxVotes = 0
+    let playersWithMostVotes = []
+
+    users.filter(user => user.isAlive).forEach((user) => {
+      if (user.votes > maxVotes) {
+        maxVotes = user.votes
+        playersWithMostVotes = [user]
+      } else if (user.votes === maxVotes) {
+        playersWithMostVotes.push(user)
+      }
+    })
+    return playersWithMostVotes
+  }
+
+  const killUser = async function() {
+    try {
+      if (gameData !== null) {
+        // console.log(gameData, '---------GAME DATA IN KILLUSER----------')
+        const playersWithMostVotes = findPlayersWithMostVotes(gameData.users)
+        console.log('players with the most votes: ', playersWithMostVotes.length, playersWithMostVotes)
+        if (playersWithMostVotes.length === 1) {
+          const response = await fetch(`/api/killPlayer/${gameID}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              gameID: gameID,
+              username: playersWithMostVotes[0].username
+            })
+          });
+          const {success, data, message} = await response.json()
+          if (!success) {
+            throw new Error(message)
+          }
+          return response;
+        } else {
+          return {reponse: 'no one player has the most votes', playersWithMostVotes: playersWithMostVotes}
         }
-        break;
-      case 'day':
-        console.log('The day has ended. Here is the result:\n');
-        if (werewolvesHaveWon()) {
-          //route to ww end screen
-          console.log('Werewolves Win!\n');
-        } else if (villagersHaveWon()) {
-          //route to vil end screen
-          console.log('Villagers Win!\n');
-        }
-        break;
-      default:
-        console.log(`Sorry, we are out of ${phaseEnded}. (Phase ended and is not one of these:)\n`, phases);
+      }
+    } catch (error) {
+      console.error('error in killUser function:\n', error)
     }
   }
 
-  const vote = function(player, isUpvote=true) {
-    //send vote
+  // const endGame = function(winner) {
+  //   console.log('Werewolves Win!\n');
+  //   router.push('/end');
+  // }
+  const handleEndPhase = async function(phaseEnded) {
+    if (gameStarted) {
+      console.log('handling phase end, ', phaseEnded);
+      switch (phaseEnded) {
+        case 'night':
+          console.log('The night has ended. Here is the result:\n');
+          // await killUser()
+          if (werewolvesHaveWon()) {
+            //route to ww end screen
+            console.log('Werewolves Win!\n');
+            router.push('/end');
+          }
+          break;
+        case 'day':
+          console.log('The day has ended. Here is the result:\n');
+          // await killUser()
+          if (werewolvesHaveWon()) {
+            console.log('Werewolves Win!\n');
+            router.push('/end');
+          } else if (villagersHaveWon()) {
+            //route to vil end screen
+            console.log('Villagers Win!\n');
+            router.push('/end');
+          }
+          break;
+        default:
+          console.log(`Sorry, we are out of ${phaseEnded}. (Phase ended and is not one of these:)\n`, phases);
+      }
+    }
   }
 
   useEffect(() => {
-    setPhase(phases[phaseIndex]);
+    // console.log('from phase index: has game started?', gameStarted)
+    if (gameStarted) {
+      setPhase(phases[phaseIndex]);
+    }
   }, [phaseIndex])
 
   useEffect(() => {
-    handleEndPhase(phases[(phaseIndex - 1) % phases.length])
+    // console.log('handle phase end for phase index: ', (phases.length + phaseIndex) % phases.length)
+    handleEndPhase(phases[(phases.length + phaseIndex) % phases.length])
     if (phase === 'night') {
       setPhaseText(nightStr)
     } else if (phase === 'day') {
@@ -216,17 +307,19 @@ export default function Game() {
 
   //hardcodes for testing
   let userPermissions = [user, 'all', 'werewolf', 'dead']
-  let timeOfDay = 'night'
+  // let timeOfDay = 'night'
   let userRole = 'werewolf'
 
   useEffect(() => {
     //upper useEffect
-    if (gameStarted === false) {
+    if (gameStarted === false && gameData !== null && gameID !== undefined) {
+      // console.log('in createGame useeEffect')
       createNewGameOnce(gameID, gameData.users, gameData.phase)
         .then((gameState) => {
-          setGameStarted(true)
+          // console.log('new game created on page load:\n', gameState)
+
         })
-        .catch((err) => console.error(err))
+        .catch((err) => console.error('error creating new game on page load:\n', err))
     }
 
     // lower useEffect
@@ -235,9 +328,12 @@ export default function Game() {
     if (gameData !== null) {
       // setPlayer(gameData.users.filter(user => (user.username === storedUser))[0])
       setPlayers(gameData.users)
+      setGameStarted(true)
+      getGameState()
     }
-    getGameState()
   }, [])
+
+
 
   useEffect(() => {
     console.log(gameID)
@@ -247,6 +343,7 @@ export default function Game() {
     }
     axios(options)
       .then(res => {
+        // console.log(res.data, '------returned from useeffect-------')
         setGameData(res.data)
       });
   }, [gameID])
@@ -325,27 +422,31 @@ export default function Game() {
       console.error(`Error reseting votes: ${response.statusText}`)
     } else {
       const updatedGameState = await response.json()
-      console.log(updatedGameState, '----UPDATED GAME STATE-------')
+      // console.log(updatedGameState, '----UPDATED GAME STATE-------')
     }
+    return response;
   }
 
   const onNextPhase = async function() {
-    resetVotes(gameID);
+    const killResult = await killUser()
+    console.log('kill result:\n', killResult)
+    const resetResult = await resetVotes(gameID);
+    console.log('reset result result:\n', resetResult)
     setPhaseIndex((phaseIndex + 1) % phases.length)
   }
-
+if (!gameDone) {
   return (
     <>
       <div style={containerStyle}>
         <div style={phase === 'night' ? gameContainerStyleNight : gameContainerStyle}>
           <div style={boxContainerStyle}>
             <div style={phase === 'night' ? roleStyleNight : roleStyle}>
-              <p>You are: {roleStr}</p>
+              <p>{roleStr}</p>
             </div>
             <div style={phase === 'night' ? timerStyleNight : timerStyle}>
               <Timer period={PHASE_LENGTH} callback={onNextPhase} />
             </div>
-            <div style={dayStyleNight}>
+            <div style={phase === 'night' ? dayStyleNight : dayStyle}>
               <p>{phaseText}</p>
               {/* Day*/}
             </div>
@@ -402,12 +503,61 @@ export default function Game() {
           value={text}
           style={inputStyle}
           placeholder="Type your message here..."
+          onKeyPress={(e)=>{
+            if(e.charCode === 13) {
+              handleSend()
+            }
+          }}
         />
-        <button style={buttonStyle} onClick={handleSend}>Send</button>
+        <button className="chatSend" style={buttonStyle} onClick={handleSend}>Send</button>
       </div>
     </>
   )
+        } if (gameDone) {
+hello
+        }
 }
+
+
+// return (
+//   <>
+//     <div style={containerStyleEnd}>
+//       <div style={imageContainerStyleEnd}>
+//         <Image src="/giphy.gif" alt="Your Image" width="400" height="600" />
+//         <p style={imageStyleEnd}>Villagers WIN!</p>
+//       </div>
+//       <div style={chatContainerStyleEnd}>
+//         <div style={chatContentContainerStyleEnd}>
+//         {messages.filter(message => (userPermissions.includes(message.visibleTo))).map((message) => {
+//               let textColor = 'text-slate-300'
+//               if(message.visibleTo === 'werewolf'){
+//                 textColor = 'text-blue-700'
+//               } else if(message.visibleTo === 'dead'){
+//                 textColor = 'text-zinc-500'
+//               } else if(message.visibleTo === user){
+//                 textColor = 'text-pink-700'
+//               }
+//               return (
+//                 <p className={`text-2xl ${textColor}`} key={message._id}>
+//                   {message.user}{message.visibleTo === user ? '(direct)' : ''}: {message.body}
+//                 </p>
+//               )}
+//             )}
+//         </div>
+//       </div>
+//     </div>
+//     <div style={inputContainerStyleEnd}>
+//       <input
+//         type="text"
+//         style={inputStyleEnd}
+//         placeholder="Type your message here..."
+//       />
+//       <button style={buttonStyleEnd}>Send</button>
+//     </div>
+//   </>
+// )
+// }
+
 var textStyle = {
   color: "white",
   textAlign: "left",
@@ -509,6 +659,7 @@ var dayStyle = {
   height: "50",
   margin: "0 5px",
   display: "flex",
+  color: "black",
   justifyContent: "center",
   alignItems: "center",
   flex: "0.2",
@@ -598,6 +749,78 @@ var inputStyle = {
 }
 
 var buttonStyle = {
+  backgroundColor: "grey",
+  color: "white",
+  border: "none",
+  marginLeft: "8px",
+  padding: "8px",
+}
+
+var textStyleEnd = {
+  color: "white",
+  textAlign: "left",
+  fontSize: "24px",
+}
+
+var containerStyleEnd = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  height: "80vh",
+}
+
+var imageContainerStyleEnd = {
+  marginLeft: "auto",
+  marginRight: "auto",
+}
+
+var imageStyleEnd = {
+  textAlign: "center",
+  marginTop: "16px",
+  color: "white",
+  fontSize: "36px",
+  fontWeight: "bold",
+}
+
+var chatContainerStyleEnd = {
+  backgroundColor: "rgba(0, 0, 0, 0.7)",
+  width: "35%",
+  height: "70vh",
+  marginLeft: "auto",
+  marginRight: "300px",
+  marginBottom: "20px",
+  marginTop: "30px",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-start",
+  padding: "16px",
+  overflowY: "auto",
+  textAlign: "left",
+}
+
+var chatContentContainerStyleEnd = {
+  flex: "1",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "flex-end",
+}
+
+var inputContainerStyleEnd = {
+  display: "flex",
+  justifyContent: "flex-end",
+  marginRight: "300px",
+}
+
+var inputStyleEnd = {
+  backgroundColor: "grey",
+  color: "white",
+  border: "none",
+  flex: "1",
+  padding: "8px",
+  maxWidth: "38%",
+}
+
+var buttonStyleEnd = {
   backgroundColor: "grey",
   color: "white",
   border: "none",

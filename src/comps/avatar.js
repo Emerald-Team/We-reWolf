@@ -2,6 +2,8 @@ import React from "react"
 import { useState, useEffect, useMemo } from "react"
 import { createAvatar } from "@dicebear/core";
 import { lorelei } from "@dicebear/collection";
+import { avataaars } from "@dicebear/collection";
+import { micah } from "@dicebear/collection";
 import Image from "next/image";
 
 var playerStyle = {
@@ -26,6 +28,7 @@ var voteStyle = {
   borderColor: 'red',
   backgroundColor: 'red',
   borderRadius: '50%',
+  width: '25px',
   position: 'absolute',
   top: '5px',
   right: '5px',
@@ -41,9 +44,10 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   const [canHover, setCanHover] = useState(player.isAlive);
   const [canSelect, setCanSelect] = useState(player.isAlive && thisPlayerCanSelect);
   const [isSelected, setIsSelected] = useState(player === selected);
+  const [isSelectedLagFrame, setIsSelectedLagFrame] = useState(player === selected);
 
   const avatar = useMemo(() => {
-    return createAvatar(lorelei, {
+    return createAvatar(micah, {
       size: 100,
       seed: player.username,
     }).toDataUriSync();
@@ -82,9 +86,13 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
     return updatedGameState
   }
 
-  // if player is dead, render dead style [TODO: bugged]
   useEffect(() => {
+    // console.log('change in this avatar player: ', player.username, 'votes', player.votes)
     setVotes(player.votes);
+  }, [player])
+
+  useEffect(() => {
+    // setVotes(player.votes);
     if (!player.isAlive || !thisPlayerCanSelect) {
       setCanHover(false);
       setCanSelect(false);
@@ -95,14 +103,34 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   useEffect(() => {
     if (selected !== player) {
       setStyle(playerStyle)
-      unvoteForUser(player.username, null, gameID)
+      // unvoteForUser(player.username, null, gameID)
     }
   }, [isSelected]);
 
   // when selected or player change, set state to whether this is the current selection
   useEffect(() => {
+
+    if(selected === player) console.log('selected: ', player)
     setIsSelected(selected === player);
   }, [selected, player])
+  useEffect(() => {
+  }, [selected])
+  useEffect(() => {
+    // console.log('isSelected:', player.username, isSelected)
+    console.log('isSelected:', player.username, isSelected)
+    console.log('isSelectedLagFrame:', player.username, isSelectedLagFrame)
+    if (isSelected && !isSelectedLagFrame) {
+      //select
+    } else if (isSelectedLagFrame && !isSelected) {
+      //unselect
+      unvoteForUser(player.username,  null, gameID)
+    }
+    setIsSelectedLagFrame(isSelected)
+  }, [isSelected])
+  useEffect(() => {
+    // console.log('isSelected:', player.username, isSelected)
+    // console.log('isSelectedLagFrame:', player.username, isSelectedLagFrame)
+  }, [isSelectedLagFrame])
 
   // if player is alive and not currently selected, highlight on hover
   const handleHoverIn = function(e) {
@@ -124,17 +152,15 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
     const newLastSelected = selected;
     setSelected(player)
     setLastSelected(selected)
-    await voteForUser(player.username, newLastSelected ? newLastSelected.username : null, gameID)
+    const response = await voteForUser(player.username, newLastSelected ? newLastSelected.username : null, gameID)
+    console.log('voted for ', player.username, '\nresponse\n', response)
   }
-
   // if not the current selection:
   //   set style to hover style,
   //   set selected and last selected to player
   const unselect = async function() {
     setStyle(playerStyle)
     setSelected(null)
-    setLastSelected(selected)
-
   }
   // if selected: unselect
   // else: select
@@ -151,7 +177,7 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
 
   return (
     <div style={style} onMouseOver={handleHoverIn} onMouseLeave={handleHoverOut} onClick={handleSelect}>
-      <div style={{position: 'relative'}} ><div style={voteStyle}>{(votes)}</div></div>
+      <div style={{position: 'relative'}} >{player.isAlive ? <div style={voteStyle}>{votes}</div> : null}</div>
         {player.isAlive ?
           <Image src={avatar} alt="Avatar" width="100" height="100" /> :
           <Image className="dead" src='/2869384.png' alt="tombstone" width="100" height="100" />}
