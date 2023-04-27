@@ -8,13 +8,8 @@ const model = {
   },
   getGameState: async (gameID) => {
     try {
-<<<<<<< HEAD
       const gameState = await db.GameState.findOne({ gameId: gameID });
       return gameState;
-=======
-      const gameState = await db.GameState.findOne({gameID: gameID})
-      return gameState
->>>>>>> 68b7c07 (killing works!)
     } catch (error) {
       console.error(error);
       throw error;
@@ -84,17 +79,10 @@ const model = {
     return db.Message.find({ gameID: gameID });
   },
 
-<<<<<<< HEAD
-  voteForUser: async (username, previousUsername, gameID) => {
-    console.log(gameID);
-    try {
-      const gameState = await db.GameState.findOne({ gameId: gameID });
-=======
   voteForUser: async(username, previousUsername, gameID) => {
     console.log('in vote for user model')
     try {
       const gameState = await db.GameState.findOne({gameID: gameID})
->>>>>>> 68b7c07 (killing works!)
 
       if (!gameState) {
         throw new Error("Game not found");
@@ -126,16 +114,9 @@ const model = {
       throw error;
     }
   },
-<<<<<<< HEAD
-  unvoteForUser: async (username, previousUsername, gameID) => {
-    console.log(gameID);
-    try {
-      const gameState = await db.GameState.findOne({ gameId: gameID });
-=======
   unvoteForUser: async(username, previousUsername, gameID) => {
     try {
       const gameState = await db.GameState.findOne({gameID: gameID})
->>>>>>> 68b7c07 (killing works!)
 
       if (!gameState) {
         throw new Error("Game not found");
@@ -157,6 +138,7 @@ const model = {
   },
 
   resetVotes: async (gameID) => {
+     console.log(gameID, 'RESET VOTES')
     try {
       const gameState = await db.GameState.findOne({ gameID: gameID });
       // console.log('Game state before resetting votes:', gameState);
@@ -180,12 +162,6 @@ const model = {
     }
   },
 
-<<<<<<< HEAD
-  toggleDead: async ({ userID }, gameID) => {},
-  grantPermissions: async ({ userID, permissions }, gameID) => {},
-  advanceGame: async (gameID) => {},
-};
-=======
   killPlayer: async(gameID, username) => {
     try {
       const gameState = await db.GameState.findOne({ gameID })
@@ -210,6 +186,7 @@ const model = {
     }
   },
 
->>>>>>> 68b7c07 (killing works!)
+}
+
 
 export default model;
