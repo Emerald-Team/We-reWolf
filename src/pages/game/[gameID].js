@@ -134,6 +134,7 @@ export default function Game() {
   }
 
   const getGameState = async function()  {
+    console.log('getting game state')
     if (gameID) {
       const response = await fetch(`/api/gameState/${gameID}`, {
         method: 'GET',
@@ -141,12 +142,13 @@ export default function Game() {
           'Content-Type': 'application/json',
         },
       });
+      console.log('response from fetch gameData:\n', response)
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       } else {
         const gameState = await response.json();
+        console.log('GAME STATE IN getGameState: is this null', gameState)
         if (gameState !== null) {
-          // console.log('GAME STATE IN getGameState', gameState)
           setGameData(gameState);
         }
       }
@@ -156,14 +158,23 @@ export default function Game() {
     setTimeout(getGameState, 1000)
   }
 
+  // useEffect(() => {
+  //   if (gameStarted === false) {
+  //     getGameState()
+  //     setGameStarted(true)
+  //   }
+  // }, [gameID])
+
   const createNewGameOnce = _.once(createNewGame);
 
   useEffect(() => {
+    console.log('in gameData useEffect: is this null?\n', gameData)
     if (gameData !== null) {
-     setPlayers(gameData.users)
-     setPhase(gameData.phase)
-    //  setGameID(gameData.gameID) //should we be setting this here or from router.query line 79
-     setThisPlayer(gameData.users.filter(user => user.username === gameData.users[0].username)[0])
+      setPlayers(gameData.users)
+      console.log(gameData, players, '-------IN INIT USEEFFECT------')
+      setPhase(gameData.phase)
+      //  setGameID(gameData.gameID) //should we be setting this here or from router.query line 79
+      setThisPlayer(gameData.users.filter(user => user.username === gameData.users[0].username)[0])
     }
   }, [gameData])
 
@@ -178,13 +189,13 @@ export default function Game() {
 
   const werewolvesHaveWon = function () {
     const numWerewolves = players.filter(user => user.role === 'werewolf' && user.isAlive).length;
-    const numVillagers = players.filter(user => user.role !== 'villager' && user.isAlive).length;
-    console.log('checking werewolves', numWerewolves, 'to villagers', numVillagers)
+    const numVillagers = players.filter(user => user.role !== 'werewolf' && user.isAlive).length;
+    console.log('have werewolves won? checking werewolves', numWerewolves, 'to villagers', numVillagers, numWerewolves === numVillagers)
     return numWerewolves === numVillagers;
   }
   const villagersHaveWon = function () {
     const numWerewolves = players.filter(user => user.role === 'werewolf' && user.isAlive).length;
-    console.log('checking werewolves', numWerewolves, 'to villagers', numVillagers)
+    console.log('have villagers won? checking werewolves', numWerewolves, numWerewolves === 0)
     return numWerewolves === 0;
   }
 
@@ -205,29 +216,30 @@ export default function Game() {
 
   const killUser = async function() {
     try {
-    if (gameData !== null) {
-      // console.log(gameData, '---------GAME DATA IN KILLUSER----------')
-    const playersWithMostVotes = findPlayersWithMostVotes(gameData.users)
-      console.log('players with the most votes: ', playersWithMostVotes.length, playersWithMostVotes)
-    if (playersWithMostVotes.length === 1) {
-      const response = await fetch(`/api/killPlayer/${gameID}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          gameID: gameID,
-          username: playersWithMostVotes[0].username
-        })
-      })
-      const {success, data, message} = await response.json()
-      if (!success) {
-        throw new Error(message)
+      if (gameData !== null) {
+        // console.log(gameData, '---------GAME DATA IN KILLUSER----------')
+        const playersWithMostVotes = findPlayersWithMostVotes(gameData.users)
+        console.log('players with the most votes: ', playersWithMostVotes.length, playersWithMostVotes)
+        if (playersWithMostVotes.length === 1) {
+          const response = await fetch(`/api/killPlayer/${gameID}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              gameID: gameID,
+              username: playersWithMostVotes[0].username
+            })
+          });
+          const {success, data, message} = await response.json()
+          if (!success) {
+            throw new Error(message)
+          }
+          return response;
+        }
       }
-    }
-  }
-   } catch (error) {
-      console.error(error)
+    } catch (error) {
+      console.error('error in killUser function:\n', error)
     }
   }
 
@@ -263,6 +275,7 @@ export default function Game() {
   }
 
   useEffect(() => {
+    console.log('from phase index: has game started?', gameStarted)
     if (gameStarted) {
       setPhase(phases[phaseIndex]);
     }
@@ -290,7 +303,7 @@ export default function Game() {
       createNewGameOnce(gameID, gameData.users, gameData.phase)
         .then((gameState) => {
           console.log('new game created on page load:\n', gameState)
-          setGameStarted(true)
+
         })
         .catch((err) => console.error('error creating new game on page load:\n', err))
     }
@@ -301,9 +314,12 @@ export default function Game() {
     if (gameData !== null) {
       // setPlayer(gameData.users.filter(user => (user.username === storedUser))[0])
       setPlayers(gameData.users)
+      setGameStarted(true)
+      getGameState()
     }
-    getGameState()
-  }, [gameID])
+  }, [])
+
+
 
   useEffect(() => {
     console.log(gameID)
@@ -394,11 +410,14 @@ export default function Game() {
       const updatedGameState = await response.json()
       console.log(updatedGameState, '----UPDATED GAME STATE-------')
     }
+    return response;
   }
 
   const onNextPhase = async function() {
-    await killUser()
-    await resetVotes(gameID);
+    const killResult = await killUser()
+    console.log('kill result:\n', killResult)
+    const resetResult = await resetVotes(gameID);
+    console.log('reset result result:\n', resetResult)
     setPhaseIndex((phaseIndex + 1) % phases.length)
   }
 

@@ -2,6 +2,7 @@ import model from '../../../server/model'
 
 export default async function handler(req, res) {
   const {gameID} = req.query;
+  // console.log(gameID, 'gameID in gameState')
   if (req.method === 'GET') {
     try {
       const gameState = await model.getGameState(gameID)
