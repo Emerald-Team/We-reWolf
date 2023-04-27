@@ -60,7 +60,7 @@ const lobbySchema = new mongoose.Schema({
   users: [{
     userName: String,
     rank: {type: Number, default: 1},
-    role: String
+    role: {type: String, default: 'default'}
   }]
 })
 
