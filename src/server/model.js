@@ -80,7 +80,9 @@ const model = {
         const previousUser = gameState.users.find(user => user.username === previousUsername)
         if (previousUser) {
           console.log('Previous user found:', previousUser)
-          previousUser.votes -= 1
+          if (previousUser.votes > 0) {
+            previousUser.votes -= 1
+          }
         } else {
           console.log('Previous user not found:', previousUsername)
         }
@@ -92,7 +94,7 @@ const model = {
         throw new Error('User not found')
       }
       user.votes += 1
-      console.log('User votes updated:', user)
+      // console.log('User votes updated:', user)
       await gameState.save()
       return gameState
     } catch (error) {
@@ -104,20 +106,20 @@ const model = {
   resetVotes: async (gameID) => {
     try {
       const gameState = await db.GameState.findOne({ gameId: gameID });
-      console.log('Game state before resetting votes:', gameState);
+      // console.log('Game state before resetting votes:', gameState);
 
       if (!gameState) {
         throw new Error('Game not found');
       }
 
       gameState.users.forEach((user) => {
-        console.log('User before resetting votes:', user);
+        // console.log('User before resetting votes:', user);
         user.votes = 0;
-        console.log('User after resetting votes:', user);
+        // console.log('User after resetting votes:', user);
       });
 
       await gameState.save();
-      console.log('Game state after resetting votes:', gameState);
+      // console.log('Game state after resetting votes:', gameState);
       return gameState;
     } catch (error) {
       console.error(error);

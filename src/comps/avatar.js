@@ -101,12 +101,15 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, lastSelect
   // if current selection:
   //   set style to normal style,
   //   set selected to null
-  const select = function() {
+  const select = async function() {
     setStyle(playerStyleHover)
-    setLastSelected(selected)
+    const newLastSelected = selected;
     setSelected(player)
-    voteForUser(player.username, lastSelected? lastSelected.username : null, gameID)
+    setLastSelected(selected)
+    console.log(lastSelected)
+    await voteForUser(player.username, newLastSelected ? newLastSelected.username : null, gameID)
   }
+
   // if not the current selection:
   //   set style to hover style,
   //   set selected and last selected to player

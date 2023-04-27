@@ -185,9 +185,9 @@ useEffect(() => {
         console.log(`Sorry, we are out of ${phaseEnded}. (Phase ended and is not one of these:)\n`, phases);
     }
   }
-  useEffect(() => {
-    console.log('change detected in players:\n', players)
-  }, [players])
+  // useEffect(() => {
+  //   console.log('change detected in players:\n', players)
+  // }, [players])
 
   const vote = function(player, isUpvote=true) {
     //send vote
@@ -200,7 +200,7 @@ useEffect(() => {
         return player
       } else if (selected !== lastSelected) {
         player.votes--
-        console.log(player)
+        // console.log(player)
         return player;
       } else {
         return player;
