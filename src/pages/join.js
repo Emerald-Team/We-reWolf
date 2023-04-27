@@ -16,9 +16,11 @@ const Join = () => {
   function joinHandler() {
     document.cookie = `isHost = false`
   }
+
 useEffect(() => {
   setGameCode(getRandomInt(1000));
 }, [])
+
   const containerStyle = {
     display: "flex",
     justifyContent: "center",

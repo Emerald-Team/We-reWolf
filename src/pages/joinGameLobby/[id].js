@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
+import axios from "axios";
 import GameSettings from "../../comps/gameSettings";
 import PlayerList from "../../comps/playerList";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 export default function Lobby() {
   const [count, setCount] = useState(0);
@@ -12,81 +13,126 @@ export default function Lobby() {
   const [copy, setCopy] = useState(false);
   const [copyWord, setCopyWord] = useState("Copy To Clipboard");
   const [selected, setSelected] = useState([]);
-  const [urlCode, setUrlCode] = useState([])
-  const router = useRouter()
+  const [urlCode, setUrlCode] = useState([]);
+  const [userName, setUserName] = useState("");
+  const router = useRouter();
+  const { id } = router.query;
 
-  useState(() => {
-    let gameID = router.query.id
-    const options = {
-      method:"POST",
-      url: `http://localhost:3000/api/lobby/${gameID}`
+
+
+  function createGame() {
+    const createGameObject = {
+      gameID: gameLobbyText,
+      users: assignRoles(fakePlayers),
+      phase: "day",
+    };
+    console.log(createGameObject, "********************");
+    axios
+      .post(`http://localhost:3000/api/createGame`, createGameObject)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  }
+
+  function getUserNames() {
+
+    axios
+      .get(`http://localhost:3000/api/lobby/${id}`)
+      .then((res) => {
+        console.log("RES from GetUserNames", res)
+        setPlayersConnected(res.data[0].users);
+      })
+      .catch((err) => console.log(err));
+
+
     }
-    axios(options)
-    .then(data => {
-      setPlayersConnected(data)
-    })
-    .catch(console.log)
-  }, [])
+
+  //***************************Can be Delete Once Pull confirmed working*************************************************** */
+  // function hostLobby() {
+  //   axios.post(`http://localhost:3000/api/lobby/${gameLobbyText}`, {user:  userName}).then((res) => console.log('RES from HostLobby POST Req',res)).catch((err) => console.log(err));
+  // }
+  // function joinLobby() {
+  //   axios.put(`http://localhost:3000/api/lobby/${gameLobbyText}`, {user:  userName}).then((res) => console.log('RES from HostLobby PUT Req',res)).catch((err) => console.log(err));
+  // }
+  // useEffect(() => {
+  //   let gameID = router.query.id
+  //   const options = {
+  //     method:"POST",
+  //     url: `http://localhost:3000/api/lobby/${gameID}`
+  //   }
+  //   axios(options)
+  //   .then(data => {
+  //     setPlayersConnected(data)
+  //   })
+  //   .catch(console.log)
+  // }, [])
+  //****************************Can be Delete Once Pull confirmed working*************************************************** */
+
+  function getUserName() {
+    setUserName(window.localStorage.user);
+    console.log("USERNAME", userName);
+  }
+
   let fakePlayers = [
-    { userName: "BadBill", rank: 1, role: null },
-    { userName: "theRealJae", rank: 1, role: null },
-    { userName: "PopShaq", rank: 1, role: null },
-    { userName: "Chrodatta", rank: 1, role: null },
-    { userName: "ZacKattack", rank: 1, role: null },
-    { userName: "jlane20", rank: 1, role: null },
-    { userName: "Romulus", rank: 1, role: null },
-    { userName: "Remus", rank: 1, role: null },
+    { userName: "BadBill", vote: 1, role: null },
+    { userName: "theRealJae", vote: 1, role: null },
+    { userName: "PopShaq", vote: 1, role: null },
+    { userName: "Chrodatta", vote: 1, role: null },
+    { userName: "ZacKattack", vote: 1, role: null },
+    { userName: "jlane20", vote: 1, role: null },
+    { userName: "Romulus", vote: 1, role: null },
+    { userName: "Remus", vote: 1, role: null },
     //greater than 8 test
-    { userName: "Bumi", rank: 1, role: null },
-    { userName: "Chance", rank: 1, role: null },
-    { userName: "Bandi", rank: 1, role: null },
+    { userName: "Bumi", vote: 1, role: null },
+    { userName: "Chance", vote: 1, role: null },
+    { userName: "Bandi", vote: 1, role: null },
     //12 or more test
-    { userName: "Axel", rank: 1, role: null },
+    { userName: "Axel", vote: 1, role: null },
   ];
 
   function assignRoles(arrayOfPlayers) {
     let rankArray = arrayOfPlayers.map((player) => {
-      if (player.rank == 1) {
+      if (player.vote == 1) {
         return {
           ...player,
-          rank: player.rank * Math.floor(Math.random() * 20),
+          vote: player.vote * Math.floor(Math.random() * 20),
           role: "Villager",
         };
       }
       return player;
     });
-    let sortedArray = rankArray.sort((a, b) => a.rank - b.rank);
+    let sortedArray = rankArray.sort((a, b) => a.vote - b.vote);
     if (sortedArray.length <= 8) {
       sortedArray[0].role = "Wolf";
-      if(selected.includes('Doctor')){
-        sortedArray[sortedArray.length - 1].role = 'Doctor'
+      if (selected.includes("Doctor")) {
+        sortedArray[sortedArray.length - 1].role = "Doctor";
       }
-      if(selected.includes('Seer')){
-        sortedArray[sortedArray.length - 2].role = 'Seer'
+      if (selected.includes("Seer")) {
+        sortedArray[sortedArray.length - 2].role = "Seer";
       }
     } else if (sortedArray.length > 8 && sortedArray.length < 12) {
       sortedArray[0].role = "Wolf";
       sortedArray[1].role = "Wolf";
-      if(selected.includes('Doctor')){
-        sortedArray[sortedArray.length - 1].role = 'Doctor'
+      if (selected.includes("Doctor")) {
+        sortedArray[sortedArray.length - 1].role = "Doctor";
       }
-      if(selected.includes('Seer')){
-        sortedArray[sortedArray.length - 2].role = 'Seer'
+      if (selected.includes("Seer")) {
+        sortedArray[sortedArray.length - 2].role = "Seer";
       }
     } else {
       sortedArray[0].role = "Wolf";
       sortedArray[1].role = "Wolf";
       sortedArray[2].role = "Wolf";
-      if(selected.includes('Doctor')){
-        sortedArray[sortedArray.length - 1].role = 'Doctor'
+      if (selected.includes("Doctor")) {
+        sortedArray[sortedArray.length - 1].role = "Doctor";
       }
-      if(selected.includes('Seer')){
-        sortedArray[sortedArray.length - 2].role = 'Seer'
+      if (selected.includes("Seer")) {
+        sortedArray[sortedArray.length - 2].role = "Seer";
       }
     }
+    return sortedArray.map((player) => {
+      return { ...player, vote: 0 };
+    });
   }
-
-
 
   function gameLobbyChangeHandler(event) {
     setGameLobbyText(event.target.value);
@@ -98,11 +144,19 @@ export default function Lobby() {
   }
 
   useEffect(() => {}, [count]);
+
   useEffect(() => {
+    //if they are not Host
     if (getCookie("isHost") === "false") {
       setButtonDisabled(true);
+    } else {
+      //add a POST request to update users in lobby
     }
-    setGameLobbyText(urlCode[urlCode.length -1])
+
+    const urlCode = window.location.pathname.split("/");
+    console.log(urlCode[urlCode.length - 1]);
+    setGameLobbyText(urlCode[urlCode.length - 1]);
+    getUserName();
   }, []);
 
   let copyClick = () => {
@@ -110,6 +164,18 @@ export default function Lobby() {
     setCopy(true);
     setCopyWord("Copied !");
   };
+
+  useEffect(() => {
+
+    if (userName !== undefined) {
+      setTimeout(() => {
+        setInterval(function () {
+          getUserNames(gameLobbyText);
+        }, 5000);
+      }, 3000);
+    }
+  }, []);
+
   return (
     <div style={containerStyle}>
       <div style={boxStyle}>
@@ -117,7 +183,21 @@ export default function Lobby() {
         <div style={contentStyle}>
           <div style={listStyle}>
             <h2 style={listHeaderStyle}>Player List</h2>
-            <PlayerList count={count} />
+            <button
+              onClick={() => {
+                if (getCookie("isHost") === "false") {
+                  joinLobby();
+                } else {
+                  hostLobby();
+                }
+              }}
+              style={{ backgroundColor: "GREEN" }}
+            >
+              Ready Up
+            </button>
+            <PlayerList
+            players ={playersConnected}
+            count={count} />
           </div>
           <div style={listStyle}>
             <h2 style={listHeaderStyle}>Role List</h2>
@@ -142,14 +222,17 @@ export default function Lobby() {
             onChange={gameLobbyChangeHandler}
             value={gameLobbyText}
           ></input>
-          <button
-            className="startButton"
-            disabled={buttonDisabled}
-            style={buttonStyle2}
-            onClick={assignRoles(fakePlayers)}
-          >
-            Start Game
-          </button>
+
+          <Link href={`http://localhost:3000/game/${gameLobbyText}`}>
+            <button
+              className="startButton"
+              disabled={buttonDisabled}
+              style={buttonStyle2}
+              onClick={() => createGame()}
+            >
+              Start Game
+            </button>
+          </Link>
         </div>
       </div>
     </div>
