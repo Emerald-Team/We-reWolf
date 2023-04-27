@@ -35,7 +35,7 @@ const Users = mongoose.models.users || mongoose.model('users', userSchema);
 const checkUsername = async (username) => {
 
   let nameTaken = await Users.find({username: username})
-  console.log(nameTaken)
+  //console.log(nameTaken)
 
   if (!nameTaken.length) {
     return false;
@@ -71,14 +71,14 @@ const newAccount = async (obj) => {
 const verifyUser = async (infoToVerify, indicator) => {
   if (indicator === 'username') {
     let usernameData = await Users.find({username: infoToVerify.username})
-    let passCheck = saltHash.verifySaltHash(usernameData.password.salt, usernameData.password.password, infoToVerify.password);
+    let passCheck = saltHash.verifySaltHash(usernameData[0].password.salt, usernameData[0].password.password, infoToVerify.password);
     return passCheck;
 
 
   } else if (indicator === 'email') {
   let usernameData = await Users.find({email: infoToVerify.email})
 
-    console.log('info to verify:', infoToVerify, usernameData)
+    //console.log('info to verify:', infoToVerify, usernameData)
   let passCheck = saltHash.verifySaltHash(usernameData[0].password.salt, usernameData[0].password.password, infoToVerify.password);
 
   return passCheck;
@@ -93,4 +93,4 @@ const verifyUser = async (infoToVerify, indicator) => {
 }
 
 
-module.exports = {dataBase, newAccount, checkUsername, checkEmail, verifyUser}
+module.exports = {dataBase, newAccount, checkUsername, checkEmail, verifyUser, Users}

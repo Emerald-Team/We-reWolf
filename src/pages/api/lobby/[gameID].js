@@ -4,6 +4,7 @@ const handler = async (req, res) => {
   const { gameID } = req.query
   if(req.method === 'PUT'){
     console.log(`PUT request received in API for ${gameID} for ${req.body.user}`)
+
     model.updateLobby(gameID, req.body.user)
     .then(data => (
       res.status(201).send(data)

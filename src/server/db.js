@@ -36,12 +36,18 @@ const messageSchema = new mongoose.Schema({
 })
 
 const gameStateSchema = new mongoose.Schema({
-  gameId: String,
+  gameId: {
+    type: String,
+    default: '1234'
+  },
   users: [{
     username: String,
     role: String,
     isAlive: Boolean,
-    votes: Number
+    votes: {
+      type: Number,
+      default: 0
+    }
   }],
   phase: {
     type: String,

@@ -1,4 +1,5 @@
 import db from './db.js'
+const userDatabase = require('./userdatabase.js')
 const mongoose = require('mongoose');
 
 const model = {
@@ -15,16 +16,16 @@ const model = {
       throw error
     }
   },
-  createGame: async ({users, phase}) => {
+  createGame: async ({gameId, users, phase}) => {
     console.log('creating game...')
     try {
-      const gameId = new mongoose.Types.ObjectId()
       const gameState = new db.GameState({
         gameId: gameId,
         users: users,
         phase: phase
       })
       await gameState.save()
+      // console.log(gameState, '------GAMESTATE IN MODEL-------')
       return gameState
     } catch (error) {
       console.error(error)
@@ -33,20 +34,24 @@ const model = {
     }
   },
   createLobby: async (gameID, user) => {
+    const userFile = await userDatabase.Users.find({username: user})[0]
     let newLobby = new db.Lobby({
+
       gameID: gameID,
       users: [{
         userName: user,
-        role: 'default'
+        role: 'in lobby'
       }]
+
     })
     return newLobby.save()
   },
   updateLobby: async (gameID, user) => {
+
     let newUser = {
       userName: user,
       rank: 1,
-      role: 'default'
+      role: 'in lobby'
     }
     return db.Lobby.findOneAndUpdate({ gameID: gameID },
       { $push: {users: newUser}},
@@ -55,6 +60,7 @@ const model = {
   },
   getLobby: async (gameID) => {
     return db.Lobby.find({ gameID: gameID })
+
   },
   getMessages: (gameID) => {
     return db.Message.find({ gameID: gameID })
@@ -69,9 +75,91 @@ const model = {
     await newMessage.save()
     return db.Message.find({ gameID: gameID })
   },
-  voteForUser: async ({ userID, count }, gameID) => {
 
+  voteForUser: async(username, previousUsername, gameID) => {
+    console.log(gameID)
+    try {
+      const gameState = await db.GameState.findOne({gameId: gameID})
+
+      if (!gameState) {
+        throw new Error('Game not found')
+      }
+
+      // if (previousUsername) {
+      //   const previousUser = gameState.users.find(user => user.username === previousUsername)
+      //   if (previousUser) {
+      //     console.log('Previous user found:', previousUser)
+      //     if (previousUser.votes > 0) {
+      //       previousUser.votes -= 1
+      //     }
+      //   } else {
+      //     console.log('Previous user not found:', previousUsername)
+      //   }
+      // }
+
+      const user = gameState.users.find(user => user.username === username)
+      if (!user) {
+        console.log('User not found:', username)
+        throw new Error('User not found')
+      }
+      user.votes += 1
+      // console.log('User votes updated:', user)
+      await gameState.save()
+      return gameState
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
   },
+  unvoteForUser: async(username, previousUsername, gameID) => {
+    console.log(gameID)
+    try {
+      const gameState = await db.GameState.findOne({gameId: gameID})
+
+      if (!gameState) {
+        throw new Error('Game not found')
+      }
+
+      const user = gameState.users.find(user => user.username === username)
+      if (!user) {
+        console.log('User not found:', username)
+        throw new Error('User not found')
+      }
+      user.votes -= 1
+      // console.log('User votes updated:', user)
+      await gameState.save()
+      return gameState
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
+  },
+
+  resetVotes: async (gameID) => {
+    try {
+      const gameState = await db.GameState.findOne({ gameId: gameID });
+      // console.log('Game state before resetting votes:', gameState);
+
+      if (!gameState) {
+        throw new Error('Game not found');
+      }
+
+      gameState.users.forEach((user) => {
+        // console.log('User before resetting votes:', user);
+        user.votes = 0;
+        // console.log('User after resetting votes:', user);
+      });
+
+      await gameState.save();
+      // console.log('Game state after resetting votes:', gameState);
+      return gameState;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+
   toggleDead: async ({ userID }, gameID) => {
 
   },

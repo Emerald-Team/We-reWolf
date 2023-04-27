@@ -1,133 +1,218 @@
 import { useMemo, useEffect, useState } from "react";
 import { createAvatar } from "@dicebear/core";
 import { lorelei } from "@dicebear/collection";
-import { useRouter } from 'next/router';
 import Image from "next/image";
+import Avatar from "/src/comps/avatar.js"
+import Timer from "/src/comps/timer.js"
 import axios from 'axios'
-import Avatar from "../../comps/avatar.js"
+import * as _ from "lodash"
+import { useRouter } from 'next/router';
 
-const interval = 10;
+const PHASE_LENGTH = 10;
 const phases = ['night', 'day'];
-const exampleGameData = {
-  gameID: '1234',
-  users: [
-     {
-      username: 'TheBigBadBill',
-      role: 'werewolf',
-      isAlive: true,
-      votes: 0
-    },
-    {
-      username: 'TheRealJae',
-      role: 'villager',
-      isAlive: true,
-      votes: 0
-    },
-    {
-      username: 'SnarlsBarkley',
-      role: 'werewolf',
-      isAlive: true,
-      votes: 0
-    },
-    {
-      username: 'ZackAttack',
-      role: 'villager',
-      isAlive: true,
-      votes: 0
-    },
-    {
-      username: 'GuyWithTuba',
-      role: 'villager',
-      isAlive: true,
-      votes: 0
-    },
-    {
-      username: 'Tr3nB@cy',
-      role: 'villager',
-      isAlive: true,
-      votes: 0
-    },
-    {
-      username: 'Chordata',
-      role: 'villager',
-      isAlive: true,
-      votes: 0
-    },
-    {
-      username: 'CoachLaner',
-      role: 'villager',
-      isAlive: true,
-      votes: 0
-    }
-  ],
-  phase: 'night',
-};
+
+const dayStr = 'Day 🔆';
+const nightStr = 'Night 🌙';
+
+const wwStr = 'Werewolf 🐺';
+const vilStr = 'Villager 🧑‍🌾';
+const seeStr = 'Seer 🔮';
+const docStr = 'Doctor 🧑‍⚕️';
 
 export default function Game() {
+  const router = useRouter()
 
-  const [gameData, setGameData] = useState(exampleGameData)
+  const [gameData, setGameData] = useState({
+    gameID: '1234',
+    users: [
+       {
+        username: 'TheBigBadBill',
+        role: 'werewolf',
+        isAlive: true,
+        votes: 0
+      },
+      {
+        username: 'TheRealJae',
+        role: 'villager',
+        isAlive: true,
+        votes: 0
+      },
+      {
+        username: 'SnarlsBarkley',
+        role: 'werewolf',
+        isAlive: true,
+        votes: 0
+      },
+      {
+        username: 'ZackAttack',
+        role: 'villager',
+        isAlive: true,
+        votes: 0
+      },
+      {
+        username: 'GuyWithTuba',
+        role: 'villager',
+        isAlive: false,
+        votes: 0
+      },
+      {
+        username: 'Tr3nB@cy',
+        role: 'villager',
+        isAlive: true,
+        votes: 0
+      },
+      {
+        username: 'Chordata',
+        role: 'villager',
+        isAlive: true,
+        votes: 0
+      },
+      {
+        username: 'CoachLaner',
+        role: 'villager',
+        isAlive: true,
+        votes: 0
+      }
+    ],
+    phase: 'night',
+  })
+  const [gameID, setGameID] = useState(router.query.gameID)
+  const [gameStarted, setGameStarted] = useState(false)
   const [user, setUser] = useState('')
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
-  const [timeLeft, setTimeLeft] = useState(0);
   const [phaseIndex, setPhaseIndex] = useState(0)
-  const [phase, setPhase] = useState(phases[phaseIndex])
-  const [players, setPlayers] = useState(exampleGameData.users)
-  const [player, setPlayer] = useState(exampleGameData.users.filter(user => user.username === exampleGameData.username)[0] || {role: "default"})
-  const [isWerewolf, setIsWerewolf] = useState(false)
+  const [phase, setPhase] = useState('night')
+  const [phaseText, setPhaseText] = useState(nightStr)
+  const [players, setPlayers] = useState([])
+  const [thisPlayer, setThisPlayer] = useState({})
+  const [isWerewolf, setIsWerewolf] = useState(thisPlayer.role === 'werewolf')
   const [selected, setSelected] = useState(null);
-
-  const router = useRouter();
-  const [gameID, setGameID] = useState(router.query.gameID)
-
-  const handleEndPhase = function(phaseEnded) {
-    console.log('handling phase end, ', phaseEnded)
-    // if (phaseEnded === 'night') {
-    //   console.log('night votes', players.reduce((accum, player) => {
-    //     if (player.votes > 0) {
-    //       return player.votes > accum.votes ? player : accum
-    //     } else {
-    //       return null
-    //     }
-    //   }))
-    // } else if (phaseEnded === 'day') {
-    //   console.log('day votes', )
-    // } else {
-
-    // }
-  }
-  useEffect(() => {
-    setPlayers(players.map(player => {
-      if (player === selected) {
-        player.votes++
-        return player
-      } else {
-        return player;
-      }
+  const [lastSelected, setLastSelected] = useState(null);
+  const roleToStr = function(role) {
+    switch(role) {
+      case 'werewolf':
+        return wwStr;
+        break;
+      case 'villager':
+        return vilStr;
+        break;
+      case 'seer':
+        return seeStr;
+        break;
+      case 'doctor':
+        return docStr;
+        break;
+      default:
+        console.log(`Sorry, we are out of ${role}.`);
     }
-  ))
-  }, [selected])
+  }
+  const [roleStr, setRoleStr] = useState(roleToStr(thisPlayer.role));
+  // const [gameID, setGameID] = useState('1234')
+
+  const createNewGame = async (gameID, users, phase) => {
+    console.log('creating new game.......... ')
+    try {
+      const gameState = await axios.post(`/api/createGame/createGame`, {
+        gameID,
+        users,
+        phase
+      })
+      console.log('Game state saved:', gameState)
+    } catch (error) {
+      console.error('ERROR CREATING GAME: ', error)
+      throw error
+    }
+  }
+
+  const getGameState = async function()  {
+    if (gameID) {
+      const response = await fetch(`/api/gameState/${gameID}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+      const gameState = await response.json();
+      setGameData(gameState);
+      // return gameState;
+
+    }
+    setTimeout(getGameState, 1000)
+  }
+
+  const createNewGameOnce = _.once(createNewGame);
+
+  useEffect(() => {
+    if (gameData !== null) {
+     setPlayers(gameData.users)
+     setPhase(gameData.phase)
+     setGameID(gameData.gameId)
+     setThisPlayer(gameData.users.filter(user => user.username === gameData.users[0].username)[0])
+    }
+  }, [gameData])
+
+  useEffect(() => {
+    setIsWerewolf(thisPlayer.role === 'werewolf')
+    console.log(thisPlayer)
+    console.log('am i alive? ', thisPlayer.isAlive)
+    setRoleStr(roleToStr(thisPlayer.role));
+  }, [thisPlayer])
+
+
+  const werewolvesHaveWon = function () {
+    const numWerewolves = players.filter(user => user.role === 'werewolf').length;
+    const numVillagers = players.filter(user => user.role !== 'werewolf').length;
+    return numWerewolves === numVillagers;
+  }
+  const villagersHaveWon = function () {
+    const numWerewolves = players.filter(user => user.role === 'werewolf').length;
+    return numWerewolves === 0;
+  }
+  const handleEndPhase = function(phaseEnded) {
+    console.log('handling phase end, ', phaseEnded);
+    switch (phaseEnded) {
+      case 'night':
+        console.log('The night has ended. Here is the result:\n');
+        if (werewolvesHaveWon()) {
+          //route to ww end screen
+          console.log('Werewolves Win!\n');
+        }
+        break;
+      case 'day':
+        console.log('The day has ended. Here is the result:\n');
+        if (werewolvesHaveWon()) {
+          //route to ww end screen
+          console.log('Werewolves Win!\n');
+        } else if (villagersHaveWon()) {
+          //route to vil end screen
+          console.log('Villagers Win!\n');
+        }
+        break;
+      default:
+        console.log(`Sorry, we are out of ${phaseEnded}. (Phase ended and is not one of these:)\n`, phases);
+    }
+  }
+
+  const vote = function(player, isUpvote=true) {
+    //send vote
+  }
+
   useEffect(() => {
     setPhase(phases[phaseIndex]);
   }, [phaseIndex])
-  useEffect(() => {
-    console.log('phase', phase)
-    handleEndPhase(phases[(phaseIndex - 1) % phases.length])
-  }, [phase])
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (timeLeft < 1) {
-        setTimeLeft(interval); // set initial time left to 10 seconds
-        setPhaseIndex((phaseIndex + 1) % phases.length)
-        console.log('phase index', phaseIndex)
-      } else {
-        console.log(timeLeft)
-        setTimeLeft(timeLeft - 1);
-      }
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, [timeLeft]);
+    handleEndPhase(phases[(phaseIndex - 1) % phases.length])
+    if (phase === 'night') {
+      setPhaseText(nightStr)
+    } else if (phase === 'day') {
+      setPhaseText(dayStr)
+    }
+  }, [phase])
 
   //hardcodes for testing
   let userPermissions = [user, 'all', 'werewolf', 'dead']
@@ -135,20 +220,35 @@ export default function Game() {
   let userRole = 'werewolf'
 
   useEffect(() => {
+    //upper useEffect
+    if (gameStarted === false) {
+      createNewGameOnce(gameID, gameData.users, gameData.phase)
+        .then((gameState) => {
+          setGameStarted(true)
+        })
+        .catch((err) => console.error(err))
+    }
+
+    // lower useEffect
     let storedUser = window.localStorage.getItem('user')
     setUser(storedUser)
-    //setPlayer(gameData.users.filter(user => (user.username === storedUser))[0])
-    setPlayers(gameData.users)
-
+    if (gameData !== null) {
+      // setPlayer(gameData.users.filter(user => (user.username === storedUser))[0])
+      setPlayers(gameData.users)
+    }
+    getGameState()
   }, [])
 
   useEffect(() => {
+    console.log(gameID)
     let options = {
       method: 'GET',
       url: `http://localhost:3000/api/gameState/${gameID}`
     }
     axios(options)
-    .then(res => setGameData(res.data))
+      .then(res => {
+        setGameData(res.data)
+      });
   }, [gameID])
 
   useEffect(() => {
@@ -161,35 +261,6 @@ export default function Game() {
   }, [router.isReady])
   // const userInfo = gameData.user
   // const username = userInfo.name
-
-
-
-  const avatar = useMemo(() => {
-    return createAvatar(lorelei, {
-      size: 100,
-      seed: "John",
-    }).toDataUriSync();
-  }, []);
-  const avatar1 = useMemo(() => {
-    return createAvatar(lorelei, {
-      size: 100,
-      seed: "Amy",
-    }).toDataUriSync();
-  }, []);
-
-  // const toggleTimeOfDay = () => {
-  //   const next = timeOfDay === "day" ? "night" : "day";
-  //   dispatch(setTimeOfDay(next));
-  // };
-  // dispatch(setTimeOfDay("night"));
-
-  useEffect(() => {
-    setTimeLeft(10); // set initial time left to 10 seconds
-    const intervalId = setInterval(() => {
-      setTimeLeft((timeLeft) => timeLeft - 1);
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, []);
 
   const getMessages = (inputID) => {
     inputID = inputID || gameID
@@ -243,6 +314,25 @@ export default function Game() {
       .catch(console.log)
   }
 
+  const resetVotes = async function(gameID) {
+    const response = await fetch(`/api/resetVotes/${gameID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    if (!response.ok) {
+      console.error(`Error reseting votes: ${response.statusText}`)
+    } else {
+      const updatedGameState = await response.json()
+      console.log(updatedGameState, '----UPDATED GAME STATE-------')
+    }
+  }
+
+  const onNextPhase = async function() {
+    resetVotes(gameID);
+    setPhaseIndex((phaseIndex + 1) % phases.length)
+  }
 
   return (
     <>
@@ -250,22 +340,34 @@ export default function Game() {
         <div style={phase === 'night' ? gameContainerStyleNight : gameContainerStyle}>
           <div style={boxContainerStyle}>
             <div style={phase === 'night' ? roleStyleNight : roleStyle}>
-              <p>{player.role}</p>
+              <p>You are: {roleStr}</p>
             </div>
             <div style={phase === 'night' ? timerStyleNight : timerStyle}>
-              <p>{timeLeft}</p>
+              <Timer period={PHASE_LENGTH} callback={onNextPhase} />
             </div>
             <div style={dayStyleNight}>
-              <p>{phase}</p>
+              <p>{phaseText}</p>
               {/* Day*/}
             </div>
           </div>
           <div className="players" style={phase === 'night' ? playerContainerNight : playerContainer}>
-            {players.map((player, i) => <Avatar key={i} player={player} selected={selected} setSelected={setSelected} />)}
+            {players.map(
+              (player, i) =>
+                <Avatar
+                  key={i}
+                  player={player}
+                  thisPlayerCanSelect={thisPlayer.isAlive}
+                  selected={selected}
+                  setSelected={setSelected}
+                  setLastSelected={setLastSelected}
+                  gameID={gameID}
+                />
+              )
+            }
           </div>
-        {isWerewolf &&<small style={phase === 'night' ? werewolfTextContainerNight : werewolfTextContainer}>
+          {isWerewolf && <small style={phase === 'night' ? werewolfTextContainerNight : werewolfTextContainer}>
             Werewolves: {players.map(player => {
-              if (isWerewolf && player.role === 'werewolf' && phase === 'night') {
+              if (isWerewolf && player.role === 'werewolf') {
                 return player.username + ' '
               } else {
                 return ''
@@ -306,6 +408,11 @@ export default function Game() {
     </>
   )
 }
+var textStyle = {
+  color: "white",
+  textAlign: "left",
+  fontSize: "24px",
+}
 
 var containerStyle = {
   display: "flex",
@@ -317,10 +424,9 @@ var containerStyle = {
 var gameContainerStyle = {
   backgroundColor: "rgba(256, 256, 256, 0.7)",
   width: "45%",
-  height: "70vh",
-  minWidth: "45%",
-  marginLeft: "200px",
-  marginRight: "100px",
+  height: "80vh",
+  marginLeft: "100px",
+  marginRight: "50px",
   marginBottom: "20px",
   marginTop: "40px",
   display: "flex",
@@ -328,6 +434,8 @@ var gameContainerStyle = {
   justifyContent: "flex-start",
   alignItems: "center",
   position: "relative",
+  overflowY: "auto",
+
 }
 
 var gameContainerStyleNight = {
@@ -419,8 +527,9 @@ var dayStyleNight = {
 
 var playerContainer = {
   display: "grid",
-  marginTop: "20px",
+  marginTop: "30px",
   gridTemplateColumns: "repeat(5, auto)",
+  gap: "20px",
 }
 
 var playerContainerNight = {
@@ -431,14 +540,6 @@ var playerContainerNight = {
   color: "white",
 }
 
-var player = {
-  textAlign: "center",
-}
-
-var playerNight = {
-  textAlign: "center",
-  color: "white",
-}
 
 var werewolfTextContainer = {
   position: "absolute",
