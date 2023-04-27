@@ -137,6 +137,9 @@ export default function Lobby() {
     setCopy(true);
     setCopyWord("Copied !");
   };
+
+  setInterval(function () {getUserNames(gameLobbyText)}, 5000);
+
   return (
     <div style={containerStyle}>
       <div style={boxStyle}>
