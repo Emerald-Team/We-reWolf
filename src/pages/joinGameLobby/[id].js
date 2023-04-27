@@ -38,7 +38,8 @@ export default function Lobby() {
     axios
       .get(`http://localhost:3000/api/lobby/${id}`)
       .then((res) => {
-        console.log("RES from GetUserNames", res);
+        console.log("RES from GetUserNames", res)
+        setPlayersConnected(res.data[0].users);
       })
       .catch((err) => console.log(err));
 
@@ -194,7 +195,9 @@ export default function Lobby() {
             >
               Ready Up
             </button>
-            <PlayerList count={count} />
+            <PlayerList
+            players ={playersConnected}
+            count={count} />
           </div>
           <div style={listStyle}>
             <h2 style={listHeaderStyle}>Role List</h2>

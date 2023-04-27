@@ -1,42 +1,40 @@
-import db from './db.js'
-const userDatabase = require('./userdatabase.js')
-const mongoose = require('mongoose');
+import db from "./db.js";
+const userDatabase = require("./userdatabase.js");
+const mongoose = require("mongoose");
 
 const model = {
-
   getChickens: async () => {
-    return 'chickens'
+    return "chickens";
   },
   getGameState: async (gameID) => {
     try {
-      const gameState = await db.GameState.findOne({gameId: gameID})
-      return gameState
+      const gameState = await db.GameState.findOne({ gameId: gameID });
+      return gameState;
     } catch (error) {
-      console.error(error)
-      throw error
+      console.error(error);
+      throw error;
     }
   },
-  createGame: async ({gameId, users, phase}) => {
-    console.log('creating game...')
+  createGame: async ({ gameId, users, phase }) => {
+    console.log("creating game...");
     try {
       const gameState = new db.GameState({
         gameId: gameId,
         users: users,
-        phase: phase
-      })
-      await gameState.save()
+        phase: phase,
+      });
+      await gameState.save();
       // console.log(gameState, '------GAMESTATE IN MODEL-------')
-      return gameState
+      return gameState;
     } catch (error) {
-      console.error(error)
-      throw error
-      console.error('SERVER ERROR: ', error.response.data.error)
+      console.error(error);
+      throw error;
+      console.error("SERVER ERROR: ", error.response.data.error);
     }
   },
   createLobby: async (gameID, user) => {
-    const userFile = await userDatabase.Users.find({username: user})[0]
-
     let newLobby = new db.Lobby({
+<<<<<<< HEAD
 <<<<<<< HEAD
 
       gameID: gameID,
@@ -49,10 +47,18 @@ const model = {
       userName: userFile.username,
       role: "in lobby"
 >>>>>>> 16e5bba (update changes to routing.)
+=======
+      gameID: gameID,
+      users: [{
+        userName: user,
+        role: 'default'
+      }]
+>>>>>>> e19e247 (lobby showing users added. Hosting working. Joining working.)
     })
     return newLobby.save()
   },
   updateLobby: async (gameID, user) => {
+<<<<<<< HEAD
 
     let newUser = {
       userName: user,
@@ -67,28 +73,43 @@ const model = {
   getLobby: async (gameID) => {
     return db.Lobby.find({ gameID: gameID })
 
+=======
+    let newUser = {
+      userName: user,
+      rank: 1,
+      role: `default`,
+    };
+    return db.Lobby.findOneAndUpdate(
+      { gameID: gameID },
+      { $push: { users: newUser } },
+      { new: true }
+    );
+  },
+  getLobby: async (gameID) => {
+    return db.Lobby.find({ gameID: gameID });
+>>>>>>> e19e247 (lobby showing users added. Hosting working. Joining working.)
   },
   getMessages: (gameID) => {
-    return db.Message.find({ gameID: gameID })
+    return db.Message.find({ gameID: gameID });
   },
   postMessage: async (gameID, message) => {
     let newMessage = new db.Message({
       gameID: gameID,
       user: message.user,
       body: message.body,
-      visibleTo: message.visibleTo
-    })
-    await newMessage.save()
-    return db.Message.find({ gameID: gameID })
+      visibleTo: message.visibleTo,
+    });
+    await newMessage.save();
+    return db.Message.find({ gameID: gameID });
   },
 
-  voteForUser: async(username, previousUsername, gameID) => {
-    console.log(gameID)
+  voteForUser: async (username, previousUsername, gameID) => {
+    console.log(gameID);
     try {
-      const gameState = await db.GameState.findOne({gameId: gameID})
+      const gameState = await db.GameState.findOne({ gameId: gameID });
 
       if (!gameState) {
-        throw new Error('Game not found')
+        throw new Error("Game not found");
       }
 
       // if (previousUsername) {
@@ -103,41 +124,41 @@ const model = {
       //   }
       // }
 
-      const user = gameState.users.find(user => user.username === username)
+      const user = gameState.users.find((user) => user.username === username);
       if (!user) {
-        console.log('User not found:', username)
-        throw new Error('User not found')
+        console.log("User not found:", username);
+        throw new Error("User not found");
       }
-      user.votes += 1
+      user.votes += 1;
       // console.log('User votes updated:', user)
-      await gameState.save()
-      return gameState
+      await gameState.save();
+      return gameState;
     } catch (error) {
-      console.error(error)
-      throw error
+      console.error(error);
+      throw error;
     }
   },
-  unvoteForUser: async(username, previousUsername, gameID) => {
-    console.log(gameID)
+  unvoteForUser: async (username, previousUsername, gameID) => {
+    console.log(gameID);
     try {
-      const gameState = await db.GameState.findOne({gameId: gameID})
+      const gameState = await db.GameState.findOne({ gameId: gameID });
 
       if (!gameState) {
-        throw new Error('Game not found')
+        throw new Error("Game not found");
       }
 
-      const user = gameState.users.find(user => user.username === username)
+      const user = gameState.users.find((user) => user.username === username);
       if (!user) {
-        console.log('User not found:', username)
-        throw new Error('User not found')
+        console.log("User not found:", username);
+        throw new Error("User not found");
       }
-      user.votes -= 1
+      user.votes -= 1;
       // console.log('User votes updated:', user)
-      await gameState.save()
-      return gameState
+      await gameState.save();
+      return gameState;
     } catch (error) {
-      console.error(error)
-      throw error
+      console.error(error);
+      throw error;
     }
   },
 
@@ -147,7 +168,7 @@ const model = {
       // console.log('Game state before resetting votes:', gameState);
 
       if (!gameState) {
-        throw new Error('Game not found');
+        throw new Error("Game not found");
       }
 
       gameState.users.forEach((user) => {
@@ -165,16 +186,9 @@ const model = {
     }
   },
 
+  toggleDead: async ({ userID }, gameID) => {},
+  grantPermissions: async ({ userID, permissions }, gameID) => {},
+  advanceGame: async (gameID) => {},
+};
 
-  toggleDead: async ({ userID }, gameID) => {
-
-  },
-  grantPermissions: async ({ userID, permissions }, gameID) => {
-
-  },
-  advanceGame: async (gameID) => {
-
-  }
-}
-
-export default model
+export default model;
