@@ -26,6 +26,7 @@ const model = {
 
     if (existingGame) {
       throw new Error('A game with the provided gameID already exists')
+      return
     }
 
     try {

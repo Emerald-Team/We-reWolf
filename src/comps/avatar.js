@@ -25,7 +25,8 @@ var voteStyle = {
   border: 'solid',
   borderColor: 'red',
   backgroundColor: 'red',
-  borderRadius: '50px',
+  borderRadius: '50%',
+  width: '25px',
   position: 'absolute',
   top: '5px',
   right: '5px',
@@ -83,9 +84,13 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
     return updatedGameState
   }
 
+  useEffect(() => {
+    // console.log('change in this avatar player: ', player.username, 'votes', player.votes)
+    setVotes(player.votes);
+  }, [player])
   // if player is dead, render dead style [TODO: bugged]
   useEffect(() => {
-    setVotes(player.votes);
+    // setVotes(player.votes);
     if (!player.isAlive || !thisPlayerCanSelect) {
       setCanHover(false);
       setCanSelect(false);
@@ -151,7 +156,7 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
 
   return (
     <div style={style} onMouseOver={handleHoverIn} onMouseLeave={handleHoverOut} onClick={handleSelect}>
-      <div style={{position: 'relative'}} ><div style={voteStyle}>{(votes)}</div></div>
+      <div style={{position: 'relative'}} >{player.isAlive ? <div style={voteStyle}>{votes}</div> : null}</div>
         {player.isAlive ?
           <Image src={avatar} alt="Avatar" width="100" height="100" /> :
           <Image className="dead" src='/2869384.png' alt="tombstone" width="100" height="100" />}
