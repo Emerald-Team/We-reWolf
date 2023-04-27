@@ -159,7 +159,18 @@ const model = {
   },
   advanceGame: async (gameID) => {
 
+  },
+
+
+
+
+  getLobbyInfo: async (gameID) => {
+    let lobby = await db.Lobby.find({gameID: gameID});
+    return lobby[0].users
   }
+
+
+
 }
 
 export default model
