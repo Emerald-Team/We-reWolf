@@ -40,6 +40,7 @@ export default function Lobby() {
       .then((res) => {
         console.log("RES from GetUserNames", res)
         setPlayersConnected(res.data[0].users);
+        res.end()
       })
       .catch((err) => console.log(err));
 
