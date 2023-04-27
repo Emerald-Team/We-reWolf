@@ -5,6 +5,7 @@ export default async function handler(req, res) {
     try {
       const {username, previousUsername} = req.body
       const {gameID} = req.query
+      console.log(`voted to kill ${username}`)
       const updatedGameState = await model.voteForUser(username, previousUsername, gameID)
       res.status(200).json(updatedGameState)
     } catch (error) {

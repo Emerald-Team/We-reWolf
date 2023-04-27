@@ -135,9 +135,13 @@ export default function Game() {
       });
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
+      } else {
+        const gameState = await response.json();
+        if (gameState !== null) {
+          // console.log('GAME STATE IN getGameState', gameState)
+          setGameData(gameState);
+        }
       }
-      const gameState = await response.json();
-      setGameData(gameState);
       // return gameState;
 
     }
@@ -150,18 +154,17 @@ export default function Game() {
     if (gameData !== null) {
      setPlayers(gameData.users)
      setPhase(gameData.phase)
-     setGameID(gameData.gameId)
+    //  setGameID(gameData.gameID) //should we be setting this here or from router.query line 79
      setThisPlayer(gameData.users.filter(user => user.username === gameData.users[0].username)[0])
     }
   }, [gameData])
 
   useEffect(() => {
     setIsWerewolf(thisPlayer.role === 'werewolf')
-    console.log(thisPlayer)
-    console.log('am i alive? ', thisPlayer.isAlive)
+    // console.log(thisPlayer)
+    // console.log('am i alive? ', thisPlayer.isAlive)
     setRoleStr(roleToStr(thisPlayer.role));
   }, [thisPlayer])
-
 
   const werewolvesHaveWon = function () {
     const numWerewolves = players.filter(user => user.role === 'werewolf').length;
@@ -172,11 +175,56 @@ export default function Game() {
     const numWerewolves = players.filter(user => user.role === 'werewolf').length;
     return numWerewolves === 0;
   }
-  const handleEndPhase = function(phaseEnded) {
+
+  const findPlayersWithMostVotes = function(users) {
+    let maxVotes = -1
+    let playersWithMostVotes = []
+
+    users.forEach((user) => {
+      if (user.votes > maxVotes) {
+        maxVotes = user.votes
+        playersWithMostVotes = [user]
+      } else if (user.votes === maxVotes) {
+        playersWithMostVotes.push(user)
+      }
+    })
+    return playersWithMostVotes
+  }
+
+  const killUser = async function() {
+    try {
+    if (gameData !== null) {
+      // console.log(gameData, '---------GAME DATA IN KILLUSER----------')
+    const playersWithMostVotes = findPlayersWithMostVotes(gameData.users)
+      console.log(playersWithMostVotes)
+    if (playersWithMostVotes.length === 1) {
+      const response = await fetch(`/api/killPlayer/${gameID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          gameID: gameID,
+          username: playersWithMostVotes[0].username
+        })
+      })
+      const {success, data, message} = await response.json()
+      if (!success) {
+        throw new Error(message)
+      }
+    }
+  }
+   } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const handleEndPhase = async function(phaseEnded) {
     console.log('handling phase end, ', phaseEnded);
     switch (phaseEnded) {
       case 'night':
         console.log('The night has ended. Here is the result:\n');
+        // await killUser()
         if (werewolvesHaveWon()) {
           //route to ww end screen
           console.log('Werewolves Win!\n');
@@ -184,6 +232,7 @@ export default function Game() {
         break;
       case 'day':
         console.log('The day has ended. Here is the result:\n');
+        // await killUser()
         if (werewolvesHaveWon()) {
           //route to ww end screen
           console.log('Werewolves Win!\n');
@@ -197,16 +246,13 @@ export default function Game() {
     }
   }
 
-  const vote = function(player, isUpvote=true) {
-    //send vote
-  }
-
   useEffect(() => {
     setPhase(phases[phaseIndex]);
   }, [phaseIndex])
 
   useEffect(() => {
-    handleEndPhase(phases[(phaseIndex - 1) % phases.length])
+    console.log('handle phase end for phase index: ', (phases.length + phaseIndex) % phases.length)
+    handleEndPhase(phases[(phases.length + phaseIndex) % phases.length])
     if (phase === 'night') {
       setPhaseText(nightStr)
     } else if (phase === 'day') {
@@ -221,7 +267,7 @@ export default function Game() {
 
   useEffect(() => {
     //upper useEffect
-    if (gameStarted === false) {
+    if (gameStarted === false && gameData !== null) {
       createNewGameOnce(gameID, gameData.users, gameData.phase)
         .then((gameState) => {
           setGameStarted(true)
@@ -247,6 +293,7 @@ export default function Game() {
     }
     axios(options)
       .then(res => {
+        // console.log(res.data, '------returned from useeffect-------')
         setGameData(res.data)
       });
   }, [gameID])
@@ -330,7 +377,8 @@ export default function Game() {
   }
 
   const onNextPhase = async function() {
-    resetVotes(gameID);
+    await killUser()
+    await resetVotes(gameID);
     setPhaseIndex((phaseIndex + 1) % phases.length)
   }
 
@@ -402,8 +450,13 @@ export default function Game() {
           value={text}
           style={inputStyle}
           placeholder="Type your message here..."
+          onKeyPress={(e)=>{
+            if(e.charCode === 13) {
+              handleSend()
+            }
+          }}
         />
-        <button style={buttonStyle} onClick={handleSend}>Send</button>
+        <button className="chatSend" style={buttonStyle} onClick={handleSend}>Send</button>
       </div>
     </>
   )

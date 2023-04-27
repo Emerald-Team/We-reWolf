@@ -36,7 +36,7 @@ const messageSchema = new mongoose.Schema({
 })
 
 const gameStateSchema = new mongoose.Schema({
-  gameId: {
+  gameID: {
     type: String,
     default: '1234'
   },
