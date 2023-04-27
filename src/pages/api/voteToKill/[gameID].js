@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     try {
       const {username, previousUsername} = req.body
       const {gameID} = req.query
-      const updatedGameState = await model.voteForUser(username, gameID, previousUsername)
+      const updatedGameState = await model.voteForUser(username, previousUsername, gameID)
       res.status(200).json(updatedGameState)
     } catch (error) {
       res.status(500).json({message: error.message})

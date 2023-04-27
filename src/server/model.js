@@ -68,6 +68,7 @@ const model = {
   },
 
   voteForUser: async(username, previousUsername, gameID) => {
+    console.log(gameID)
     try {
       const gameState = await db.GameState.findOne({gameId: gameID})
 
@@ -77,17 +78,21 @@ const model = {
 
       if (previousUsername) {
         const previousUser = gameState.users.find(user => user.username === previousUsername)
-        if (previousUser, '--------USERNAME-------') {
+        if (previousUser) {
+          console.log('Previous user found:', previousUser)
           previousUser.votes -= 1
+        } else {
+          console.log('Previous user not found:', previousUsername)
         }
       }
 
       const user = gameState.users.find(user => user.username === username)
       if (!user) {
+        console.log('User not found:', username)
         throw new Error('User not found')
       }
       user.votes += 1
-      console.log(previousUser)
+      console.log('User votes updated:', user)
       await gameState.save()
       return gameState
     } catch (error) {
@@ -98,23 +103,28 @@ const model = {
 
   resetVotes: async (gameID) => {
     try {
-      const gameState = await db.GameState.findOne({gameId: gameID})
-      console.log(gameState)
-      if (!gameState) {
-        throw new Error('Game not found')
-      }
-      gameState.users.forEach((users) => {
-        user.votes = 0
-        console.log(user)
-      })
+      const gameState = await db.GameState.findOne({ gameId: gameID });
+      console.log('Game state before resetting votes:', gameState);
 
-      await gameState.save()
-      return gameState
+      if (!gameState) {
+        throw new Error('Game not found');
+      }
+
+      gameState.users.forEach((user) => {
+        console.log('User before resetting votes:', user);
+        user.votes = 0;
+        console.log('User after resetting votes:', user);
+      });
+
+      await gameState.save();
+      console.log('Game state after resetting votes:', gameState);
+      return gameState;
     } catch (error) {
-      console.error(error)
-      throw error
+      console.error(error);
+      throw error;
     }
   },
+
 
   toggleDead: async ({ userID }, gameID) => {
 
