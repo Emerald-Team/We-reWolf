@@ -23,7 +23,7 @@ export default function Lobby() {
   function createGame() {
     const createGameObject = {
       gameID: gameLobbyText,
-      users: assignRoles(fakePlayers),
+      users: assignRoles(playersConnected),
       phase: "day",
     };
     console.log(createGameObject, "********************");
