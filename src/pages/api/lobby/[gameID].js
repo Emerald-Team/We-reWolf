@@ -18,6 +18,12 @@ const handler = async (req, res) => {
     .catch(err => (
       res.status(401).send(err)
     ))
+  } else if (req.method === 'GET') {
+    console.log(`Get request received in API for ${gameID}`)
+    res.status(200).send("NICE")
+    // model.findLobby(gameID)
+    //   .then(data => {res.status(200).send(data)})
+    //   .catch(err => {res.status(401).send(err)})
   }
 }
 
