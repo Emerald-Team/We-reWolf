@@ -101,6 +101,7 @@ export default function End() {
     { username: "User1", text: "HAHA EASY GAME" },
     { username: "User2", text: "wolfs were brain dead" },
   ]
+  const tomb = "/2869384.png"
   return (
     <>
       <div style={containerStyle}>
