@@ -11,13 +11,13 @@ import { useRouter } from 'next/router';
 const PHASE_LENGTH = 10;
 const phases = ['night', 'day'];
 
-const dayStr = 'Day 🔆';
-const nightStr = 'Night 🌙';
+const dayStr = 'Day🔆';
+const nightStr = 'Night🌙';
 
-const wwStr = 'Werewolf 🐺';
-const vilStr = 'Villager 🧑‍🌾';
-const seeStr = 'Seer 🔮';
-const docStr = 'Doctor 🧑‍⚕️';
+const wwStr = 'Werewolf🐺';
+const vilStr = 'Villager🧑‍🌾';
+const seeStr = 'Seer🔮';
+const docStr = 'Doctor🧑‍⚕️';
 
 export default function Game() {
   const router = useRouter()
@@ -167,12 +167,12 @@ export default function Game() {
   }, [thisPlayer])
 
   const werewolvesHaveWon = function () {
-    const numWerewolves = players.filter(user => user.role === 'werewolf').length;
-    const numVillagers = players.filter(user => user.role !== 'werewolf').length;
+    const numWerewolves = players.filter(user => user.role === 'werewolf' && user.isAlive).length;
+    const numVillagers = players.filter(user => user.role !== 'villager' && user.isAlive).length;
     return numWerewolves === numVillagers;
   }
   const villagersHaveWon = function () {
-    const numWerewolves = players.filter(user => user.role === 'werewolf').length;
+    const numWerewolves = players.filter(user => user.role === 'werewolf' && user.isAlive).length;
     return numWerewolves === 0;
   }
 
@@ -228,17 +228,19 @@ export default function Game() {
         if (werewolvesHaveWon()) {
           //route to ww end screen
           console.log('Werewolves Win!\n');
+          // router.push('end');
         }
         break;
       case 'day':
         console.log('The day has ended. Here is the result:\n');
         // await killUser()
         if (werewolvesHaveWon()) {
-          //route to ww end screen
           console.log('Werewolves Win!\n');
+          // router.push('/end');
         } else if (villagersHaveWon()) {
           //route to vil end screen
           console.log('Villagers Win!\n');
+          // router.push('end');
         }
         break;
       default:
@@ -388,12 +390,12 @@ export default function Game() {
         <div style={phase === 'night' ? gameContainerStyleNight : gameContainerStyle}>
           <div style={boxContainerStyle}>
             <div style={phase === 'night' ? roleStyleNight : roleStyle}>
-              <p>You are: {roleStr}</p>
+              <p>{roleStr}</p>
             </div>
             <div style={phase === 'night' ? timerStyleNight : timerStyle}>
               <Timer period={PHASE_LENGTH} callback={onNextPhase} />
             </div>
-            <div style={dayStyleNight}>
+            <div style={phase === 'night' ? dayStyleNight : dayStyle}>
               <p>{phaseText}</p>
               {/* Day*/}
             </div>
@@ -562,6 +564,7 @@ var dayStyle = {
   height: "50",
   margin: "0 5px",
   display: "flex",
+  color: "black",
   justifyContent: "center",
   alignItems: "center",
   flex: "0.2",

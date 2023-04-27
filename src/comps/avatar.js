@@ -25,7 +25,7 @@ var voteStyle = {
   border: 'solid',
   borderColor: 'red',
   backgroundColor: 'red',
-  borderRadius: '50%',
+  borderRadius: '50px',
   position: 'absolute',
   top: '5px',
   right: '5px',

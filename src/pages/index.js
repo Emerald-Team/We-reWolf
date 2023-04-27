@@ -102,7 +102,7 @@ export default function Home() {
             style={styles.input}
             required
           />
-          <button type="submit" style={styles.button} onClick={(e) => {e.preventDefault(); loginHandler()}}>
+          <button className="loginButton" type="submit" style={styles.button} onClick={(e) => {e.preventDefault(); loginHandler()}}>
             Login
           </button>
         </form>

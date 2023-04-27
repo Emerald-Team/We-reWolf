@@ -43,7 +43,10 @@ const gameStateSchema = new mongoose.Schema({
   users: [{
     username: String,
     role: String,
-    isAlive: Boolean,
+    isAlive: {
+      type: Boolean,
+      default: true
+    },
     votes: {
       type: Number,
       default: 0
