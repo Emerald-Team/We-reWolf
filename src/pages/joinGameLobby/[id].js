@@ -183,18 +183,6 @@ export default function Lobby() {
         <div style={contentStyle}>
           <div style={listStyle}>
             <h2 style={listHeaderStyle}>Player List</h2>
-            <button
-              onClick={() => {
-                if (getCookie("isHost") === "false") {
-                  joinLobby();
-                } else {
-                  hostLobby();
-                }
-              }}
-              style={{ backgroundColor: "GREEN" }}
-            >
-              Ready Up
-            </button>
             <PlayerList
             players ={playersConnected}
             count={count} />
