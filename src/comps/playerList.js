@@ -20,7 +20,7 @@ const playerListGrid = {
   gap: "10px",
 }
 
-const PlayerList = ({ count }) => {
+const PlayerList = ({ count, players }) => {
   return (
     <>
       <div style={playerListStyles}>
@@ -28,11 +28,9 @@ const PlayerList = ({ count }) => {
           <b>Player List</b> <span>1/{count}</span>
         </h1>
         <div style={playerListGrid}>
-          <div style={playerItemStyles}>BadBill</div>
-          <div style={playerItemStyles}>ZackAttack</div>
-          <div style={playerItemStyles}>Chordata</div>
-          <div style={playerItemStyles}>PopeShaq</div>
-          <div style={playerItemStyles}>theRealJae</div>
+          {players.map((player, index) => (
+            <div style={playerItemStyles} key = {index}>{player.userName} </div>
+          ))}
         </div>
       </div>
     </>
