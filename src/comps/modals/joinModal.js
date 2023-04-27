@@ -39,6 +39,7 @@ const JoinModal = ({ open, onClose, setCookie }) => {
     color: "#fff",
     border: "none",
     cursor: "pointer",
+    borderRadius: "5px",
   }
 
   const buttonStyleX = {
