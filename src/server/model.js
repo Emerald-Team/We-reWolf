@@ -16,7 +16,7 @@ const model = {
       throw error
     }
   },
-  createGame: async (gameId, users, phase) => {
+  createGame: async ({gameId, users, phase}) => {
     console.log('creating game...')
     try {
       const gameState = new db.GameState({
@@ -34,9 +34,9 @@ const model = {
     }
   },
   createLobby: async (gameID, user) => {
+    const userFile = await userDatabase.Users.find({username: user})[0]
+
     let newLobby = new db.Lobby({
-<<<<<<< HEAD
-<<<<<<< HEAD
 
       gameID: gameID,
       users: [{
@@ -44,22 +44,10 @@ const model = {
         role: 'in lobby'
       }]
 
-=======
-      userName: userFile.username,
-      role: "in lobby"
->>>>>>> 16e5bba (update changes to routing.)
-=======
-      gameID: gameID,
-      users: [{
-        userName: user,
-        role: 'default'
-      }]
->>>>>>> e19e247 (lobby showing users added. Hosting working. Joining working.)
     })
     return newLobby.save()
   },
   updateLobby: async (gameID, user) => {
-<<<<<<< HEAD
 
     let newUser = {
       userName: user,
@@ -74,24 +62,6 @@ const model = {
   getLobby: async (gameID) => {
     return db.Lobby.find({ gameID: gameID })
 
-=======
-    let newUser = {
-      userName: user,
-      rank: 1,
-      role: 'default'
-    }
-    return db.Lobby.findOneAndUpdate({ gameID: gameID },
-      { $push: {users: newUser}},
-      {new: true}
-    )
-  },
-  getLobby: async (gameID) => {
-<<<<<<< HEAD
-    return db.Lobby.find({ gameID: gameID });
->>>>>>> e19e247 (lobby showing users added. Hosting working. Joining working.)
-=======
-    return db.Lobby.find({ gameID: gameID })
->>>>>>> 1bd882f (fix createGame route)
   },
   getMessages: (gameID) => {
     return db.Message.find({ gameID: gameID })
