@@ -66,6 +66,11 @@ export default function Home() {
   };
  //console.log('in index file') // useEffect(() => {if (localStorage.getItem('user')) {router.push('/joinGameLobby')}}, [])
 
+ useEffect(() => {
+  if (localStorage.getItem("user")) {
+    router.push("/joinGameLobby")
+  }
+}, [])
 
   const [username, setUsername] = useState("");
 
@@ -98,12 +103,12 @@ export default function Home() {
         <h2 style={{ marginBottom: "10px" }}>Login</h2>
         <form style={styles.form}>
           <input type="text" placeholder="Username" style={styles.input} />
-          <input type="password" placeholder="Password" style={styles.input} />
-          <button type="submit" style={styles.button}>
+          <input type="password" placeholder="Password" style={styles.input} required/>
+          <button type="submit" style={styles.button}> onClick={(e) => {e.preventDefault(); loginHandler()}}
             Login
           </button>
         </form>
-        <Link href='/signup' style={styles.text}>Sign Up</Link>
+        <Link href='/signup' style={styles.text}>Sign-Up</Link>
       </div>
       <div style={styles.imageBox}>
         <Image
