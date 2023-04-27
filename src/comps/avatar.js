@@ -136,7 +136,7 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, lastSelect
       <div style={{position: 'relative'}} ><div style={voteStyle}>{votes + (isSelected ? 1 : 0)}</div></div>
         {player.isAlive ?
           <Image src={avatar} alt="Avatar" width="100" height="100" /> :
-          <Image src='/tombstone.png' alt="tombstone" width="100" height="100" />}
+          <Image className="dead" src='/2869384.png' alt="tombstone" width="100" height="100" />}
       <small>{player.username}</small>
     </div>
   )
