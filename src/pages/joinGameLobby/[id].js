@@ -12,19 +12,20 @@ export default function Lobby() {
   const [copy, setCopy] = useState(false);
   const [copyWord, setCopyWord] = useState("Copy To Clipboard");
   const [selected, setSelected] = useState([]);
+  const [urlCode, setUrlCode] = useState([]);
+  const [userName, setUserName] = useState('');
   const router = useRouter()
+  const {pid} = router.query;
 
 
-  function getUserNames(gamecode) {
-    axios.get(`http://localhost:3000/api/lobby/${gamecode}`)
-      .then((res) => {console.log('RES from GetUserNames', res); setPlayersConnected(res);})
-      .catch((err)=> console.log(err))
+  function getUserNames() {
+    axios.get(`http://localhost:3000/api/lobby/${gameLobbyText}`).then((res) => console.log('RES from GetUserNames', res)).catch((err)=> console.log(err))
   }
-  function hostLobby(gamecode) {
-    axios.post(`http://localhost:3000/api/lobby/${gamecode}`, {userName:window.localStorage.user}).then((res) => console.log('RES from HostLobby POST Req',res)).catch((err) => console.log('post req error',err));
+  function hostLobby() {
+    axios.post(`http://localhost:3000/api/lobby/${gameLobbyText}`, {user:  userName}).then((res) => console.log('RES from HostLobby POST Req',res)).catch((err) => console.log(err));
   }
-  function joinLobby(gamecode) {
-    axios.post(`http://localhost:3000/api/lobby/${gamecode}`, {userName:window.localStorage.user}).then((res) => console.log('RES from joinLobby PUT Req',res)).catch((err) => console.log('put req err',err));
+  function joinLobby() {
+    axios.put(`http://localhost:3000/api/lobby/${gameLobbyText}`, {user:  userName}).then((res) => console.log('RES from HostLobby PUT Req',res)).catch((err) => console.log(err));
   }
 
 
@@ -43,7 +44,7 @@ export default function Lobby() {
   // }, [])
 
   function getUserName () {
-    let userName = window.localStorage.user;
+    setUserName(window.localStorage.user);
     console.log('USERNAME', userName)
   }
 
@@ -104,8 +105,8 @@ export default function Lobby() {
         sortedArray[sortedArray.length - 2].role = 'Seer'
       }
     }
+    console.log(sortedArray)
   }
-
 
   function gameLobbyChangeHandler(event) {
     setGameLobbyText(event.target.value);
@@ -118,24 +119,18 @@ export default function Lobby() {
 
   useEffect(() => {}, [count]);
   useEffect(() => {
-    const urlCode = window.location.pathname.split('/');
-    console.log('GAME LOBBY TEXT',urlCode[urlCode.length -1])
-    setGameLobbyText(urlCode[urlCode.length -1])
     //if they are not Host
     if (getCookie("isHost") === "false") {
-      //dont' allow user to click butons
       setButtonDisabled(true);
-      //send put request -PUT
-      // joinLobby(urlCode[urlCode.length -1]);
     } else{
-
-      //create a lobby for others to join - POST
-      // hostLobby(urlCode[urlCode.length -1]);
+      //add a POST request to update users in lobby
     }
 
-    // getUserName();
+    const urlCode = window.location.pathname.split('/');
+    console.log(urlCode[urlCode.length -1])
+    setGameLobbyText(urlCode[urlCode.length -1])
+    getUserName();
   }, []);
-  setTimeout(function () {getUserNames(gameLobbyText)}, 5000);
 
   let copyClick = () => {
     navigator.clipboard.writeText(gameLobbyText);
@@ -149,6 +144,10 @@ export default function Lobby() {
         <div style={contentStyle}>
           <div style={listStyle}>
             <h2 style={listHeaderStyle}>Player List</h2>
+            <button
+            onClick = {() => {if(getCookie('isHost') === 'false'){joinLobby()
+            }else{hostLobby()} }}
+            style = {{backgroundColor: "GREEN"}}>Ready Up</button>
             <PlayerList count={count} />
           </div>
           <div style={listStyle}>
@@ -174,11 +173,12 @@ export default function Lobby() {
             onChange={gameLobbyChangeHandler}
             value={gameLobbyText}
           ></input>
+
           <button
             className="startButton"
             disabled={buttonDisabled}
             style={buttonStyle2}
-            onClick={assignRoles(fakePlayers)}
+            onClick={() => assignRoles(fakePlayers)}
           >
             Start Game
           </button>
