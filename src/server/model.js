@@ -35,7 +35,9 @@ const model = {
   },
   createLobby: async (gameID, user) => {
     const userFile = await userDatabase.Users.find({username: user})[0]
+
     let newLobby = new db.Lobby({
+<<<<<<< HEAD
 
       gameID: gameID,
       users: [{
@@ -43,6 +45,10 @@ const model = {
         role: 'in lobby'
       }]
 
+=======
+      userName: userFile.username,
+      role: "in lobby"
+>>>>>>> 16e5bba (update changes to routing.)
     })
     return newLobby.save()
   },
