@@ -41,6 +41,7 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   const [canHover, setCanHover] = useState(player.isAlive);
   const [canSelect, setCanSelect] = useState(player.isAlive && thisPlayerCanSelect);
   const [isSelected, setIsSelected] = useState(player === selected);
+  const [isSelectedLagFrame, setIsSelectedLagFrame] = useState(player === selected);
 
   const avatar = useMemo(() => {
     return createAvatar(lorelei, {
@@ -95,7 +96,8 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   useEffect(() => {
     if (selected !== player) {
       setStyle(playerStyle)
-      unvoteForUser(player.username, null, gameID)
+      // unvoteForUser(player.username, null, gameID)
+      setIsSelectedLagFrame(player)
     }
   }, [isSelected]);
 
@@ -133,8 +135,6 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   const unselect = async function() {
     setStyle(playerStyle)
     setSelected(null)
-    setLastSelected(selected)
-
   }
   // if selected: unselect
   // else: select
