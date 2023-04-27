@@ -65,9 +65,26 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, lastSelect
     console.log(updatedGameState, '--------UPDATED GAME STATE-------')
     return updatedGameState
   }
+  // unvote to kill
+  async function unvoteForUser(username, previousUsername, gameID ) {
+    const response = await fetch(`/api/unvoteToKill/${gameID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({username,previousUsername, gameID})
+    })
+    if (!response.ok) {
+      console.error(`Error: ${response.statusText}`)
+    }
+    const updatedGameState = await response.json()
+    console.log(updatedGameState, '--------UNUPDATED GAME STATE-------')
+    return updatedGameState
+  }
 
   // if player is dead, render dead style [TODO: bugged]
   useEffect(() => {
+    setVotes(player.votes);
     if (!player.isAlive || !thisPlayerCanSelect) {
       setCanHover(false);
       setCanSelect(false);
@@ -78,8 +95,9 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, lastSelect
   useEffect(() => {
     if (selected !== player) {
       setStyle(playerStyle)
+      unvoteForUser(player.username, null, gameID)
     }
-  }, [selected]);
+  }, [isSelected]);
 
   // when selected or player change, set state to whether this is the current selection
   useEffect(() => {
@@ -107,16 +125,17 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, lastSelect
     setSelected(player)
     setLastSelected(selected)
     console.log(lastSelected)
-    await voteForUser(player.username, newLastSelected ? newLastSelected.username : null, gameID)
+    await voteForUser(player.username, null, gameID)
   }
 
   // if not the current selection:
   //   set style to hover style,
   //   set selected and last selected to player
-  const unselect = function() {
+  const unselect = async function() {
     setStyle(playerStyle)
     setSelected(null)
     setLastSelected(selected)
+
   }
   // if selected: unselect
   // else: select
@@ -133,7 +152,7 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, lastSelect
 
   return (
     <div style={style} onMouseOver={handleHoverIn} onMouseLeave={handleHoverOut} onClick={handleSelect}>
-      <div style={{position: 'relative'}} ><div style={voteStyle}>{votes + (isSelected ? 1 : 0)}</div></div>
+      <div style={{position: 'relative'}} ><div style={voteStyle}>{(votes)}</div></div>
         {player.isAlive ?
           <Image src={avatar} alt="Avatar" width="100" height="100" /> :
           <Image src='/tombstone.png' alt="tombstone" width="100" height="100" />}

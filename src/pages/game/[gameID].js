@@ -11,6 +11,13 @@ import { useRouter } from 'next/router';
 const PHASE_LENGTH = 10;
 const phases = ['night', 'day'];
 
+const dayStr = 'Day 🔆';
+const nightStr = 'Night 🌙';
+
+const wwStr = 'Werewolf 🐺';
+const vilStr = 'Villager 🧑‍🌾';
+const seeStr = 'Seer 🔮';
+const docStr = 'Doctor 🧑‍⚕️';
 
 export default function Game() {
   const router = useRouter()
@@ -69,62 +76,75 @@ export default function Game() {
     ],
     phase: 'night',
   })
+  const [gameID, setGameID] = useState(router.query.gameID)
   const [gameStarted, setGameStarted] = useState(false)
   const [user, setUser] = useState('')
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
-  // const [timeLeft, setTimeLeft] = useState(interval); //dont need
   const [phaseIndex, setPhaseIndex] = useState(0)
-  const [phase, setPhase] = useState('nights')
+  const [phase, setPhase] = useState('night')
+  const [phaseText, setPhaseText] = useState(nightStr)
   const [players, setPlayers] = useState([])
   const [thisPlayer, setThisPlayer] = useState({})
-  // console.log('player role', thisPlayer.role)
   const [isWerewolf, setIsWerewolf] = useState(thisPlayer.role === 'werewolf')
   const [selected, setSelected] = useState(null);
   const [lastSelected, setLastSelected] = useState(null);
-  const [gameID, setGameID] = useState(router.query.gameID)
+  const roleToStr = function(role) {
+    switch(role) {
+      case 'werewolf':
+        return wwStr;
+        break;
+      case 'villager':
+        return vilStr;
+        break;
+      case 'seer':
+        return seeStr;
+        break;
+      case 'doctor':
+        return docStr;
+        break;
+      default:
+        console.log(`Sorry, we are out of ${role}.`);
+    }
+  }
+  const [roleStr, setRoleStr] = useState(roleToStr(thisPlayer.role));
   // const [gameID, setGameID] = useState('1234')
 
-const createNewGame = async (gameID, users, phase) => {
-  console.log('creating new game.......... ')
-  try {
-    const gameState = await axios.post(`/api/createGame/createGame`, {
-      gameID,
-      users,
-      phase
-    })
-    console.log('Game state saved:', gameState)
-  } catch (error) {
-    console.error('ERROR CREATING GAME: ', error)
-    throw error
-  }
-}
-
-async function getGameState(gameID) {
-  const response = await fetch(`/api/gameState/${gameID}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Error: ${response.statusText}`);
+  const createNewGame = async (gameID, users, phase) => {
+    console.log('creating new game.......... ')
+    try {
+      const gameState = await axios.post(`/api/createGame/createGame`, {
+        gameID,
+        users,
+        phase
+      })
+      console.log('Game state saved:', gameState)
+    } catch (error) {
+      console.error('ERROR CREATING GAME: ', error)
+      throw error
+    }
   }
 
-  const gameState = await response.json();
-  return gameState;
-}
+  const getGameState = async function()  {
+    if (gameID) {
+      const response = await fetch(`/api/gameState/${gameID}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+      const gameState = await response.json();
+      setGameData(gameState);
+      // return gameState;
 
-useEffect(() => {
-  console.log(gameID)
-}, [gameID])
-const createNewGameOnce = _.once(createNewGame);
+    }
+    setTimeout(getGameState, 1000)
+  }
 
-useEffect(() => {
-  console.log(thisPlayer)
-}, [thisPlayer])
-
+  const createNewGameOnce = _.once(createNewGame);
 
   useEffect(() => {
     if (gameData !== null) {
@@ -137,18 +157,11 @@ useEffect(() => {
 
   useEffect(() => {
     setIsWerewolf(thisPlayer.role === 'werewolf')
+    console.log(thisPlayer)
     console.log('am i alive? ', thisPlayer.isAlive)
+    setRoleStr(roleToStr(thisPlayer.role));
   }, [thisPlayer])
 
-  useEffect(() => {
-    if (gameStarted === false) {
-      createNewGameOnce(gameID, gameData.users, gameData.phase)
-        .then((gameState) => {
-          setGameStarted(true)
-        })
-        .catch((err) => console.error(err))
-    }
-  }, []);
 
   const werewolvesHaveWon = function () {
     const numWerewolves = players.filter(user => user.role === 'werewolf').length;
@@ -164,15 +177,13 @@ useEffect(() => {
     switch (phaseEnded) {
       case 'night':
         console.log('The night has ended. Here is the result:\n');
-        //if number of werewolves === number of villagers, werewolves win
         if (werewolvesHaveWon()) {
           //route to ww end screen
+          console.log('Werewolves Win!\n');
         }
         break;
       case 'day':
         console.log('The day has ended. Here is the result:\n');
-        //if number of werewolves === number of villagers, werewolves win
-        //else if number of werewolves === 0, villagers win
         if (werewolvesHaveWon()) {
           //route to ww end screen
           console.log('Werewolves Win!\n');
@@ -185,35 +196,22 @@ useEffect(() => {
         console.log(`Sorry, we are out of ${phaseEnded}. (Phase ended and is not one of these:)\n`, phases);
     }
   }
-  // useEffect(() => {
-  //   console.log('change detected in players:\n', players)
-  // }, [players])
 
   const vote = function(player, isUpvote=true) {
     //send vote
   }
-  useEffect(() => {
-    setPlayers(players.map(player => {
-      if (player === selected) {
-        player.votes++
-        console.log(player)
-        return player
-      } else if (selected !== lastSelected) {
-        player.votes--
-        // console.log(player)
-        return player;
-      } else {
-        return player;
-      }
-    }
-  ))
-  }, [selected])
+
   useEffect(() => {
     setPhase(phases[phaseIndex]);
   }, [phaseIndex])
+
   useEffect(() => {
-    // console.log('phase', phase)
     handleEndPhase(phases[(phaseIndex - 1) % phases.length])
+    if (phase === 'night') {
+      setPhaseText(nightStr)
+    } else if (phase === 'day') {
+      setPhaseText(dayStr)
+    }
   }, [phase])
 
   //hardcodes for testing
@@ -222,21 +220,35 @@ useEffect(() => {
   let userRole = 'werewolf'
 
   useEffect(() => {
+    //upper useEffect
+    if (gameStarted === false) {
+      createNewGameOnce(gameID, gameData.users, gameData.phase)
+        .then((gameState) => {
+          setGameStarted(true)
+        })
+        .catch((err) => console.error(err))
+    }
+
+    // lower useEffect
     let storedUser = window.localStorage.getItem('user')
     setUser(storedUser)
     if (gameData !== null) {
-    // setPlayer(gameData.users.filter(user => (user.username === storedUser))[0])
-    setPlayers(gameData.users)
+      // setPlayer(gameData.users.filter(user => (user.username === storedUser))[0])
+      setPlayers(gameData.users)
     }
+    getGameState()
   }, [])
 
   useEffect(() => {
+    console.log(gameID)
     let options = {
       method: 'GET',
       url: `http://localhost:3000/api/gameState/${gameID}`
     }
     axios(options)
-    .then(res => setGameData(res.data))
+      .then(res => {
+        setGameData(res.data)
+      });
   }, [gameID])
 
   useEffect(() => {
@@ -321,21 +333,20 @@ useEffect(() => {
     resetVotes(gameID);
     setPhaseIndex((phaseIndex + 1) % phases.length)
   }
-  const dayStr = 'Day 🔆';
-  const nightStr = 'Night 🌙';
+
   return (
     <>
       <div style={containerStyle}>
         <div style={phase === 'night' ? gameContainerStyleNight : gameContainerStyle}>
           <div style={boxContainerStyle}>
             <div style={phase === 'night' ? roleStyleNight : roleStyle}>
-              <p>{thisPlayer.role}</p>
+              <p>You are: {roleStr}</p>
             </div>
             <div style={phase === 'night' ? timerStyleNight : timerStyle}>
               <Timer period={PHASE_LENGTH} callback={onNextPhase} />
             </div>
             <div style={dayStyleNight}>
-              <p>{phase}</p>
+              <p>{phaseText}</p>
               {/* Day*/}
             </div>
           </div>
