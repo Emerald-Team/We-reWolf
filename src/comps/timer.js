@@ -1,8 +1,6 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
 
-// const TIMER_DURATION = 6
-
 export default function Timer({period, callback}) {
   const [time, setTime] = useState(period)
 
@@ -25,6 +23,6 @@ export default function Timer({period, callback}) {
   }, []);
 
   return (
-    <div>TIMER: {time}</div>
+    <div>{time}</div>
   );
 }

@@ -76,17 +76,17 @@ const model = {
         throw new Error('Game not found')
       }
 
-      if (previousUsername) {
-        const previousUser = gameState.users.find(user => user.username === previousUsername)
-        if (previousUser) {
-          console.log('Previous user found:', previousUser)
-          if (previousUser.votes > 0) {
-            previousUser.votes -= 1
-          }
-        } else {
-          console.log('Previous user not found:', previousUsername)
-        }
-      }
+      // if (previousUsername) {
+      //   const previousUser = gameState.users.find(user => user.username === previousUsername)
+      //   if (previousUser) {
+      //     console.log('Previous user found:', previousUser)
+      //     if (previousUser.votes > 0) {
+      //       previousUser.votes -= 1
+      //     }
+      //   } else {
+      //     console.log('Previous user not found:', previousUsername)
+      //   }
+      // }
 
       const user = gameState.users.find(user => user.username === username)
       if (!user) {
@@ -94,6 +94,29 @@ const model = {
         throw new Error('User not found')
       }
       user.votes += 1
+      // console.log('User votes updated:', user)
+      await gameState.save()
+      return gameState
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
+  },
+  unvoteForUser: async(username, previousUsername, gameID) => {
+    console.log(gameID)
+    try {
+      const gameState = await db.GameState.findOne({gameId: gameID})
+
+      if (!gameState) {
+        throw new Error('Game not found')
+      }
+
+      const user = gameState.users.find(user => user.username === username)
+      if (!user) {
+        console.log('User not found:', username)
+        throw new Error('User not found')
+      }
+      user.votes -= 1
       // console.log('User votes updated:', user)
       await gameState.save()
       return gameState
