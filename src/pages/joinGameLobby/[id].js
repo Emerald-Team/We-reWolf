@@ -137,8 +137,18 @@ export default function Lobby() {
     setCopy(true);
     setCopyWord("Copied !");
   };
+useEffect(() => {
+  if(userName !== undefined){
+    setTimeout(() => {
+      setInterval(function () {getUserNames(gameLobbyText)}, 5000);
+    }, 3000)
+  } else{
+    setTimeout(() => {
+      setInterval(function () {getUserNames(gameLobbyText)}, 5000);
+    }, 3000)
+  }
+}, [])
 
-  setInterval(function () {getUserNames(gameLobbyText)}, 5000);
 
   return (
     <div style={containerStyle}>
