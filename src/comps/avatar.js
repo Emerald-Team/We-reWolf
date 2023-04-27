@@ -124,12 +124,7 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
     const newLastSelected = selected;
     setSelected(player)
     setLastSelected(selected)
-<<<<<<< HEAD
-    console.log(lastSelected)
-    await voteForUser(player.username, null, gameID)
-=======
     await voteForUser(player.username, newLastSelected ? newLastSelected.username : null, gameID)
->>>>>>> b174eb9 (minor changes)
   }
 
   // if not the current selection:

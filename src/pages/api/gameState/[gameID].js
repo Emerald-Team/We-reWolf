@@ -1,6 +1,6 @@
 import model from '../../../server/model'
 
-const handler = async (req, res) => {
+export default async function handler(req, res) {
   const {gameID} = req.query;
   if (req.method === 'GET') {
     try {
@@ -14,5 +14,3 @@ const handler = async (req, res) => {
     return res.status(405).json({message: 'Method not allowed'})
   }
 }
-
-export default handler
