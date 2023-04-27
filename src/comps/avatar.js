@@ -33,12 +33,15 @@ var voteStyle = {
   color: "white",
 }
 
-const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSelected, gameID }) => {
+const tombstoneUrl = '/tombstone.png';
+
+const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, lastSelected, setLastSelected, gameID }) => {
   const [style, setStyle] = useState(playerStyle);
   const [votes, setVotes] = useState(player.votes);
   const [canHover, setCanHover] = useState(player.isAlive);
   const [canSelect, setCanSelect] = useState(player.isAlive && thisPlayerCanSelect);
   const [isSelected, setIsSelected] = useState(player === selected);
+
   const avatar = useMemo(() => {
     return createAvatar(lorelei, {
       size: 100,
@@ -46,18 +49,14 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
     }).toDataUriSync();
   }, []);
 
-  useEffect(() => {
-    console.log(gameID)
-  }, [gameID])
-
   // vote to kill
-  async function voteForUser(username, gameID) {
+  async function voteForUser(username, previousUsername, gameID ) {
     const response = await fetch(`/api/voteToKill/${gameID}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({username, gameID})
+      body: JSON.stringify({username,previousUsername, gameID})
     })
     if (!response.ok) {
       console.error(`Error: ${response.statusText}`)
@@ -70,9 +69,6 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   // if player is dead, render dead style [TODO: bugged]
   useEffect(() => {
     if (!player.isAlive || !thisPlayerCanSelect) {
-      if (!player.isAlive) {
-        setStyle(playerStyleDead);
-      }
       setCanHover(false);
       setCanSelect(false);
     }
@@ -105,12 +101,15 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   // if current selection:
   //   set style to normal style,
   //   set selected to null
-  const select = function() {
+  const select = async function() {
     setStyle(playerStyleHover)
+    const newLastSelected = selected;
     setSelected(player)
-    setLastSelected(player)
-    voteForUser(player.username, gameID)
+    setLastSelected(selected)
+    console.log(lastSelected)
+    await voteForUser(player.username, newLastSelected ? newLastSelected.username : null, gameID)
   }
+
   // if not the current selection:
   //   set style to hover style,
   //   set selected and last selected to player
@@ -135,7 +134,9 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   return (
     <div style={style} onMouseOver={handleHoverIn} onMouseLeave={handleHoverOut} onClick={handleSelect}>
       <div style={{position: 'relative'}} ><div style={voteStyle}>{votes + (isSelected ? 1 : 0)}</div></div>
-      <Image src={avatar} alt="Avatar" width="100" height="100" />
+        {player.isAlive ?
+          <Image src={avatar} alt="Avatar" width="100" height="100" /> :
+          <Image src='/tombstone.png' alt="tombstone" width="100" height="100" />}
       <small>{player.username}</small>
     </div>
   )

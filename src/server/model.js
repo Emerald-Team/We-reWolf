@@ -25,7 +25,7 @@ const model = {
         phase: phase
       })
       await gameState.save()
-      console.log(gameState, '------GAMESTATE IN MODEL-------')
+      // console.log(gameState, '------GAMESTATE IN MODEL-------')
       return gameState
     } catch (error) {
       console.error(error)
@@ -67,7 +67,8 @@ const model = {
     return db.Message.find({ gameID: gameID })
   },
 
-  voteForUser: async(username, gameID) => {
+  voteForUser: async(username, previousUsername, gameID) => {
+    console.log(gameID)
     try {
       const gameState = await db.GameState.findOne({gameId: gameID})
 
@@ -75,12 +76,25 @@ const model = {
         throw new Error('Game not found')
       }
 
+      if (previousUsername) {
+        const previousUser = gameState.users.find(user => user.username === previousUsername)
+        if (previousUser) {
+          console.log('Previous user found:', previousUser)
+          if (previousUser.votes > 0) {
+            previousUser.votes -= 1
+          }
+        } else {
+          console.log('Previous user not found:', previousUsername)
+        }
+      }
+
       const user = gameState.users.find(user => user.username === username)
       if (!user) {
+        console.log('User not found:', username)
         throw new Error('User not found')
       }
       user.votes += 1
-
+      // console.log('User votes updated:', user)
       await gameState.save()
       return gameState
     } catch (error) {
@@ -88,6 +102,31 @@ const model = {
       throw error
     }
   },
+
+  resetVotes: async (gameID) => {
+    try {
+      const gameState = await db.GameState.findOne({ gameId: gameID });
+      // console.log('Game state before resetting votes:', gameState);
+
+      if (!gameState) {
+        throw new Error('Game not found');
+      }
+
+      gameState.users.forEach((user) => {
+        // console.log('User before resetting votes:', user);
+        user.votes = 0;
+        // console.log('User after resetting votes:', user);
+      });
+
+      await gameState.save();
+      // console.log('Game state after resetting votes:', gameState);
+      return gameState;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
 
   toggleDead: async ({ userID }, gameID) => {
 
