@@ -38,7 +38,6 @@ const messageSchema = new mongoose.Schema({
 const gameStateSchema = new mongoose.Schema({
   gameID: {
     type: String,
-    default: '1234'
   },
   users: [{
     username: String,

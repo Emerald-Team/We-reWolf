@@ -32,6 +32,7 @@ const model = {
       });
       await gameState.save();
       // console.log(gameState, '------GAMESTATE IN MODEL-------')
+      console.log(`game ${gameID} successfully created! `)
       return gameState;
     } catch (error) {
       console.error(error);
