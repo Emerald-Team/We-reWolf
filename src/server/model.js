@@ -33,6 +33,7 @@ const model = {
     }
   },
   createLobby: async (gameID, user) => {
+
     let newLobby = new db.Lobby({
       gameID: gameID,
       users: [{
