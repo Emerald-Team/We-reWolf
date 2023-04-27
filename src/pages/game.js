@@ -286,7 +286,7 @@ useEffect(() => {
           <div className="players" style={phase === 'night' ? playerContainerNight : playerContainer}>
             {players !== [] && players.map(
               (player, i) =>
-                <Avatar key={i} player={player} thisPlayerCanSelect={thisPlayer.isAlive} selected={selected} setSelected={setSelected} lastSelected={lastSelected} setLastSelected={setLastSelected} gameID={gameID} />
+                <Avatar key={i} player={player} thisPlayerCanSelect={thisPlayer.isAlive} selected={selected} setSelected={setSelected} setLastSelected={setLastSelected} gameID={gameID} />
               )
             }
           </div>

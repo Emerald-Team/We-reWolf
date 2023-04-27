@@ -1,6 +1,6 @@
 import model from '../../../server/model.js'
 
-const handler = async (req, res) => {
+export default async function handler  (req, res) {
   // console.log('messages!')
   const { gameID } = req.query
   if(req.method === 'POST'){
