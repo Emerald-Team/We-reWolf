@@ -2,8 +2,9 @@
 
 ![](public/image.png)
 
-## Getting Started
+Welcome to We'reWolf!
 
+## Getting Started
 First, run the development server:
 
 ```bash
