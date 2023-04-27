@@ -1,24 +1,34 @@
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
 import JoinModal from "../../comps/modals/joinModal.js"
+import axios from 'axios';
 
 const Join = () => {
   //state variables
   const [gameCode, setGameCode] = useState("")
-  const [showJoinModal, setJoinModal] = useState(false)
+  const [showJoinModal, setJoinModal] = useState(false);
+  const [userName, setUserName] = useState('');
+
 
   function getRandomInt(max) {
     return Math.floor(Math.random() * max)
   }
+
+  function getUserName () {
+    setUserName(window.localStorage.user);
+    console.log('USERNAME', userName)
+  }
+
   function hostHandler() {
-    document.cookie = `isHost = true`
+    document.cookie = `isHost = true`;
+    axios.post(`http://localhost:3000/api/lobby/${gameCode}`, {user:  userName}).then((res) => console.log('RES from HostLobby POST Req',res)).catch((err) => console.log(err));
   }
-  function joinHandler() {
-    document.cookie = `isHost = false`
-  }
+
+
 
   useEffect(() => {
     setGameCode(getRandomInt(1000))
+    getUserName();
   }, [])
 
   const containerStyle = {
@@ -183,7 +193,7 @@ const Join = () => {
       <JoinModal
         open={showJoinModal}
         onClose={() => setJoinModal(false)}
-        setCookie={joinHandler}
+        user = {userName}
       />
     </>
   )

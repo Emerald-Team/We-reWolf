@@ -1,8 +1,15 @@
 import React, { useState } from "react"
 import Link from "next/link"
+import axios from 'axios';
 
-const JoinModal = ({ open, onClose, setCookie }) => {
+const JoinModal = ({ open, onClose, user}) => {
   const [gameCode, setGameCode] = useState(0)
+
+
+  function joinGameHandler() {
+    document.cookie = `isHost = false`;
+    axios.put(`http://localhost:3000/api/lobby/${gameCode}`, {user:  user}).then((res) => console.log('RES from HostLobby PUT Req',res)).catch((err) => console.log(err));
+  }
 
   if (!open) return null
   const overlay = {
@@ -74,7 +81,7 @@ const JoinModal = ({ open, onClose, setCookie }) => {
           value={gameCode}
         />
         <Link href={`/joinGameLobby/${gameCode}`}>
-          <button className="modalJoin" onClick={setCookie} style={buttonStyle}>
+          <button className="modalJoin" onClick={() => joinGameHandler()} style={buttonStyle}>
             Join
           </button>
         </Link>

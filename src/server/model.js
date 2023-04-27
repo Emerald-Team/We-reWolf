@@ -35,8 +35,9 @@ const model = {
   },
   createLobby: async (gameID, user) => {
     const userFile = await userDatabase.Users.find({username: user})[0]
+
     let newLobby = new db.Lobby({
-      username: userFile.username,
+      userName: userFile.username,
       role: "in lobby"
     })
     return newLobby.save()
