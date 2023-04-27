@@ -13,8 +13,6 @@ const handler = async (req, res) => {
       res.status(401).send(err)
     ))
   } else if (req.method === 'POST'){
-    console.log(`POST request received in API for ${gameID} for ${req.body.user}`)
-
     model.createLobby(gameID, req.body.user)
     .then(data => (
       res.status(201).send(data)
