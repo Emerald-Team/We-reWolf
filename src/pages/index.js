@@ -1,3 +1,4 @@
+
 import Image from "next/image"
 import { Inter } from "next/font/google"
 import App from "./_app"
@@ -5,6 +6,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import axios from 'axios'
+
 
 
 const inter = Inter({ subsets: ["latin"] })
@@ -62,9 +64,13 @@ export default function Home() {
       borderRadius: "4px",
     },
   };
-  useEffect(() => {if (localStorage.getItem('user')) {router.push('/joinGameLobby')}}, [])
+ //console.log('in index file') // useEffect(() => {if (localStorage.getItem('user')) {router.push('/joinGameLobby')}}, [])
 
-
+ useEffect(() => {
+  if (localStorage.getItem("user")) {
+    router.push("/joinGameLobby")
+  }
+}, [])
 
   const [username, setUsername] = useState("");
 
@@ -77,14 +83,17 @@ export default function Home() {
     await axios
       .post("api/verifyUser", obj)
       .then((res) => {
-        window.localStorage.setItem('user', obj.username)
+        if (!window.localStorage.getItem('user')) {
+
+         window.localStorage.setItem('user', username)
+        };
         setEmail("");
         setUsername("");
         setPassword("");
-        router.push('/lobby')
+        router.push('/joinGameLobby')
       })
-      .catch((res) => { console.log('fjksdla;fksa;')
-       router.push("/login");
+      .catch((res) => { setEmail(''); setUsername(''); setPassword('');
+       router.push("/");
       });
   };
 
@@ -94,12 +103,12 @@ export default function Home() {
         <h2 style={{ marginBottom: "10px" }}>Login</h2>
         <form style={styles.form}>
           <input type="text" placeholder="Username" style={styles.input} />
-          <input type="password" placeholder="Password" style={styles.input} />
-          <button type="submit" style={styles.button}>
+          <input type="password" placeholder="Password" style={styles.input} required/>
+          <button type="submit" style={styles.button}> onClick={(e) => {e.preventDefault(); loginHandler()}}
             Login
           </button>
         </form>
-        <Link href='/signup' style={styles.text}>Sign Up</Link>
+        <Link href='/signup' style={styles.text}>Sign-Up</Link>
       </div>
       <div style={styles.imageBox}>
         <Image

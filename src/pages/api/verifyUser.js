@@ -9,7 +9,7 @@ export default async function handler(req, res){ //const router = useRouter();
   if (userDetails.username) {
     let hasusername = await userDatabase.checkUsername(userDetails.username);
 
-    if (!hasusername) {
+    if (!hasusername.length) {
       res.status(400).send("Username not found.");
     } else {
       let loginPass = userDetails.password;
@@ -19,10 +19,16 @@ export default async function handler(req, res){ //const router = useRouter();
         password: loginPass,
       };
       let isValid = await userDatabase.verifyUser(verification, "username");
+      if (isValid) {
+        // req.session.user = user
+       res.send("Success");
+      } else {
+        res.statusCode(400)
+      }
     }
   } else if (userDetails.email) {
     let hasEmail = await userDatabase.checkEmail(userDetails.email);
-    if (!hasEmail) {
+    if (!hasEmail.length) {
       res.status(400).send("Email not found.");
     } else {
       let loginPass = userDetails.password;
@@ -31,9 +37,9 @@ export default async function handler(req, res){ //const router = useRouter();
 
       if (isValid) {
         // req.session.user = user
-       res.redirect("/lobby");
+       res.send("Success");
       } else {
-        res.status(400).send("invalid credentials");
+        res.statusCode(400)
       }
     }
   }
