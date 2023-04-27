@@ -32,11 +32,29 @@ const model = {
       console.error('SERVER ERROR: ', error.response.data.error)
     }
   },
-
   createLobby: async (gameID, user) => {
     let newLobby = new db.Lobby({
-
+      gameID: gameID,
+      users: [{
+        userName: user,
+        role: 'default'
+      }]
     })
+    return newLobby.save()
+  },
+  updateLobby: async (gameID, user) => {
+    let newUser = {
+      userName: user,
+      rank: 1,
+      role: 'default'
+    }
+    return db.Lobby.findOneAndUpdate({ gameID: gameID },
+      { $push: {users: newUser}},
+      {new: true}
+    )
+  },
+  getLobby: async (gameID) => {
+    return db.Lobby.find({ gameID: gameID })
   },
   getMessages: (gameID) => {
     return db.Message.find({ gameID: gameID })
