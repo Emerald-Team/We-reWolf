@@ -35,7 +35,7 @@ var voteStyle = {
 
 const tombstoneUrl = '/tombstone.png';
 
-const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, lastSelected, setLastSelected, gameID }) => {
+const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSelected, gameID }) => {
   const [style, setStyle] = useState(playerStyle);
   const [votes, setVotes] = useState(player.votes);
   const [canHover, setCanHover] = useState(player.isAlive);
@@ -124,8 +124,12 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, lastSelect
     const newLastSelected = selected;
     setSelected(player)
     setLastSelected(selected)
+<<<<<<< HEAD
     console.log(lastSelected)
     await voteForUser(player.username, null, gameID)
+=======
+    await voteForUser(player.username, newLastSelected ? newLastSelected.username : null, gameID)
+>>>>>>> b174eb9 (minor changes)
   }
 
   // if not the current selection:
