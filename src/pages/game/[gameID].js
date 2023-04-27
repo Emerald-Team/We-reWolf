@@ -23,53 +23,61 @@ export default function Game() {
   const router = useRouter()
 
   const [gameData, setGameData] = useState({
-    gameID: '1234',
+    gameID:  router.query.gameID,
     users: [
        {
         username: 'TheBigBadBill',
         role: 'werewolf',
+        permissions: ['day, night'],
         isAlive: true,
         votes: 0
       },
       {
         username: 'TheRealJae',
         role: 'villager',
+        permissions: ['day'],
         isAlive: true,
         votes: 0
       },
       {
         username: 'SnarlsBarkley',
         role: 'werewolf',
+        permissions: ['day, night'],
         isAlive: true,
         votes: 0
       },
       {
         username: 'ZackAttack',
         role: 'villager',
+        permissions: ['day'],
         isAlive: true,
         votes: 0
       },
       {
         username: 'GuyWithTuba',
         role: 'villager',
+        permissions: ['day'],
         isAlive: false,
         votes: 0
       },
       {
         username: 'Tr3nB@cy',
         role: 'villager',
+        permissions: ['day'],
         isAlive: true,
         votes: 0
       },
       {
         username: 'Chordata',
         role: 'villager',
+        permissions: ['day'],
         isAlive: true,
         votes: 0
       },
       {
         username: 'CoachLaner',
         role: 'villager',
+        permissions: ['day'],
         isAlive: true,
         votes: 0
       }
@@ -108,7 +116,7 @@ export default function Game() {
     }
   }
   const [roleStr, setRoleStr] = useState(roleToStr(thisPlayer.role));
-  // const [gameID, setGameID] = useState('1234')
+  // const [gameID, setGameID] = useState( router.query.gameID)
 
   const createNewGame = async (gameID, users, phase) => {
     console.log('creating new game.......... ')
@@ -160,27 +168,31 @@ export default function Game() {
   }, [gameData])
 
   useEffect(() => {
-    setIsWerewolf(thisPlayer.role === 'werewolf')
-    // console.log(thisPlayer)
-    // console.log('am i alive? ', thisPlayer.isAlive)
-    setRoleStr(roleToStr(thisPlayer.role));
+    if(gameStarted) {
+      setIsWerewolf(thisPlayer.role === 'werewolf')
+      // console.log(thisPlayer)
+      // console.log('am i alive? ', thisPlayer.isAlive)
+      setRoleStr(roleToStr(thisPlayer.role));
+    }
   }, [thisPlayer])
 
   const werewolvesHaveWon = function () {
     const numWerewolves = players.filter(user => user.role === 'werewolf' && user.isAlive).length;
     const numVillagers = players.filter(user => user.role !== 'villager' && user.isAlive).length;
+    console.log('checking werewolves', numWerewolves, 'to villagers', numVillagers)
     return numWerewolves === numVillagers;
   }
   const villagersHaveWon = function () {
     const numWerewolves = players.filter(user => user.role === 'werewolf' && user.isAlive).length;
+    console.log('checking werewolves', numWerewolves, 'to villagers', numVillagers)
     return numWerewolves === 0;
   }
 
   const findPlayersWithMostVotes = function(users) {
-    let maxVotes = -1
+    let maxVotes = 0
     let playersWithMostVotes = []
 
-    users.forEach((user) => {
+    users.filter(user => user.isAlive).forEach((user) => {
       if (user.votes > maxVotes) {
         maxVotes = user.votes
         playersWithMostVotes = [user]
@@ -196,7 +208,7 @@ export default function Game() {
     if (gameData !== null) {
       // console.log(gameData, '---------GAME DATA IN KILLUSER----------')
     const playersWithMostVotes = findPlayersWithMostVotes(gameData.users)
-      console.log(playersWithMostVotes)
+      console.log('players with the most votes: ', playersWithMostVotes.length, playersWithMostVotes)
     if (playersWithMostVotes.length === 1) {
       const response = await fetch(`/api/killPlayer/${gameID}`, {
         method: 'POST',
@@ -220,36 +232,40 @@ export default function Game() {
   }
 
   const handleEndPhase = async function(phaseEnded) {
-    console.log('handling phase end, ', phaseEnded);
-    switch (phaseEnded) {
-      case 'night':
-        console.log('The night has ended. Here is the result:\n');
-        // await killUser()
-        if (werewolvesHaveWon()) {
-          //route to ww end screen
-          console.log('Werewolves Win!\n');
-          // router.push('end');
-        }
-        break;
-      case 'day':
-        console.log('The day has ended. Here is the result:\n');
-        // await killUser()
-        if (werewolvesHaveWon()) {
-          console.log('Werewolves Win!\n');
-          // router.push('/end');
-        } else if (villagersHaveWon()) {
-          //route to vil end screen
-          console.log('Villagers Win!\n');
-          // router.push('end');
-        }
-        break;
-      default:
-        console.log(`Sorry, we are out of ${phaseEnded}. (Phase ended and is not one of these:)\n`, phases);
+    if (gameStarted) {
+      console.log('handling phase end, ', phaseEnded);
+      switch (phaseEnded) {
+        case 'night':
+          console.log('The night has ended. Here is the result:\n');
+          // await killUser()
+          if (werewolvesHaveWon()) {
+            //route to ww end screen
+            console.log('Werewolves Win!\n');
+            // router.push('/end');
+          }
+          break;
+        case 'day':
+          console.log('The day has ended. Here is the result:\n');
+          // await killUser()
+          if (werewolvesHaveWon()) {
+            console.log('Werewolves Win!\n');
+            // router.push('/end');
+          } else if (villagersHaveWon()) {
+            //route to vil end screen
+            console.log('Villagers Win!\n');
+            // router.push('/end');
+          }
+          break;
+        default:
+          console.log(`Sorry, we are out of ${phaseEnded}. (Phase ended and is not one of these:)\n`, phases);
+      }
     }
   }
 
   useEffect(() => {
-    setPhase(phases[phaseIndex]);
+    if (gameStarted) {
+      setPhase(phases[phaseIndex]);
+    }
   }, [phaseIndex])
 
   useEffect(() => {
@@ -269,12 +285,14 @@ export default function Game() {
 
   useEffect(() => {
     //upper useEffect
-    if (gameStarted === false && gameData !== null) {
+    if (gameStarted === false && gameData !== null && gameID !== undefined) {
+      console.log('in createGame useeEffect')
       createNewGameOnce(gameID, gameData.users, gameData.phase)
         .then((gameState) => {
+          console.log('new game created on page load:\n', gameState)
           setGameStarted(true)
         })
-        .catch((err) => console.error(err))
+        .catch((err) => console.error('error creating new game on page load:\n', err))
     }
 
     // lower useEffect
@@ -285,7 +303,7 @@ export default function Game() {
       setPlayers(gameData.users)
     }
     getGameState()
-  }, [])
+  }, [gameID])
 
   useEffect(() => {
     console.log(gameID)
