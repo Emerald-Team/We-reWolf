@@ -86,6 +86,7 @@ export default function Game() {
   })
   const [gameID, setGameID] = useState(router.query.gameID)
   const [gameStarted, setGameStarted] = useState(false)
+  const [gameEnded, setGameEnded] = useState(false)
   const [user, setUser] = useState('')
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
@@ -97,6 +98,7 @@ export default function Game() {
   const [isWerewolf, setIsWerewolf] = useState(thisPlayer.role === 'werewolf')
   const [selected, setSelected] = useState(null);
   const [lastSelected, setLastSelected] = useState(null);
+  const [gameDone, setGameDone] = useState(false)
   const roleToStr = function(role) {
     switch(role) {
       case 'werewolf':
@@ -134,7 +136,7 @@ export default function Game() {
   }
 
   const getGameState = async function()  {
-    console.log('getting game state')
+    // console.log('getting game state')
     if (gameID) {
       const response = await fetch(`/api/gameState/${gameID}`, {
         method: 'GET',
@@ -142,7 +144,7 @@ export default function Game() {
           'Content-Type': 'application/json',
         },
       });
-      console.log('response from fetch gameData:\n', response)
+      // console.log('response from fetch gameData:\n', response)
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       } else {
@@ -150,9 +152,15 @@ export default function Game() {
         console.log('GAME STATE IN getGameState: is this null', gameState)
         if (gameState !== null) {
           setGameData(gameState);
+                // return gameState;
+          // setPlayers(gameState.users)
+          // // console.log(gameData, players, '-------IN INIT USEEFFECT------')
+          // // setPhase(gameState.phase)
+          // //  setGameID(gameData.gameID) //should we be setting this here or from router.query line 79
+          // setThisPlayer(gameState.users.filter(user => user.username === gameState.users[0].username)[0])
         }
       }
-      // return gameState;
+
 
     }
     setTimeout(getGameState, 1000)
@@ -168,10 +176,10 @@ export default function Game() {
   const createNewGameOnce = _.once(createNewGame);
 
   useEffect(() => {
-    console.log('in gameData useEffect: is this null?\n', gameData)
+    // console.log('in gameData useEffect: is this null?\n', gameData)
     if (gameData !== null) {
       setPlayers(gameData.users)
-      console.log(gameData, players, '-------IN INIT USEEFFECT------')
+      // console.log(gameData, players, '-------IN INIT USEEFFECT------')
       setPhase(gameData.phase)
       //  setGameID(gameData.gameID) //should we be setting this here or from router.query line 79
       setThisPlayer(gameData.users.filter(user => user.username === gameData.users[0].username)[0])
@@ -236,6 +244,8 @@ export default function Game() {
             throw new Error(message)
           }
           return response;
+        } else {
+          return {reponse: 'no one player has the most votes', playersWithMostVotes: playersWithMostVotes}
         }
       }
     } catch (error) {
@@ -243,6 +253,10 @@ export default function Game() {
     }
   }
 
+  // const endGame = function(winner) {
+  //   console.log('Werewolves Win!\n');
+  //   router.push('/end');
+  // }
   const handleEndPhase = async function(phaseEnded) {
     if (gameStarted) {
       console.log('handling phase end, ', phaseEnded);
@@ -253,7 +267,7 @@ export default function Game() {
           if (werewolvesHaveWon()) {
             //route to ww end screen
             console.log('Werewolves Win!\n');
-            // router.push('/end');
+            router.push('/end');
           }
           break;
         case 'day':
@@ -261,11 +275,11 @@ export default function Game() {
           // await killUser()
           if (werewolvesHaveWon()) {
             console.log('Werewolves Win!\n');
-            // router.push('/end');
+            router.push('/end');
           } else if (villagersHaveWon()) {
             //route to vil end screen
             console.log('Villagers Win!\n');
-            // router.push('/end');
+            router.push('/end');
           }
           break;
         default:
@@ -275,14 +289,14 @@ export default function Game() {
   }
 
   useEffect(() => {
-    console.log('from phase index: has game started?', gameStarted)
+    // console.log('from phase index: has game started?', gameStarted)
     if (gameStarted) {
       setPhase(phases[phaseIndex]);
     }
   }, [phaseIndex])
 
   useEffect(() => {
-    console.log('handle phase end for phase index: ', (phases.length + phaseIndex) % phases.length)
+    // console.log('handle phase end for phase index: ', (phases.length + phaseIndex) % phases.length)
     handleEndPhase(phases[(phases.length + phaseIndex) % phases.length])
     if (phase === 'night') {
       setPhaseText(nightStr)
@@ -293,16 +307,16 @@ export default function Game() {
 
   //hardcodes for testing
   let userPermissions = [user, 'all', 'werewolf', 'dead']
-  let timeOfDay = 'night'
+  // let timeOfDay = 'night'
   let userRole = 'werewolf'
 
   useEffect(() => {
     //upper useEffect
     if (gameStarted === false && gameData !== null && gameID !== undefined) {
-      console.log('in createGame useeEffect')
+      // console.log('in createGame useeEffect')
       createNewGameOnce(gameID, gameData.users, gameData.phase)
         .then((gameState) => {
-          console.log('new game created on page load:\n', gameState)
+          // console.log('new game created on page load:\n', gameState)
 
         })
         .catch((err) => console.error('error creating new game on page load:\n', err))
@@ -408,7 +422,7 @@ export default function Game() {
       console.error(`Error reseting votes: ${response.statusText}`)
     } else {
       const updatedGameState = await response.json()
-      console.log(updatedGameState, '----UPDATED GAME STATE-------')
+      // console.log(updatedGameState, '----UPDATED GAME STATE-------')
     }
     return response;
   }
@@ -420,7 +434,7 @@ export default function Game() {
     console.log('reset result result:\n', resetResult)
     setPhaseIndex((phaseIndex + 1) % phases.length)
   }
-
+if (!gameDone) {
   return (
     <>
       <div style={containerStyle}>
@@ -499,7 +513,51 @@ export default function Game() {
       </div>
     </>
   )
+        } if (gameDone) {
+hello
+        }
 }
+
+
+// return (
+//   <>
+//     <div style={containerStyleEnd}>
+//       <div style={imageContainerStyleEnd}>
+//         <Image src="/giphy.gif" alt="Your Image" width="400" height="600" />
+//         <p style={imageStyleEnd}>Villagers WIN!</p>
+//       </div>
+//       <div style={chatContainerStyleEnd}>
+//         <div style={chatContentContainerStyleEnd}>
+//         {messages.filter(message => (userPermissions.includes(message.visibleTo))).map((message) => {
+//               let textColor = 'text-slate-300'
+//               if(message.visibleTo === 'werewolf'){
+//                 textColor = 'text-blue-700'
+//               } else if(message.visibleTo === 'dead'){
+//                 textColor = 'text-zinc-500'
+//               } else if(message.visibleTo === user){
+//                 textColor = 'text-pink-700'
+//               }
+//               return (
+//                 <p className={`text-2xl ${textColor}`} key={message._id}>
+//                   {message.user}{message.visibleTo === user ? '(direct)' : ''}: {message.body}
+//                 </p>
+//               )}
+//             )}
+//         </div>
+//       </div>
+//     </div>
+//     <div style={inputContainerStyleEnd}>
+//       <input
+//         type="text"
+//         style={inputStyleEnd}
+//         placeholder="Type your message here..."
+//       />
+//       <button style={buttonStyleEnd}>Send</button>
+//     </div>
+//   </>
+// )
+// }
+
 var textStyle = {
   color: "white",
   textAlign: "left",
@@ -691,6 +749,78 @@ var inputStyle = {
 }
 
 var buttonStyle = {
+  backgroundColor: "grey",
+  color: "white",
+  border: "none",
+  marginLeft: "8px",
+  padding: "8px",
+}
+
+var textStyleEnd = {
+  color: "white",
+  textAlign: "left",
+  fontSize: "24px",
+}
+
+var containerStyleEnd = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  height: "80vh",
+}
+
+var imageContainerStyleEnd = {
+  marginLeft: "auto",
+  marginRight: "auto",
+}
+
+var imageStyleEnd = {
+  textAlign: "center",
+  marginTop: "16px",
+  color: "white",
+  fontSize: "36px",
+  fontWeight: "bold",
+}
+
+var chatContainerStyleEnd = {
+  backgroundColor: "rgba(0, 0, 0, 0.7)",
+  width: "35%",
+  height: "70vh",
+  marginLeft: "auto",
+  marginRight: "300px",
+  marginBottom: "20px",
+  marginTop: "30px",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-start",
+  padding: "16px",
+  overflowY: "auto",
+  textAlign: "left",
+}
+
+var chatContentContainerStyleEnd = {
+  flex: "1",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "flex-end",
+}
+
+var inputContainerStyleEnd = {
+  display: "flex",
+  justifyContent: "flex-end",
+  marginRight: "300px",
+}
+
+var inputStyleEnd = {
+  backgroundColor: "grey",
+  color: "white",
+  border: "none",
+  flex: "1",
+  padding: "8px",
+  maxWidth: "38%",
+}
+
+var buttonStyleEnd = {
   backgroundColor: "grey",
   color: "white",
   border: "none",

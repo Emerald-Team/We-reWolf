@@ -87,7 +87,7 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   }
 
   useEffect(() => {
-    console.log('change in this avatar player: ', player.username, 'votes', player.votes)
+    // console.log('change in this avatar player: ', player.username, 'votes', player.votes)
     setVotes(player.votes);
   }, [player])
 
@@ -104,14 +104,33 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
     if (selected !== player) {
       setStyle(playerStyle)
       // unvoteForUser(player.username, null, gameID)
-      setIsSelectedLagFrame(player)
     }
   }, [isSelected]);
 
   // when selected or player change, set state to whether this is the current selection
   useEffect(() => {
+
+    if(selected === player) console.log('selected: ', player)
     setIsSelected(selected === player);
   }, [selected, player])
+  useEffect(() => {
+  }, [selected])
+  useEffect(() => {
+    // console.log('isSelected:', player.username, isSelected)
+    console.log('isSelected:', player.username, isSelected)
+    console.log('isSelectedLagFrame:', player.username, isSelectedLagFrame)
+    if (isSelected && !isSelectedLagFrame) {
+      //select
+    } else if (isSelectedLagFrame && !isSelected) {
+      //unselect
+      unvoteForUser(player.username,  null, gameID)
+    }
+    setIsSelectedLagFrame(isSelected)
+  }, [isSelected])
+  useEffect(() => {
+    // console.log('isSelected:', player.username, isSelected)
+    // console.log('isSelectedLagFrame:', player.username, isSelectedLagFrame)
+  }, [isSelectedLagFrame])
 
   // if player is alive and not currently selected, highlight on hover
   const handleHoverIn = function(e) {
@@ -136,7 +155,6 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
     const response = await voteForUser(player.username, newLastSelected ? newLastSelected.username : null, gameID)
     console.log('voted for ', player.username, '\nresponse\n', response)
   }
-
   // if not the current selection:
   //   set style to hover style,
   //   set selected and last selected to player
