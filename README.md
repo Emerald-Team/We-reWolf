@@ -64,6 +64,16 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 
 
+  ### Login
+  ![](public/loginGif.gif)
+
+  ### Game Lobby
+  ![]()
+
+  ### Game Page
+  ### Game Page with tombstone
+  ### End Page?
+
 ## Authors
 
   1. Ben Tracy : https://www.linkedin.com/in/bentracydotcom/
