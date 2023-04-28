@@ -5,6 +5,7 @@ import { lorelei } from "@dicebear/collection";
 import { avataaars } from "@dicebear/collection";
 import { micah } from "@dicebear/collection";
 import Image from "next/image";
+import axios from "axios";
 
 var playerStyle = {
   textAlign: "center",
@@ -59,37 +60,67 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   }, [player.votes])
 
   // vote to kill
-  async function voteForUser(username, previousUsername, gameID ) {
-    const response = await fetch(`/api/voteToKill/${gameID}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({username,previousUsername, gameID})
-    })
-    if (!response.ok) {
-      console.error(`Error: ${response.statusText}`)
+  const voteForUser = (username, gameID) => {
+    const options = {
+      method: "put",
+      url: `http://localhost:3000/api/voteToKill/${gameID}`,
+      data: { gameID: gameID, username: username,}
     }
-    const updatedGameState = await response.json()
-    console.log(updatedGameState, '--------UPDATED GAME STATE-------')
-    return updatedGameState
+    axios(options)
+    .then(res => {
+      return res.data
+    })
+    .catch((err) => {
+      console.log(err, 'didnae vote good')
+    })
   }
+
+  // async function voteForUser(username, previousUsername, gameID ) {
+  //   const response = await fetch(`/api/voteToKill/${gameID}`, {
+  //     method: 'PUT',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify({username, previousUsername, gameID})
+  //   })
+  //   if (!response.ok) {
+  //     console.error(`Error: ${response.statusText}`)
+  //   }
+  //   const updatedGameState = await response.json()
+  //   console.log(updatedGameState, '--------UPDATED GAME STATE-------')
+  //   return updatedGameState
+  // }
   // unvote to kill
-  async function unvoteForUser(username, previousUsername, gameID ) {
-    const response = await fetch(`/api/unvoteToKill/${gameID}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({username,previousUsername, gameID})
-    })
-    if (!response.ok) {
-      console.error(`Error: ${response.statusText}`)
+  const unvoteForUser = (username, gameID) => {
+    const options = {
+      method: "put",
+      url: `http://localhost:3000/api/unvoteToKill/${gameID}`,
+      data: {username: username, gameID: gameID}
     }
-    const updatedGameState = await response.json()
-    console.log(updatedGameState, '--------UNUPDATED GAME STATE-------')
-    return updatedGameState
+    axios(options)
+    .then(res => {
+      return res.data
+    })
+    .catch((err) => {
+      console.log(err, 'didnae vote good')
+    })
   }
+
+  // async function unvoteForUser(username, previousUsername, gameID ) {
+  //   const response = await fetch(`/api/unvoteToKill/${gameID}`, {
+  //     method: 'PUT',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify({username,previousUsername, gameID})
+  //   })
+  //   if (!response.ok) {
+  //     console.error(`Error: ${response.statusText}`)
+  //   }
+  //   const updatedGameState = await response.json()
+  //   console.log(updatedGameState, '--------UNUPDATED GAME STATE-------')
+  //   return updatedGameState
+  // }
 
   useEffect(() => {
     // console.log('change in this avatar player: ', player.username, 'votes', player.votes)
@@ -127,7 +158,7 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
       //select
     } else if (isSelectedLagFrame && !isSelected) {
       //unselect
-      // unvoteForUser(player.username,  null, gameID)
+      unvoteForUser(player.username, gameID)
     }
     setIsSelectedLagFrame(isSelected)
   }, [isSelected])
@@ -151,32 +182,35 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   // if current selection:
   //   set style to normal style,
   //   set selected to null
-  const select = async function() {
-    setStyle(playerStyleHover)
+  const select = async function () {
+    setStyle(playerStyleHover);
     const newLastSelected = selected;
-    setSelected(player)
-    setLastSelected(selected)
-    const response = await voteForUser(player.username, newLastSelected ? newLastSelected.username : null, gameID)
-    console.log(response)
-    console.log('voted for ', player.username, '\nresponse\n', response)
-  }
+    console.log(gameID)
+    await voteForUser(player.username, gameID);
+    setSelected(player);
+    setLastSelected(selected);
+    console.log("voted for ", player.username);
+  };
+
   // if not the current selection:
   //   set style to hover style,
   //   set selected and last selected to player
-  const unselect = async function() {
+  const unselect =  function() {
     setStyle(playerStyle)
     setSelected(null)
+    // await unvoteForUser(player.username, null, gameID)
   }
   // if selected: unselect
   // else: select
-  const handleSelect = function(e) {
+  const handleSelect = async function(e) {
+    console.log('clicked!')
     if(!canSelect) {
       return;
     }
     if (isSelected) {
-      unselect();
+      await unselect();
     } else {
-      select();
+      await select();
     }
   }
 

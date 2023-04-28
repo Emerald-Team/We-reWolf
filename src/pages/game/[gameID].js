@@ -22,10 +22,11 @@ const docStr = 'Doctor🧑‍⚕️';
 export default function Game() {
   const router = useRouter()
 
+
   const [gameData, setGameData] = useState({
     gameID:  router.query.gameID,
     users: [
-       {
+      {
         username: 'TheBigBadBill',
         role: 'werewolf',
         permissions: ['day, night'],
@@ -94,13 +95,22 @@ export default function Game() {
   const [phase, setPhase] = useState('night')
   const [phaseText, setPhaseText] = useState(nightStr)
   const [players, setPlayers] = useState([])
-  const [thisPlayer, setThisPlayer] = useState({})
+  const [thisPlayer, setThisPlayer] = useState(      {
+    username: 'SnarlsBarkley',
+    role: 'villager',
+    permissions: ['SnarlsBarkley', 'all'],
+    isAlive: true,
+    votes: 0
+  })
   const [isWerewolf, setIsWerewolf] = useState(thisPlayer.role === 'werewolf')
   const [selected, setSelected] = useState(null);
   const [lastSelected, setLastSelected] = useState(null);
   const [gameDone, setGameDone] = useState(false)
   const [wolfWins, setWolfWins] = useState(false)
   const [villWins, setVillWins] = useState(false)
+  useEffect(() => {
+    setGameID(router.query.gameID)
+  }, [])
   const roleToStr = function(role) {
     // console.log('this player and role', thisPlayer, thisPlayer.role)
     switch(role) {
@@ -324,13 +334,17 @@ export default function Game() {
   }, [gameID])
 
   useEffect(() => {
-    if (!router.isReady) {
-      return
-    }
     console.log('setting gameID to ', router.query.gameID)
     setGameID(router.query.gameID)
-    getMessages(router.query.gameID)
   }, [router.isReady])
+
+  useEffect(() => {
+    // if (!router.isReady) {
+    //   return
+    // }
+
+    getMessages(router.query.gameID)
+  }, /*[router.isReady]*/)
   // const userInfo = gameData.user
   // const username = userInfo.name
 
@@ -503,7 +517,7 @@ export default function Game() {
             <div style={chatContainerStyleEnd}>
               <div style={chatContentContainerStyleEnd}>
                 {messages
-                  .filter(message => (userPermissions.includes(message.visibleTo)))
+                  .filter(message => (thisPlayer.permissions.includes(message.visibleTo)))
                   .map((message) => {
                     let textColor = 'text-slate-300'
                     if (message.visibleTo === 'werewolf') {
