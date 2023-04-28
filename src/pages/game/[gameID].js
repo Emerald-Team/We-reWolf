@@ -360,7 +360,7 @@ export default function Game() {
         if (!!res.data[0]) {
             setMessages(res.data)
             if (!!gameID) {
-              setTimeout(getMessages, 1000)
+              setTimeout(getMessages, 2000)
             }
           }
         })
