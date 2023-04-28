@@ -63,5 +63,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
   6. The game continues until one of the win conditions is met: either the Werewolves are all eliminated, or the Werewolves outnumber the Villagers.
 
-## Deploy on Vercel
+
+## Gameplay
+
+## Authors
 
