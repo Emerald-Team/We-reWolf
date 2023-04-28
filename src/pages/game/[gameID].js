@@ -516,24 +516,21 @@ export default function Game() {
             </div>
             <div style={chatContainerStyleEnd}>
               <div style={chatContentContainerStyleEnd}>
-                {messages
-                  .filter(message => (thisPlayer.permissions.includes(message.visibleTo)))
-                  .map((message) => {
-                    let textColor = 'text-slate-300'
-                    if (message.visibleTo === 'werewolf') {
-                      textColor = 'text-blue-700'
-                    } else if (message.visibleTo === 'dead') {
-                      textColor = 'text-zinc-500'
-                    } else if (message.visibleTo === user) {
-                      textColor = 'text-pink-700'
-                    }
-                    return (
-                      <p className={`text-2xl ${textColor}`} key={message._id}>
-                        {message.user}{message.visibleTo === user ? '(direct)' : ''} : {message.body}
-                      </p>
-                    )
-                  })
+              {messages.filter(message => (thisPlayer.permissions.includes(message.visibleTo))).map((message) => {
+                let textColor = 'text-slate-300'
+                if(message.visibleTo === 'werewolf'){
+                  textColor = 'text-blue-700'
+                } else if(message.visibleTo === 'dead'){
+                  textColor = 'text-zinc-500'
+                } else if(message.visibleTo === user){
+                  textColor = 'text-pink-700'
                 }
+                return (
+                  <p className={`text-2xl ${textColor}`} key={message._id}>
+                    {message.user}{message.visibleTo === user ? '(direct)' : ''}: {message.body}
+                  </p>
+                )}
+              )}
               </div>
             </div>
           </div>
