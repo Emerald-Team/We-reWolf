@@ -42,10 +42,7 @@ const gameStateSchema = new mongoose.Schema({
   users: [{
     username: String,
     role: String,
-    permissions: {
-      type: [String],
-      default: ['villager']
-    },
+    permissions: [String],
     isAlive: {
       type: Boolean,
       default: true
@@ -64,7 +61,7 @@ const gameStateSchema = new mongoose.Schema({
 const lobbySchema = new mongoose.Schema({
   gameID: String,
   users: [{
-    userName: String,
+    username: String,
     rank: {type: Number, default: 1},
     role: {type: String, default: 'default'}
   }]

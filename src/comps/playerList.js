@@ -29,7 +29,7 @@ const PlayerList = ({ count, players }) => {
         </h1>
         <div style={playerListGrid}>
           {players.map((player, index) => (
-            <div style={playerItemStyles} key = {index}>{player.userName} </div>
+            <div style={playerItemStyles} key = {index}>{player.username} </div>
           ))}
         </div>
       </div>

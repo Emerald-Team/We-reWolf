@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     ))
   } else if (req.method === 'GET') {
     model.getLobby(gameID)
-      .then(data => {res.status(200).send(data)})
-      .catch(err => {res.status(401).send(err)})
+      .then(data => (res.status(200).send(data)))
+      .catch(err => (res.status(401).send(err)))
   }
 }

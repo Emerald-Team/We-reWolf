@@ -15,7 +15,7 @@ const model = {
       throw error;
     }
   },
-  createGame: async ({gameID, users, phase}) => {
+  createGame: async (gameID, users, phase) => {
     console.log('creating game...')
     const existingGame = await db.GameState.findOne({gameID: gameID})
 
@@ -45,7 +45,7 @@ const model = {
     let newLobby = new db.Lobby({
       gameID: gameID,
       users: [{
-        userName: user,
+        username: user,
         role: 'default'
       }]
     })
@@ -53,7 +53,7 @@ const model = {
   },
   updateLobby: async (gameID, user) => {
     let newUser = {
-      userName: user,
+      username: user,
       rank: 1,
       role: `default`,
     };
