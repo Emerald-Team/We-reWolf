@@ -40,7 +40,11 @@ export default function Lobby() {
       .then((res) => {
         console.log("RES from GetUserNames", res)
         setPlayersConnected(res.data[0].users)
-        setTimeout(getUserNames, 3000);
+        if(res.data[0].hasStarted){
+          router.push(`http://localhost:3000/game/${id}`)
+        } else {
+          setTimeout(getUserNames, 3000);
+        }
       })
       .catch((err) => console.log(err));
 
@@ -72,23 +76,6 @@ export default function Lobby() {
     setUserName(window.localStorage.user);
     console.log("USERNAME", username);
   }
-
-  let fakePlayers = [
-    { username: "BadBill", vote: 1, role: null },
-    { username: "theRealJae", vote: 1, role: null },
-    { username: "PopShaq", vote: 1, role: null },
-    { username: "Chrodatta", vote: 1, role: null },
-    { username: "ZacKattack", vote: 1, role: null },
-    { username: "jlane20", vote: 1, role: null },
-    { username: "Romulus", vote: 1, role: null },
-    { username: "Remus", vote: 1, role: null },
-    //greater than 8 test
-    { username: "Bumi", vote: 1, role: null },
-    { username: "Chance", vote: 1, role: null },
-    { username: "Bandi", vote: 1, role: null },
-    //12 or more test
-    { username: "Axel", vote: 1, role: null },
-  ];
 
   function assignRoles(arrayOfPlayers) {
     let rankArray = arrayOfPlayers.map((player) => {

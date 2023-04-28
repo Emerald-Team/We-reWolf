@@ -64,7 +64,8 @@ const lobbySchema = new mongoose.Schema({
     username: String,
     rank: {type: Number, default: 1},
     role: {type: String, default: 'default'}
-  }]
+  }],
+  hasStarted: { type: Boolean, default: false }
 })
 
 const db = {
