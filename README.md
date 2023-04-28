@@ -68,3 +68,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Authors
 
+  1. Ben Tracy
+  2. Jae Lee
+  3. James Carrington
+  4. Justen Lane
+  5. Will Miller
+  6. Zack Freeman
