@@ -46,8 +46,10 @@ const model = {
       gameID: gameID,
       users: [{
         username: user,
+        rank: 1,
         role: 'default'
-      }]
+      }],
+      hasStarted: false
     })
     return newLobby.save()
   },
