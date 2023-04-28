@@ -470,7 +470,7 @@ export default function Game() {
           </div>
           <div style={chatContainerStyle}>
             <div style={chatContentContainerStyle}>
-              {messages.filter(message => (thisPlayer.permissions.includes(message.visibleTo))).map((message) => {
+              {messages.filter(message => (thisPlayer.permissions.includes(message.visibleTo) || (!thisPlayer.isAlive && message.visibleTo === 'dead'))).map((message) => {
                 let textColor = 'text-slate-300'
                 if(message.visibleTo === 'werewolf'){
                   textColor = 'text-blue-700'
