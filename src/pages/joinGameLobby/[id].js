@@ -79,18 +79,18 @@ export default function Lobby() {
 
   function assignRoles(arrayOfPlayers) {
     let rankArray = arrayOfPlayers.map((player) => {
-      if (player.vote == 1) {
+      if (player.rank == 1) {
         const returnObj = {
           ...player,
-          vote: player.vote * Math.floor(Math.random() * 20),
-          role: "Villager",
+          rank: player.rank * Math.floor(Math.random() * 20),
+          role: "villager",
         };
         console.log('random roles:\n');
         return returnObj;
       }
       return player;
     });
-    let sortedArray = rankArray.sort((a, b) => a.vote - b.vote);
+    let sortedArray = rankArray.sort((a, b) => a.rank - b.rank);
     if (sortedArray.length <= 8) {
       sortedArray[0].role = "werewolf";
       if (selected.includes("Doctor")) {
@@ -121,7 +121,7 @@ export default function Lobby() {
     }
     console.log(sortedArray)
     return sortedArray.map((player) => {
-      return { ...player, votes: 0, permissions: [player.role === 'werewolf' ? 'werewolf' : '', 'all', player.username] };
+      return { ...player, rank: 0, permissions: [player.role === 'werewolf' ? 'werewolf' : '', 'all', player.username] };
     });
   }
 
