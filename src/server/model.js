@@ -46,10 +46,9 @@ const model = {
       gameID: gameID,
       users: [{
         username: user,
-        rank: 1,
-        role: 'default'
-      }],
-      hasStarted: false
+        role: 'villager'
+      }]
+
     })
     return newLobby.save()
   },
@@ -57,7 +56,7 @@ const model = {
     let newUser = {
       username: user,
       rank: 1,
-      role: `default`,
+      role: `villager`,
     };
     return db.Lobby.findOneAndUpdate(
       { gameID: gameID },
@@ -104,6 +103,7 @@ const model = {
       // }
 
       const user = gameState.users.find((user) => user.username === username);
+      // const user = gameState.users.find({username:username});
       if (!user) {
         console.log("User not found:", username);
         throw new Error("User not found");
@@ -127,10 +127,12 @@ const model = {
       }
 
       const user = gameState.users.find((user) => user.username === username);
+      // const user = gameState.users.find({username:username});
       if (!user) {
         console.log("User not found:", username);
         throw new Error("User not found");
       }
+
       user.votes -= 1;
       // console.log('User votes updated:', user)
       await gameState.save();

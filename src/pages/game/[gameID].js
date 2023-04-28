@@ -102,6 +102,7 @@ export default function Game() {
   const [wolfWins, setWolfWins] = useState(false)
   const [villWins, setVillWins] = useState(false)
   const roleToStr = function(role) {
+    // console.log('this player and role', thisPlayer, thisPlayer.role)
     switch(role) {
       case 'werewolf':
         return wwStr;
@@ -116,26 +117,10 @@ export default function Game() {
         return docStr;
         break;
       default:
-        console.log(`Sorry, we are out of ${role}.`);
+        console.log(`NOT SORRY, we are out of ${role}.`);
     }
   }
   const [roleStr, setRoleStr] = useState(roleToStr(thisPlayer.role));
-  // const [gameID, setGameID] = useState( router.query.gameID)
-
-  // const createNewGame = async (gameID, users, phase) => {
-  //   console.log('creating new game.......... ')
-  //   try {
-  //     // const gameState = await axios.post(`/api/createGame/createGame`, {
-  //     //   gameID,
-  //     //   users,
-  //     //   phase
-  //     // })
-  //     console.log('Game state saved:', gameState)
-  //   } catch (error) {
-  //     console.error('ERROR CREATING GAME: ', error)
-  //     throw error
-  //   }
-  // }
 
   const getGameState = async function()  {
     // console.log('getting game state')
@@ -153,6 +138,8 @@ export default function Game() {
         const gameState = await response.json();
         // console.log('GAME STATE IN getGameState: is this null', gameState)
         if (gameState !== null) {
+          delete gameState.phase;
+          // console.log('GAME STATE IN getGameState: is phase gone?', gameState)
           setGameData(gameState);
                 // return gameState;
           // setPlayers(gameState.users)
@@ -162,29 +149,21 @@ export default function Game() {
           // setThisPlayer(gameState.users.filter(user => user.username === gameState.users[0].username)[0])
         }
       }
-
-
     }
     setTimeout(getGameState, 1000)
   }
-
-  // useEffect(() => {
-  //   if (gameStarted === false) {
-  //     getGameState()
-  //     setGameStarted(true)
-  //   }
-  // }, [gameID])
-
-  // const createNewGameOnce = _.once(createNewGame);
 
   useEffect(() => {
     // console.log('in gameData useEffect: is this null?\n', gameData)
     if (gameData !== null) {
       setPlayers(gameData.users)
       // console.log(gameData, players, '-------IN INIT USEEFFECT------')
-      setPhase(gameData.phase)
+      // setPhase(gameData.phase)
       //  setGameID(gameData.gameID) //should we be setting this here or from router.query line 79
-      setThisPlayer(gameData.users.filter(user => user.username === gameData.users[0].username)[0])
+      const thisPlayerArr = gameData.users.filter(user => user.username === localStorage.getItem('user'));
+      if (thisPlayerArr[0] !== undefined) {
+        setThisPlayer(gameData.users.filter(user => user.username === localStorage.getItem('user'))[0]);
+      }
     }
   }, [gameData])
 
@@ -276,19 +255,24 @@ export default function Game() {
           if (werewolvesHaveWon()) {
             //route to ww end screen
             console.log('Werewolves Win!\n');
-            router.push('/end');
+            setGameDone(true);
+            setWolfWins(true);
+            // router.push('/end');
           }
           break;
         case 'day':
           console.log('The day has ended. Here is the result:\n');
           await killUser()
-          if (werewolvesHaveWon()) {
-            console.log('Werewolves Win!\n');
-            router.push('/end');
-          } else if (villagersHaveWon()) {
-            //route to vil end screen
+          if (villagersHaveWon()) {
             console.log('Villagers Win!\n');
-            router.push('/end');
+            setGameDone(true);
+            setVillWins(true);
+            // router.push('/end');
+          } else if (werewolvesHaveWon()) {
+            console.log('Werewolves Win!\n');
+            setGameDone(true);
+            setWolfWins(true);
+            // router.push('/end');
           }
           break;
         default:
@@ -298,7 +282,7 @@ export default function Game() {
   }
 
   useEffect(() => {
-    // console.log('from phase index: has game started?', gameStarted)
+    console.log('from phase index: has game started?', gameStarted)
     if (gameStarted) {
       setPhase(phases[phaseIndex]);
     }
@@ -306,7 +290,7 @@ export default function Game() {
   }, [phaseIndex])
 
   useEffect(() => {
-    // console.log('handle phase end for phase index: ', (phases.length + phaseIndex) % phases.length)
+    console.log('handle phase end for phase index: ', (phases.length + phaseIndex) % phases.length)
     handleEndPhase(phases[(phases.length + phaseIndex) % phases.length])
     if (phase === 'night') {
       setPhaseText(nightStr)
@@ -315,24 +299,7 @@ export default function Game() {
     }
   }, [phase])
 
-  //hardcodes for testing
-  let userPermissions = [user, 'all', 'werewolf', 'dead']
-  // let timeOfDay = 'night'
-  let userRole = 'werewolf'
-
   useEffect(() => {
-  //   //upper useEffect
-  //   if (gameStarted === false && gameData !== null && gameID !== undefined) {
-  //     // console.log('in createGame useeEffect')
-  //     createNewGameOnce(gameID, gameData.users, gameData.phase)
-  //       .then((gameState) => {
-  //         // console.log('new game created on page load:\n', gameState)
-
-  //       })
-  //       .catch((err) => console.error('error creating new game on page load:\n', err))
-  //   }
-
-    // lower useEffect
     let storedUser = window.localStorage.getItem('user')
     setUser(storedUser)
     if (gameData !== null) {
@@ -342,8 +309,6 @@ export default function Game() {
       getGameState()
     }
   }, [])
-
-
 
   useEffect(() => {
     console.log(gameID)
@@ -377,8 +342,8 @@ export default function Game() {
         url: `http://localhost:3000/api/messages/${inputID}`
       }
       axios(options)
-        .then(res => {
-          if (!!res.data[0]) {
+      .then(res => {
+        if (!!res.data[0]) {
             setMessages(res.data)
             if (!!gameID) {
               setTimeout(getMessages, 1000)
@@ -397,9 +362,9 @@ export default function Game() {
 
   const handleSend = () => {
     let visibleTo = 'all'
-    if(phase === 'night' && userRole === 'werewolf'){
+    if (phase === 'night' && thisPlayer.role === 'werewolf') {
       visibleTo = 'werewolf'
-    } else if(userRole === 'dead'){
+    } else if (thisPlayer.isAlive === false) {
       visibleTo = 'dead'
     }
 
@@ -438,175 +403,177 @@ export default function Game() {
   }
 
   const onNextPhase = async function() {
+    console.log('end of phase', phase, '\ngameData:\n', gameData)
     await killUser()
     // console.log('kill result:\n', killResult)
-    await resetVotes(gameID);
+    const resetResult = await resetVotes(gameID);
     // console.log('reset result result:\n', resetResult)
     // setPlayers(gameData.players)
     setPhaseIndex((phaseIndex + 1) % phases.length)
   }
 
-
-
-if (!gameDone) {
-  return (
-    <>
-      <div style={containerStyle}>
-        <div style={phase === 'night' ? gameContainerStyleNight : gameContainerStyle}>
-          <div style={boxContainerStyle}>
-            <div style={phase === 'night' ? roleStyleNight : roleStyle}>
-              <p>{roleStr}</p>
+  if (!gameDone) {
+    return (
+      <>
+        <div style={containerStyle}>
+          <div style={phase === 'night' ? gameContainerStyleNight : gameContainerStyle}>
+            <div style={boxContainerStyle}>
+              <div style={phase === 'night' ? roleStyleNight : roleStyle}>
+                <p>{roleStr}</p>
+              </div>
+              <div style={phase === 'night' ? timerStyleNight : timerStyle}>
+                <Timer period={PHASE_LENGTH} callback={onNextPhase} />
+              </div>
+              <div style={phase === 'night' ? dayStyleNight : dayStyle}>
+                <p>{phaseText}</p>
+                {/* Day*/}
+              </div>
             </div>
-            <div style={phase === 'night' ? timerStyleNight : timerStyle}>
-              <Timer period={PHASE_LENGTH} callback={onNextPhase} />
-            </div>
-            <div style={phase === 'night' ? dayStyleNight : dayStyle}>
-              <p>{phaseText}</p>
-              {/* Day*/}
-            </div>
-          </div>
-          <div className="players" style={phase === 'night' ? playerContainerNight : playerContainer}>
-            {players !== undefined && players.map(
-              (player, i) =>
-                <Avatar
-                  key={i}
-                  player={player}
-                  thisPlayerCanSelect={thisPlayer.isAlive}
-                  selected={selected}
-                  setSelected={setSelected}
-                  setLastSelected={setLastSelected}
-                  gameID={gameID}
-                />
-              )
-            }
-          </div>
-          {isWerewolf && <small style={phase === 'night' ? werewolfTextContainerNight : werewolfTextContainer}>
-            Werewolves: {players.map(player => {
-              if (isWerewolf && player.role === 'werewolf') {
-                return player.username + ' '
-              } else {
-                return ''
+            <div className="players" style={phase === 'night' ? playerContainerNight : playerContainer}>
+              {players !== undefined && players.map(
+                (player, i) =>
+                  <Avatar
+                    key={i}
+                    player={player}
+                    thisPlayerCanSelect={thisPlayer.isAlive}
+                    selected={selected}
+                    setSelected={setSelected}
+                    setLastSelected={setLastSelected}
+                    gameID={gameID}
+                  />
+                )
               }
-            })}
-          </small>}
-        </div>
-        <div style={chatContainerStyle}>
-          <div style={chatContentContainerStyle}>
-            {messages.filter(message => (userPermissions.includes(message.visibleTo))).map((message) => {
-              let textColor = 'text-slate-300'
-              if(message.visibleTo === 'werewolf'){
-                textColor = 'text-blue-700'
-              } else if(message.visibleTo === 'dead'){
-                textColor = 'text-zinc-500'
-              } else if(message.visibleTo === user){
-                textColor = 'text-pink-700'
-              }
-              return (
-                <p className={`text-2xl ${textColor}`} key={message._id}>
-                  {message.user}{message.visibleTo === user ? '(direct)' : ''}: {message.body}
-                </p>
+            </div>
+            {isWerewolf && <small style={phase === 'night' ? werewolfTextContainerNight : werewolfTextContainer}>
+              Werewolves: {players.map(player => {
+                if (isWerewolf && player.role === 'werewolf') {
+                  return player.username + ' '
+                } else {
+                  return ''
+                }
+              })}
+            </small>}
+          </div>
+          <div style={chatContainerStyle}>
+            <div style={chatContentContainerStyle}>
+              {messages.filter(message => (thisPlayer.permissions.includes(message.visibleTo))).map((message) => {
+                let textColor = 'text-slate-300'
+                if(message.visibleTo === 'werewolf'){
+                  textColor = 'text-blue-700'
+                } else if(message.visibleTo === 'dead'){
+                  textColor = 'text-zinc-500'
+                } else if(message.visibleTo === user){
+                  textColor = 'text-pink-700'
+                }
+                return (
+                  <p className={`text-2xl ${textColor}`} key={message._id}>
+                    {message.user}{message.visibleTo === user ? '(direct)' : ''}: {message.body}
+                  </p>
+                )}
               )}
-            )}
+            </div>
           </div>
         </div>
-      </div>
-      <div style={inputContainerStyle}>
-        <input
-          type="text"
-          onChange={handleText}
-          value={text}
-          style={inputStyle}
-          placeholder="Type your message here..."
-          onKeyPress={(e)=>{
-            if(e.charCode === 13) {
-              handleSend()
-            }
-          }}
-        />
-        <button className="chatSend" style={buttonStyle} onClick={handleSend}>Send</button>
-      </div>
-    </>
-  )
-        } if (gameDone) {
-          if (wolfWins) {
-          return (
-            <>
-              <div style={containerStyleEnd}>
-                <div style={imageContainerStyleEnd}>
-                  <Image src="/giphy.gif" alt="Your Image" width="400" height="600" />
-                  <p style={imageStyleEnd}>Villagers WIN!</p>
-                </div>
-                <div style={chatContainerStyleEnd}>
-                  <div style={chatContentContainerStyleEnd}>
-                  {messages.filter(message => (userPermissions.includes(message.visibleTo))).map((message) => {
-                        let textColor = 'text-slate-300'
-                        if(message.visibleTo === 'werewolf'){
-                          textColor = 'text-blue-700'
-                        } else if(message.visibleTo === 'dead'){
-                          textColor = 'text-zinc-500'
-                        } else if(message.visibleTo === user){
-                          textColor = 'text-pink-700'
-                        }
-                        return (
-                          <p className={`text-2xl ${textColor}`} key={message._id}>
-                            {message.user}{message.visibleTo === user ? '(direct)' : ''}: {message.body}
-                          </p>
-                        )}
-                      )}
-                  </div>
-                </div>
+        <div style={inputContainerStyle}>
+          <input
+            type="text"
+            onChange={handleText}
+            value={text}
+            style={inputStyle}
+            placeholder="Type your message here..."
+            onKeyPress={(e)=>{
+              if(e.charCode === 13) {
+                handleSend()
+              }
+            }}
+          />
+          <button className="chatSend" style={buttonStyle} onClick={handleSend}>Send</button>
+        </div>
+      </>
+    );
+  } else if (gameDone) {
+    if (wolfWins) {
+      return (
+        <>
+          <div style={containerStyleEnd}>
+            <div style={imageContainerStyleEnd}>
+              <Image src="/giphy-1.gif" alt="Your Image" width="400" height="600" />
+              <p style={imageStyleEnd}>Werewolves WIN!</p>
+            </div>
+            <div style={chatContainerStyleEnd}>
+              <div style={chatContentContainerStyleEnd}>
+                {messages
+                  .filter(message => (userPermissions.includes(message.visibleTo)))
+                  .map((message) => {
+                    let textColor = 'text-slate-300'
+                    if (message.visibleTo === 'werewolf') {
+                      textColor = 'text-blue-700'
+                    } else if (message.visibleTo === 'dead') {
+                      textColor = 'text-zinc-500'
+                    } else if (message.visibleTo === user) {
+                      textColor = 'text-pink-700'
+                    }
+                    return (
+                      <p className={`text-2xl ${textColor}`} key={message._id}>
+                        {message.user}{message.visibleTo === user ? '(direct)' : ''} : {message.body}
+                      </p>
+                    )
+                  })
+                }
               </div>
-              <div style={inputContainerStyleEnd}>
-                <input
-                  type="text"
-                  style={inputStyleEnd}
-                  placeholder="Type your message here..."
-                />
-                <button style={buttonStyleEnd}>Send</button>
+            </div>
+          </div>
+          <div style={inputContainerStyleEnd}>
+            <input
+              type="text"
+              style={inputStyleEnd}
+              placeholder="Type your message here..."
+            />
+            <button style={buttonStyle}>Send</button>
+          </div>
+        </>
+      );
+    }
+    if (villWins) {
+      return (
+        <>
+          <div style={containerStyleEnd}>
+            <div style={imageContainerStyleEnd}>
+              <Image src="/giphy.gif" alt="Your Image" width="400" height="600" />
+              <p style={imageStyleEnd}>Villagers WIN!</p>
+            </div>
+            <div style={chatContainerStyleEnd}>
+              <div style={chatContentContainerStyleEnd}>
+              {messages.filter(message => (userPermissions.includes(message.visibleTo))).map((message) => {
+                    let textColor = 'text-slate-300'
+                    if(message.visibleTo === 'werewolf'){
+                      textColor = 'text-blue-700'
+                    } else if(message.visibleTo === 'dead'){
+                      textColor = 'text-zinc-500'
+                    } else if(message.visibleTo === user){
+                      textColor = 'text-pink-700'
+                    }
+                    return (
+                      <p className={`text-2xl ${textColor}`} key={message._id}>
+                        {message.user}{message.visibleTo === user ? '(direct)' : ''}: {message.body}
+                      </p>
+                    )}
+                  )}
               </div>
-            </>
-          )
-        }
-        if (villWins) {
-          return (
-            <>
-              <div style={containerStyleEnd}>
-                <div style={imageContainerStyleEnd}>
-                  <Image src="/giphy.gif" alt="Your Image" width="400" height="600" />
-                  <p style={imageStyleEnd}>Villagers WIN!</p>
-                </div>
-                <div style={chatContainerStyleEnd}>
-                  <div style={chatContentContainerStyleEnd}>
-                  {messages.filter(message => (userPermissions.includes(message.visibleTo))).map((message) => {
-                        let textColor = 'text-slate-300'
-                        if(message.visibleTo === 'werewolf'){
-                          textColor = 'text-blue-700'
-                        } else if(message.visibleTo === 'dead'){
-                          textColor = 'text-zinc-500'
-                        } else if(message.visibleTo === user){
-                          textColor = 'text-pink-700'
-                        }
-                        return (
-                          <p className={`text-2xl ${textColor}`} key={message._id}>
-                            {message.user}{message.visibleTo === user ? '(direct)' : ''}: {message.body}
-                          </p>
-                        )}
-                      )}
-                  </div>
-                </div>
-              </div>
-              <div style={inputContainerStyleEnd}>
-                <input
-                  type="text"
-                  style={inputStyleEnd}
-                  placeholder="Type your message here..."
-                />
-                <button style={buttonStyleEnd}>Send</button>
-              </div>
-            </>
-          )
-        }
-        }
+            </div>
+          </div>
+          <div style={inputContainerStyleEnd}>
+            <input
+              type="text"
+              style={inputStyleEnd}
+              placeholder="Type your message here..."
+            />
+            <button style={buttonStyle}>Send</button>
+          </div>
+        </>
+      );
+    }
+  }
 }
 
 

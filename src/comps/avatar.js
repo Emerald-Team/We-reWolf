@@ -75,21 +75,21 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
     return updatedGameState
   }
   // unvote to kill
-  // async function unvoteForUser(username, previousUsername, gameID ) {
-  //   const response = await fetch(`/api/unvoteToKill/${gameID}`, {
-  //     method: 'PUT',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify({username,previousUsername, gameID})
-  //   })
-  //   if (!response.ok) {
-  //     console.error(`Error: ${response.statusText}`)
-  //   }
-  //   const updatedGameState = await response.json()
-  //   console.log(updatedGameState, '--------UNUPDATED GAME STATE-------')
-  //   return updatedGameState
-  // }
+  async function unvoteForUser(username, previousUsername, gameID ) {
+    const response = await fetch(`/api/unvoteToKill/${gameID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({username,previousUsername, gameID})
+    })
+    if (!response.ok) {
+      console.error(`Error: ${response.statusText}`)
+    }
+    const updatedGameState = await response.json()
+    console.log(updatedGameState, '--------UNUPDATED GAME STATE-------')
+    return updatedGameState
+  }
 
   useEffect(() => {
     // console.log('change in this avatar player: ', player.username, 'votes', player.votes)
@@ -114,7 +114,6 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
 
   // when selected or player change, set state to whether this is the current selection
   useEffect(() => {
-
     if(selected === player) console.log('selected: ', player)
     setIsSelected(selected === player);
   }, [selected, player])
@@ -128,7 +127,7 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
       //select
     } else if (isSelectedLagFrame && !isSelected) {
       //unselect
-      // unvoteForUser(player.username,  null, gameID)
+      unvoteForUser(player.username,  null, gameID)
     }
     setIsSelectedLagFrame(isSelected)
   }, [isSelected])

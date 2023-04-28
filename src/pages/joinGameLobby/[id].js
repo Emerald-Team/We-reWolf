@@ -24,7 +24,7 @@ export default function Lobby() {
     const createGameObject = {
       gameID: gameLobbyText,
       users: assignRoles(playersConnected),
-      phase: "day",
+      // phase: "day",
     };
     console.log(createGameObject, "********************");
     axios
