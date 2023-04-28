@@ -127,7 +127,7 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
       //select
     } else if (isSelectedLagFrame && !isSelected) {
       //unselect
-      unvoteForUser(player.username,  null, gameID)
+      // unvoteForUser(player.username,  null, gameID)
     }
     setIsSelectedLagFrame(isSelected)
   }, [isSelected])
