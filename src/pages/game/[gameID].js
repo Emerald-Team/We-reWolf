@@ -120,20 +120,20 @@ export default function Game() {
   const [roleStr, setRoleStr] = useState(roleToStr(thisPlayer.role));
   // const [gameID, setGameID] = useState( router.query.gameID)
 
-  const createNewGame = async (gameID, users, phase) => {
-    console.log('creating new game.......... ')
-    try {
-      const gameState = await axios.post(`/api/createGame/createGame`, {
-        gameID,
-        users,
-        phase
-      })
-      console.log('Game state saved:', gameState)
-    } catch (error) {
-      console.error('ERROR CREATING GAME: ', error)
-      throw error
-    }
-  }
+  // const createNewGame = async (gameID, users, phase) => {
+  //   console.log('creating new game.......... ')
+  //   try {
+  //     // const gameState = await axios.post(`/api/createGame/createGame`, {
+  //     //   gameID,
+  //     //   users,
+  //     //   phase
+  //     // })
+  //     console.log('Game state saved:', gameState)
+  //   } catch (error) {
+  //     console.error('ERROR CREATING GAME: ', error)
+  //     throw error
+  //   }
+  // }
 
   const getGameState = async function()  {
     // console.log('getting game state')
@@ -173,7 +173,7 @@ export default function Game() {
   //   }
   // }, [gameID])
 
-  const createNewGameOnce = _.once(createNewGame);
+  // const createNewGameOnce = _.once(createNewGame);
 
   useEffect(() => {
     // console.log('in gameData useEffect: is this null?\n', gameData)
@@ -311,16 +311,16 @@ export default function Game() {
   let userRole = 'werewolf'
 
   useEffect(() => {
-    //upper useEffect
-    if (gameStarted === false && gameData !== null && gameID !== undefined) {
-      // console.log('in createGame useeEffect')
-      createNewGameOnce(gameID, gameData.users, gameData.phase)
-        .then((gameState) => {
-          // console.log('new game created on page load:\n', gameState)
+  //   //upper useEffect
+  //   if (gameStarted === false && gameData !== null && gameID !== undefined) {
+  //     // console.log('in createGame useeEffect')
+  //     createNewGameOnce(gameID, gameData.users, gameData.phase)
+  //       .then((gameState) => {
+  //         // console.log('new game created on page load:\n', gameState)
 
-        })
-        .catch((err) => console.error('error creating new game on page load:\n', err))
-    }
+  //       })
+  //       .catch((err) => console.error('error creating new game on page load:\n', err))
+  //   }
 
     // lower useEffect
     let storedUser = window.localStorage.getItem('user')

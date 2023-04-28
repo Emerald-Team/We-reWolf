@@ -17,20 +17,20 @@ export default function Lobby() {
 
 
   let fakePlayers = [
-    { userName: "BadBill", rank: 1, role: null },
-    { userName: "theRealJae", rank: 1, role: null },
-    { userName: "PopShaq", rank: 1, role: null },
-    { userName: "Chrodatta", rank: 1, role: null },
-    { userName: "ZacKattack", rank: 1, role: null },
-    { userName: "jlane20", rank: 1, role: null },
-    { userName: "Romulus", rank: 1, role: null },
-    { userName: "Remus", rank: 1, role: null },
+    { username: "BadBill", rank: 1, role: null },
+    { username: "theRealJae", rank: 1, role: null },
+    { username: "PopShaq", rank: 1, role: null },
+    { username: "Chrodatta", rank: 1, role: null },
+    { username: "ZacKattack", rank: 1, role: null },
+    { username: "jlane20", rank: 1, role: null },
+    { username: "Romulus", rank: 1, role: null },
+    { username: "Remus", rank: 1, role: null },
     //greater than 8 test
-    { userName: "Bumi", rank: 1, role: null },
-    { userName: "Chance", rank: 1, role: null },
-    { userName: "Bandi", rank: 1, role: null },
+    { username: "Bumi", rank: 1, role: null },
+    { username: "Chance", rank: 1, role: null },
+    { username: "Bandi", rank: 1, role: null },
     //12 or more test
-    { userName: "Axel", rank: 1, role: null },
+    { username: "Axel", rank: 1, role: null },
   ]
 
   function assignRoles(arrayOfPlayers) {

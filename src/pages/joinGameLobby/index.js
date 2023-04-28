@@ -7,7 +7,7 @@ const Join = () => {
   //state variables
   const [gameCode, setGameCode] = useState("")
   const [showJoinModal, setJoinModal] = useState(false);
-  const [userName, setUserName] = useState('');
+  const [username, setUserName] = useState('');
 
 
   function getRandomInt(max) {
@@ -16,12 +16,12 @@ const Join = () => {
 
   function getUserName () {
     setUserName(window.localStorage.user);
-    console.log('USERNAME', userName)
+    console.log('USERNAME', username)
   }
 
   function hostHandler() {
     document.cookie = `isHost = true`;
-    axios.post(`http://localhost:3000/api/lobby/${gameCode}`, {user:  userName}).then((res) => console.log('RES from HostLobby POST Req',res)).catch((err) => console.log(err));
+    axios.post(`http://localhost:3000/api/lobby/${gameCode}`, {user:  username}).then((res) => console.log('RES from HostLobby POST Req',res)).catch((err) => console.log(err));
   }
 
 
@@ -193,7 +193,7 @@ const Join = () => {
       <JoinModal
         open={showJoinModal}
         onClose={() => setJoinModal(false)}
-        user = {userName}
+        user = {username}
       />
     </>
   )
