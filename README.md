@@ -87,28 +87,28 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Authors
 
-  1. [Ben Tracy](https://www.linkedin.com/in/bentracydotcom/) <a href="https://github.com/popeshaq">
+  1. [Ben Tracy](https://www.linkedin.com/in/bentracydotcom/) <p><a href="https://github.com/popeshaq">
  <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white">
- </a>
+ </a></p>
 
-  2. [Jae Hoon Lee](https://www.linkedin.com/in/jae-hoon-lee/) <a href="https://github.com/jl924">
+  2. [Jae Hoon Lee](https://www.linkedin.com/in/jae-hoon-lee/) <p><a href="https://github.com/jl924">
  <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white">
- </a>
+ </a></p>
 
 
-  3. [James Carrington](https://www.linkedin.com/in/james-carrington-jdc/) <a href="https://github.com/Chordata88">
+  3. [James Carrington](https://www.linkedin.com/in/james-carrington-jdc/) <p><a href="https://github.com/Chordata88">
  <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white">
- </a>
+ </a></p>
 
-  4. [Justen Lane](https://www.linkedin.com/in/justenlane/) <a href="https://github.com/Jlane20">
+  4. [Justen Lane](https://www.linkedin.com/in/justenlane/) <p><a href="https://github.com/Jlane20">
  <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white">
- </a>
+ </a></p>
 
 
-  5. [William Miller](https://www.linkedin.com/in/willcmiller/) <a href="https://github.com/millerw4">
+  5. [William Miller](https://www.linkedin.com/in/willcmiller/) <p><a href="https://github.com/millerw4">
  <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white">
- </a>
+ </a></p>
 
-  6. [Zack Freeman](https://www.linkedin.com/in/zackfreeman/) <a href="https://github.com/zfreeman341">
+  6. [Zack Freeman](https://www.linkedin.com/in/zackfreeman/) <p><a href="https://github.com/zfreeman341">
  <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white">
- </a>
+ </a></p>
