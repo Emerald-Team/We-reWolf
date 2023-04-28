@@ -76,9 +76,26 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Authors
 
-  1. Ben Tracy : https://www.linkedin.com/in/bentracydotcom/
-  2. Jae Hoon Lee : https://www.linkedin.com/in/jae-hoon-lee/
-  3. James Carrington: https://www.linkedin.com/in/james-carrington-jdc/
-  4. Justen Lane: https://www.linkedin.com/in/justenlane/
-  5. William Miller: https://www.linkedin.com/in/willcmiller/
-  6. Zack Freeman: https://www.linkedin.com/in/zackfreeman/
+  1. [Ben Tracy](https://www.linkedin.com/in/bentracydotcom/)
+  <a href="https://github.com/Vorelli">
+ <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white">
+ </a>
+  2. [Jae Hoon Lee](https://www.linkedin.com/in/jae-hoon-lee/)
+  <a href="https://github.com/Vorelli">
+ <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white">
+ </a>
+  3. [James Carrington](https://www.linkedin.com/in/james-carrington-jdc/)
+  <a href="https://github.com/Vorelli">
+ <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white">
+ </a>
+  4. [Justen Lane](https://www.linkedin.com/in/justenlane/)  <a href="https://github.com/Vorelli">
+ <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white">
+ </a>
+  5. [William Miller](https://www.linkedin.com/in/willcmiller/)
+  <a href="https://github.com/Vorelli">
+ <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white">
+ </a>
+  6. [Zack Freeman](https://www.linkedin.com/in/zackfreeman/)
+  <a href="https://github.com/Vorelli">
+ <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white">
+ </a>
