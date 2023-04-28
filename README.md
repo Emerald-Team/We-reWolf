@@ -35,18 +35,18 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## About The Game
 
 ### Objective:
-  -For the Villagers, Doctor, and Seer: Identify and vote out the Werewolves to save the village.
+  - **For the Villagers, Doctor, and Seer:** Identify and vote out the Werewolves to save the village.
 
-  -For the Werewolves: Eliminate all Villagers and other opposing roles.
+  - **For the Werewolves:** Eliminate all Villagers and other opposing roles.
 
 ### Roles:
-  - Werewolves: Typically, there are 2 or more players who are designated as Werewolves. They work together to eliminate other players during the game. The Werewolves know each others identity and can communicate secretly to plan their strategy.
+  - **Werewolves:** Typically, there are 2 or more players who are designated as Werewolves. They work together to eliminate other players during the game. The Werewolves know each others identity and can communicate secretly to plan their strategy.
 
-  - Villagers: The majority of players are Villagers. They do not have any special abilities other than trying to identify and vote out the Werewolves during the game.
+  - **Villagers:** The majority of players are Villagers. They do not have any special abilities other than trying to identify and vote out the Werewolves during the game.
 
-  - Doctor: The Doctor is a special role on the side of the Villagers. The Doctor has the ability to protect one player each night from being eliminated by the Werewolves. The Doctors goal is to save as many Villagers as possible.
+  <!-- - **Doctor:** The Doctor is a special role on the side of the Villagers. The Doctor has the ability to protect one player each night from being eliminated by the Werewolves. The Doctors goal is to save as many Villagers as possible.
 
-  - Seer: The Seer is another special role on the side of the Villagers. The Seer has the ability to investigate one players identity each night to determine if they are a Villager or a Werewolf. The Seers goal is to gather information and use it to help the Villagers identify the Werewolves.
+  - **Seer:** The Seer is another special role on the side of the Villagers. The Seer has the ability to investigate one players identity each night to determine if they are a Villager or a Werewolf. The Seers goal is to gather information and use it to help the Villagers identify the Werewolves. -->
 
 
 ### GamePlay:
