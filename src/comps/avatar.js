@@ -43,7 +43,7 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   const [style, setStyle] = useState(playerStyle);
   const [votes, setVotes] = useState(player.votes || 0);
   const [canHover, setCanHover] = useState(player.isAlive);
-  const [canSelect, setCanSelect] = useState(player.isAlive && thisPlayerCanSelect);
+  const [canSelect, setCanSelect] = useState(thisPlayerCanSelect);
   const [isSelected, setIsSelected] = useState(player === selected);
   const [isSelectedLagFrame, setIsSelectedLagFrame] = useState(player === selected);
 
@@ -55,9 +55,9 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
     }).toDataUriSync();
   }, []);
 
-  useEffect(() => {
-    setVotes(player.votes || 0)
-  }, [player.votes])
+  // useEffect(() => {
+  //   setVotes(player.votes || 0)
+  // }, [player.votes])
 
   // vote to kill
   const voteForUser = (username, gameID) => {
@@ -75,21 +75,6 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
     })
   }
 
-  // async function voteForUser(username, previousUsername, gameID ) {
-  //   const response = await fetch(`/api/voteToKill/${gameID}`, {
-  //     method: 'PUT',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify({username, previousUsername, gameID})
-  //   })
-  //   if (!response.ok) {
-  //     console.error(`Error: ${response.statusText}`)
-  //   }
-  //   const updatedGameState = await response.json()
-  //   console.log(updatedGameState, '--------UPDATED GAME STATE-------')
-  //   return updatedGameState
-  // }
   // unvote to kill
   const unvoteForUser = (username, gameID) => {
     const options = {
@@ -106,34 +91,18 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
     })
   }
 
-  // async function unvoteForUser(username, previousUsername, gameID ) {
-  //   const response = await fetch(`/api/unvoteToKill/${gameID}`, {
-  //     method: 'PUT',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify({username,previousUsername, gameID})
-  //   })
-  //   if (!response.ok) {
-  //     console.error(`Error: ${response.statusText}`)
-  //   }
-  //   const updatedGameState = await response.json()
-  //   console.log(updatedGameState, '--------UNUPDATED GAME STATE-------')
-  //   return updatedGameState
-  // }
-
-  useEffect(() => {
+  useEffect(() => { //wcm @ gametime
     // console.log('change in this avatar player: ', player.username, 'votes', player.votes)
     setVotes(player.votes);
   }, [player])
 
   useEffect(() => {
     // setVotes(player.votes);
-    if (!player.isAlive || !thisPlayerCanSelect) {
-      setCanHover(false);
-      setCanSelect(false);
-    }
-  }, [player, canSelect]);
+    setCanSelect(thisPlayerCanSelect);
+    // if (!thisPlayerCanSelect) {
+    //   setCanHover(false);
+    // }
+  }, [thisPlayerCanSelect]);
 
   // if player is not currently selected, set style to unselected
   useEffect(() => {
@@ -146,26 +115,26 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   // when selected or player change, set state to whether this is the current selection
   useEffect(() => {
     if(selected === player) console.log('selected: ', player)
-    setIsSelected(selected === player);
+      setIsSelected(selected === player);
   }, [selected, player])
-  useEffect(() => {
-  }, [selected])
-  useEffect(() => {
-    // console.log('isSelected:', player.username, isSelected)
-    console.log('isSelected:', player.username, isSelected)
-    console.log('isSelectedLagFrame:', player.username, isSelectedLagFrame)
-    if (isSelected && !isSelectedLagFrame) {
-      //select
-    } else if (isSelectedLagFrame && !isSelected) {
-      //unselect
-      // unvoteForUser(player.username, gameID)
-    }
-    setIsSelectedLagFrame(isSelected)
-  }, [isSelected])
-  useEffect(() => {
-    // console.log('isSelected:', player.username, isSelected)
-    // console.log('isSelectedLagFrame:', player.username, isSelectedLagFrame)
-  }, [isSelectedLagFrame])
+  // useEffect(() => {
+  // }, [selected])
+  // useEffect(() => {
+  //   // console.log('isSelected:', player.username, isSelected)
+  //   // console.log('isSelected:', player.username, isSelected)
+  //   // console.log('isSelectedLagFrame:', player.username, isSelectedLagFrame)
+  //   if (isSelected && !isSelectedLagFrame) {
+  //     //select
+  //   } else if (isSelectedLagFrame && !isSelected) {
+  //     //unselect
+  //     // unvoteForUser(player.username, gameID)
+  //   }
+  //   setIsSelectedLagFrame(isSelected)
+  // }, [isSelected])
+  // useEffect(() => {
+  //   // console.log('isSelected:', player.username, isSelected)
+  //   // console.log('isSelectedLagFrame:', player.username, isSelectedLagFrame)
+  // }, [isSelectedLagFrame])
 
   // if player is alive and not currently selected, highlight on hover
   const handleHoverIn = function(e) {
@@ -205,6 +174,8 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   const handleSelect = async function(e) {
     console.log('clicked!')
     if(!canSelect) {
+      console.log(player.isAlive)
+      console.log(canSelect)
       return;
     }
     if (isSelected) {
