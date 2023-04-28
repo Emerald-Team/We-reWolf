@@ -8,7 +8,7 @@ import axios from 'axios'
 import * as _ from "lodash"
 import { useRouter } from 'next/router';
 
-const PHASE_LENGTH = 10;
+const PHASE_LENGTH = 60;
 const phases = ['night', 'day'];
 
 const dayStr = 'Day🔆';
@@ -171,8 +171,9 @@ export default function Game() {
       // setPhase(gameData.phase)
       //  setGameID(gameData.gameID) //should we be setting this here or from router.query line 79
       const thisPlayerArr = gameData.users.filter(user => user.username === localStorage.getItem('user'));
+      // console.log(thisPlayerArr[0], 'THISPLAYERARR')
       if (thisPlayerArr[0] !== undefined) {
-        setThisPlayer(gameData.users.filter(user => user.username === localStorage.getItem('user'))[0]);
+        setThisPlayer(thisPlayerArr[0]);
       }
     }
   }, [gameData])
@@ -339,14 +340,8 @@ export default function Game() {
   }, [router.isReady])
 
   useEffect(() => {
-    // if (!router.isReady) {
-    //   return
-    // }
-
     getMessages(router.query.gameID)
-  }, /*[router.isReady]*/)
-  // const userInfo = gameData.user
-  // const username = userInfo.name
+  },)
 
   const getMessages = (inputID) => {
     inputID = inputID || gameID
@@ -373,6 +368,8 @@ export default function Game() {
   const handleText = (e) => {
     setText(e.target.value)
   }
+
+
 
   const handleSend = () => {
     let visibleTo = 'all'
@@ -426,6 +423,10 @@ export default function Game() {
     setPhaseIndex((phaseIndex + 1) % phases.length)
   }
 
+  // useEffect(() => {
+  //   console.log(thisPlayer, thisPlayer.isAlive, thisPlayer.role, phase)
+  // }, [thisPlayer])
+
   if (!gameDone) {
     return (
       <>
@@ -449,7 +450,7 @@ export default function Game() {
                   <Avatar
                     key={i}
                     player={player}
-                    thisPlayerCanSelect={thisPlayer.isAlive}
+                    thisPlayerCanSelect={(thisPlayer.isAlive && thisPlayer.role === 'werewolf') || (thisPlayer.isAlive && phase === 'day')}
                     selected={selected}
                     setSelected={setSelected}
                     setLastSelected={setLastSelected}
