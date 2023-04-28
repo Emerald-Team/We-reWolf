@@ -99,6 +99,8 @@ export default function Game() {
   const [selected, setSelected] = useState(null);
   const [lastSelected, setLastSelected] = useState(null);
   const [gameDone, setGameDone] = useState(false)
+  const [wolfWins, setWolfWins] = useState(false)
+  const [villWins, setVillWins] = useState(false)
   const roleToStr = function(role) {
     switch(role) {
       case 'werewolf':
@@ -149,7 +151,7 @@ export default function Game() {
         throw new Error(`Error: ${response.statusText}`);
       } else {
         const gameState = await response.json();
-        console.log('GAME STATE IN getGameState: is this null', gameState)
+        // console.log('GAME STATE IN getGameState: is this null', gameState)
         if (gameState !== null) {
           setGameData(gameState);
                 // return gameState;
@@ -185,6 +187,13 @@ export default function Game() {
       setThisPlayer(gameData.users.filter(user => user.username === gameData.users[0].username)[0])
     }
   }, [gameData])
+
+  // useEffect(() => {
+  //   if (gameData !== null) {
+  //   setPlayers(gameData.users)
+  //   }
+  // }, [gameData, phaseIndex])
+
 
   useEffect(() => {
     if(gameStarted) {
@@ -263,7 +272,7 @@ export default function Game() {
       switch (phaseEnded) {
         case 'night':
           console.log('The night has ended. Here is the result:\n');
-          // await killUser()
+          await killUser()
           if (werewolvesHaveWon()) {
             //route to ww end screen
             console.log('Werewolves Win!\n');
@@ -272,7 +281,7 @@ export default function Game() {
           break;
         case 'day':
           console.log('The day has ended. Here is the result:\n');
-          // await killUser()
+          await killUser()
           if (werewolvesHaveWon()) {
             console.log('Werewolves Win!\n');
             router.push('/end');
@@ -293,6 +302,7 @@ export default function Game() {
     if (gameStarted) {
       setPhase(phases[phaseIndex]);
     }
+    console.log(gameData)
   }, [phaseIndex])
 
   useEffect(() => {
@@ -428,12 +438,16 @@ export default function Game() {
   }
 
   const onNextPhase = async function() {
-    const killResult = await killUser()
-    console.log('kill result:\n', killResult)
-    const resetResult = await resetVotes(gameID);
-    console.log('reset result result:\n', resetResult)
+    await killUser()
+    // console.log('kill result:\n', killResult)
+    await resetVotes(gameID);
+    // console.log('reset result result:\n', resetResult)
+    // setPlayers(gameData.players)
     setPhaseIndex((phaseIndex + 1) % phases.length)
   }
+
+
+
 if (!gameDone) {
   return (
     <>
@@ -452,7 +466,7 @@ if (!gameDone) {
             </div>
           </div>
           <div className="players" style={phase === 'night' ? playerContainerNight : playerContainer}>
-            {players.map(
+            {players !== undefined && players.map(
               (player, i) =>
                 <Avatar
                   key={i}
@@ -514,49 +528,87 @@ if (!gameDone) {
     </>
   )
         } if (gameDone) {
-hello
+          if (wolfWins) {
+          return (
+            <>
+              <div style={containerStyleEnd}>
+                <div style={imageContainerStyleEnd}>
+                  <Image src="/giphy.gif" alt="Your Image" width="400" height="600" />
+                  <p style={imageStyleEnd}>Villagers WIN!</p>
+                </div>
+                <div style={chatContainerStyleEnd}>
+                  <div style={chatContentContainerStyleEnd}>
+                  {messages.filter(message => (userPermissions.includes(message.visibleTo))).map((message) => {
+                        let textColor = 'text-slate-300'
+                        if(message.visibleTo === 'werewolf'){
+                          textColor = 'text-blue-700'
+                        } else if(message.visibleTo === 'dead'){
+                          textColor = 'text-zinc-500'
+                        } else if(message.visibleTo === user){
+                          textColor = 'text-pink-700'
+                        }
+                        return (
+                          <p className={`text-2xl ${textColor}`} key={message._id}>
+                            {message.user}{message.visibleTo === user ? '(direct)' : ''}: {message.body}
+                          </p>
+                        )}
+                      )}
+                  </div>
+                </div>
+              </div>
+              <div style={inputContainerStyleEnd}>
+                <input
+                  type="text"
+                  style={inputStyleEnd}
+                  placeholder="Type your message here..."
+                />
+                <button style={buttonStyleEnd}>Send</button>
+              </div>
+            </>
+          )
+        }
+        if (villWins) {
+          return (
+            <>
+              <div style={containerStyleEnd}>
+                <div style={imageContainerStyleEnd}>
+                  <Image src="/giphy.gif" alt="Your Image" width="400" height="600" />
+                  <p style={imageStyleEnd}>Villagers WIN!</p>
+                </div>
+                <div style={chatContainerStyleEnd}>
+                  <div style={chatContentContainerStyleEnd}>
+                  {messages.filter(message => (userPermissions.includes(message.visibleTo))).map((message) => {
+                        let textColor = 'text-slate-300'
+                        if(message.visibleTo === 'werewolf'){
+                          textColor = 'text-blue-700'
+                        } else if(message.visibleTo === 'dead'){
+                          textColor = 'text-zinc-500'
+                        } else if(message.visibleTo === user){
+                          textColor = 'text-pink-700'
+                        }
+                        return (
+                          <p className={`text-2xl ${textColor}`} key={message._id}>
+                            {message.user}{message.visibleTo === user ? '(direct)' : ''}: {message.body}
+                          </p>
+                        )}
+                      )}
+                  </div>
+                </div>
+              </div>
+              <div style={inputContainerStyleEnd}>
+                <input
+                  type="text"
+                  style={inputStyleEnd}
+                  placeholder="Type your message here..."
+                />
+                <button style={buttonStyleEnd}>Send</button>
+              </div>
+            </>
+          )
+        }
         }
 }
 
-
-// return (
-//   <>
-//     <div style={containerStyleEnd}>
-//       <div style={imageContainerStyleEnd}>
-//         <Image src="/giphy.gif" alt="Your Image" width="400" height="600" />
-//         <p style={imageStyleEnd}>Villagers WIN!</p>
-//       </div>
-//       <div style={chatContainerStyleEnd}>
-//         <div style={chatContentContainerStyleEnd}>
-//         {messages.filter(message => (userPermissions.includes(message.visibleTo))).map((message) => {
-//               let textColor = 'text-slate-300'
-//               if(message.visibleTo === 'werewolf'){
-//                 textColor = 'text-blue-700'
-//               } else if(message.visibleTo === 'dead'){
-//                 textColor = 'text-zinc-500'
-//               } else if(message.visibleTo === user){
-//                 textColor = 'text-pink-700'
-//               }
-//               return (
-//                 <p className={`text-2xl ${textColor}`} key={message._id}>
-//                   {message.user}{message.visibleTo === user ? '(direct)' : ''}: {message.body}
-//                 </p>
-//               )}
-//             )}
-//         </div>
-//       </div>
-//     </div>
-//     <div style={inputContainerStyleEnd}>
-//       <input
-//         type="text"
-//         style={inputStyleEnd}
-//         placeholder="Type your message here..."
-//       />
-//       <button style={buttonStyleEnd}>Send</button>
-//     </div>
-//   </>
-// )
-// }
 
 var textStyle = {
   color: "white",

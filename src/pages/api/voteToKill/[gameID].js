@@ -4,6 +4,7 @@ export default async function handler(req, res) {
   if (req.method === 'PUT') {
     try {
       const {username, previousUsername} = req.body
+      console.log('you oted to kill username')
       const {gameID} = req.query
       console.log(`voted to kill ${username}`)
       const updatedGameState = await model.voteForUser(username, previousUsername, gameID)

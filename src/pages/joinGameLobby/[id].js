@@ -103,7 +103,7 @@ export default function Lobby() {
     });
     let sortedArray = rankArray.sort((a, b) => a.vote - b.vote);
     if (sortedArray.length <= 8) {
-      sortedArray[0].role = "Wolf";
+      sortedArray[0].role = "werewolf";
       if (selected.includes("Doctor")) {
         sortedArray[sortedArray.length - 1].role = "Doctor";
       }
@@ -111,8 +111,8 @@ export default function Lobby() {
         sortedArray[sortedArray.length - 2].role = "Seer";
       }
     } else if (sortedArray.length > 8 && sortedArray.length < 12) {
-      sortedArray[0].role = "Wolf";
-      sortedArray[1].role = "Wolf";
+      sortedArray[0].role = "werewolf";
+      sortedArray[1].role = "werewolf";
       if (selected.includes("Doctor")) {
         sortedArray[sortedArray.length - 1].role = "Doctor";
       }
@@ -120,9 +120,9 @@ export default function Lobby() {
         sortedArray[sortedArray.length - 2].role = "Seer";
       }
     } else {
-      sortedArray[0].role = "Wolf";
-      sortedArray[1].role = "Wolf";
-      sortedArray[2].role = "Wolf";
+      sortedArray[0].role = "werewolf";
+      sortedArray[1].role = "werewolf";
+      sortedArray[2].role = "werewolf";
       if (selected.includes("Doctor")) {
         sortedArray[sortedArray.length - 1].role = "Doctor";
       }
