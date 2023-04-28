@@ -4,6 +4,7 @@ export default async function handler(req, res) {
   const {method, body} = req
 
   console.log('bury me bury me')
+  console.log(' I AM IN KILL WE ARE GOING TO KILL KILL KILL KILL KILL KILL KILL ')
   switch (method) {
     case 'POST' :
       try {
