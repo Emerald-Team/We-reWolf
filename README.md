@@ -34,12 +34,12 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## About The Game
 
-###Objective:
+### Objective:
   -For the Villagers, Doctor, and Seer: Identify and vote out the Werewolves to save the village.
 
   -For the Werewolves: Eliminate all Villagers and other opposing roles.
 
-###Roles:
+### Roles:
   -Werewolves: Typically, there are 2 or more players who are designated as Werewolves. They work together to eliminate other players during the game. The Werewolves know each others identity and can communicate secretly to plan their strategy.
 
   -Villagers: The majority of players are Villagers. They do not have any special abilities other than trying to identify and vote out the Werewolves during the game.
@@ -49,7 +49,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
   -Seer: The Seer is another special role on the side of the Villagers. The Seer has the ability to investigate one players identity each night to determine if they are a Villager or a Werewolf. The Seers goal is to gather information and use it to help the Villagers identify the Werewolves.
 
 
-###GamePlay:
+### GamePlay:
 
   1. The game is played in rounds, with each round consisting of two phases: Day and Night.
 
@@ -64,7 +64,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
   6. The game continues until one of the win conditions is met: either the Werewolves are all eliminated, or the Werewolves outnumber the Villagers.
 
 
-## Gameplay
+## Features
 
 ## Authors
 
