@@ -40,7 +40,11 @@ export default function Lobby() {
       .then((res) => {
         console.log("RES from GetUserNames", res)
         setPlayersConnected(res.data[0].users)
-        setTimeout(getUserNames, 3000);
+        if(res.data[0].hasStarted){
+          router.push(`http://localhost:3000/game/${id}`)
+        } else {
+          setTimeout(getUserNames, 3000);
+        }
       })
       .catch((err) => console.log(err));
 
