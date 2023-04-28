@@ -58,7 +58,7 @@ export default function Game() {
         username: 'GuyWithTuba',
         role: 'villager',
         permissions: ['day'],
-        isAlive: false,
+        isAlive: true,
         votes: 0
       },
       {
@@ -555,7 +555,7 @@ export default function Game() {
             </div>
             <div style={chatContainerStyleEnd}>
               <div style={chatContentContainerStyleEnd}>
-              {messages.filter(message => (userPermissions.includes(message.visibleTo))).map((message) => {
+              {messages.filter(message => (thisPlayer.permissions.includes(message.visibleTo))).map((message) => {
                     let textColor = 'text-slate-300'
                     if(message.visibleTo === 'werewolf'){
                       textColor = 'text-blue-700'
@@ -709,14 +709,14 @@ var dayStyleNight = {
 var playerContainer = {
   display: "grid",
   marginTop: "30px",
-  gridTemplateColumns: "repeat(5, auto)",
+  gridTemplateColumns: "repeat(4, auto)",
   gap: "20px",
 }
 
 var playerContainerNight = {
   display: "grid",
   marginTop: "30px",
-  gridTemplateColumns: "repeat(5, auto)",
+  gridTemplateColumns: "repeat(4, auto)",
   gap: "20px",
   color: "white",
 }

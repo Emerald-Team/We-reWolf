@@ -205,6 +205,8 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
   const handleSelect = async function(e) {
     console.log('clicked!')
     if(!canSelect) {
+      console.log(player.isAlive)
+      console.log(canSelect)
       return;
     }
     if (isSelected) {
