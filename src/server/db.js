@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const uri = 'mongodb+srv://werewolf:awooo@testcluster.j05r1cq.mongodb.net/?retryWrites=true&w=majority';
+const uri = 'AVAILABLE FROM YOUR MONGODB ATLAS PAGE';
 // const options = {
 //   useNewUrlParser: true,
 //   useUnifiedTopology: true
