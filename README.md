@@ -77,7 +77,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
   ![](public/gameroomGif.gif)
 
-  ### Game Page with tombstone
+  ### Voting Off Players
   <div>After villagers have casted their votes, players with the majority of votes cast will be removed from the game, and unable to participate in future rounds.
   <img src="public/tombstonepic.png"></div>
 
