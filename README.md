@@ -2,14 +2,13 @@
 
 ![](public/image.png)
 
-
-
 ## Tech Stack
+
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 ![Axios](https://img.shields.io/badge/-Axios-671ddf?logo=axios&logoColor=black&style=for-the-badge)
-
 ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
+
 ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
 
 Welcome to We'reWolf!
@@ -32,12 +31,12 @@ npm install
 Once all node module dependencies have been installed, initialize a server and compiler to open the app:
 
 ```
-
-npm run dev
+npm run build
+npm run start
 
 ```
-
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
 ## About The Game
 
 ### Objective:
@@ -63,30 +62,26 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
   6. The game continues until one of the win conditions is met: either the Werewolves are all eliminated, or the Werewolves outnumber the Villagers.
 
+
+
 ## Features
-
-
-
   ### Login
+  Login/Signup forms provide an authentication layer to the game, with successful credentials leading to serverless routing to the game lobby.
   ![](public/loginGif.gif)
-
   ### Game Lobby
+
   ![]()
 
-
-
-
-
   ### Game Page
+  Once in the main room, the day and night cycle will run based off of a timer, with users voting at different moments based on their provided roles. Group deliberation is conducted through the chat window as shown to the right.
+
   ![](public/gameroomGif.gif)
 
   ### Game Page with tombstone
-  <div>Div Here
-
-
-
+  <div>After villagers have casted their votes, players with the majority of votes cast will be removed from the game, and unable to participate in future rounds.
   <img src="public/tombstonepic.png"></div>
-  ### End Page?
+
+  ### - Questions and feedback is most welcome, and should be directed to the authors listed below. Thank you for visiting!
 
 
 
