@@ -1,4 +1,4 @@
-const mongoose = require('mongoose'); const saltHash = require('password-salt-and-hash'); const uri = 'mongodb+srv://werewolf:awooo@testcluster.j05r1cq.mongodb.net/?retryWrites=true&w=majority';
+const mongoose = require('mongoose'); const saltHash = require('password-salt-and-hash'); const uri = 'AVAILABLE FROM MONGODB ATLAS PAGE';
 
 //mongoose.connect(uri);
 
