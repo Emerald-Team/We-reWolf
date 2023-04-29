@@ -70,7 +70,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
   ![](public/loginGif.gif)
   ### Game Lobby
 
-  ![]()
+  ![](public/lobbytogame.gif)
 
   ### Game Page
   Once in the main room, the day and night cycle will run based off of a timer, with users voting at different moments based on their provided roles. Group deliberation is conducted through the chat window as shown to the right.
