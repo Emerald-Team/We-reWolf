@@ -45,6 +45,7 @@ export default function Lobby() {
         } else {
           setTimeout(getUserNames, 3000);
         }
+        res.end()
       })
       .catch((err) => console.log(err));
 
