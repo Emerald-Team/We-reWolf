@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const uri = '';
+const uri = 'MONGO_DB_ATLAS_STRING';
 
 mongoose.connect(uri)
 

@@ -21,8 +21,6 @@ const docStr = 'Doctor🧑‍⚕️';
 
 export default function Game() {
   const router = useRouter()
-
-
   const [gameData, setGameData] = useState({
     gameID:  router.query.gameID,
     users: [
