@@ -55,10 +55,6 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
     }).toDataUriSync();
   }, []);
 
-  // useEffect(() => {
-  //   setVotes(player.votes || 0)
-  // }, [player.votes])
-
   // vote to kill
   const voteForUser = (username, gameID) => {
     const options = {
@@ -91,17 +87,12 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
     })
   }
 
-  useEffect(() => { //wcm @ gametime
-    // console.log('change in this avatar player: ', player.username, 'votes', player.votes)
+  useEffect(() => {
     setVotes(player.votes);
   }, [player])
 
   useEffect(() => {
-    // setVotes(player.votes);
     setCanSelect(thisPlayerCanSelect);
-    // if (!thisPlayerCanSelect) {
-    //   setCanHover(false);
-    // }
   }, [thisPlayerCanSelect]);
 
   // if player is not currently selected, set style to unselected
@@ -117,24 +108,6 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
     if(selected === player) console.log('selected: ', player)
       setIsSelected(selected === player);
   }, [selected, player])
-  // useEffect(() => {
-  // }, [selected])
-  // useEffect(() => {
-  //   // console.log('isSelected:', player.username, isSelected)
-  //   // console.log('isSelected:', player.username, isSelected)
-  //   // console.log('isSelectedLagFrame:', player.username, isSelectedLagFrame)
-  //   if (isSelected && !isSelectedLagFrame) {
-  //     //select
-  //   } else if (isSelectedLagFrame && !isSelected) {
-  //     //unselect
-  //     // unvoteForUser(player.username, gameID)
-  //   }
-  //   setIsSelectedLagFrame(isSelected)
-  // }, [isSelected])
-  // useEffect(() => {
-  //   // console.log('isSelected:', player.username, isSelected)
-  //   // console.log('isSelectedLagFrame:', player.username, isSelectedLagFrame)
-  // }, [isSelectedLagFrame])
 
   // if player is alive and not currently selected, highlight on hover
   const handleHoverIn = function(e) {
@@ -184,10 +157,6 @@ const Avatar = ({ player, thisPlayerCanSelect, selected, setSelected, setLastSel
       await select();
     }
   }
-
-  // useEffect(() => {
-  //   console.log(selected)
-  // }, [selected])
 
   return (
     <div style={style} onMouseOver={handleHoverIn} onMouseLeave={handleHoverOut} onClick={handleSelect}>

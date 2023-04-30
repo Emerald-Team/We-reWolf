@@ -8,8 +8,6 @@ export function middleware(req) {
     res.cookies.set("wwGameID", gameID)
     return res
   }
-
-
 }
 
 export const config = {

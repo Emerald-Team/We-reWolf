@@ -175,19 +175,6 @@ useEffect(() => {
       default:
         console.log(`Sorry, we are out of ${phaseEnded}.`);
     }
-    // if (phaseEnded === 'night') {
-    //   console.log('night votes', players.reduce((accum, player) => {
-    //     if (player.votes > 0) {
-    //       return player.votes > accum.votes ? player : accum
-    //     } else {
-    //       return null
-    //     }
-    //   }))
-    // } else if (phaseEnded === 'day') {
-    //   console.log('day votes', )
-    // } else {
-    //
-    // }
   }
   useEffect(() => {
     console.log('players', players)
