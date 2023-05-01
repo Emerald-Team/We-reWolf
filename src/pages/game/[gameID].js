@@ -21,8 +21,6 @@ const docStr = 'Doctor🧑‍⚕️';
 
 export default function Game() {
   const router = useRouter()
-
-
   const [gameData, setGameData] = useState({
     gameID:  router.query.gameID,
     users: [
@@ -112,7 +110,6 @@ export default function Game() {
     setGameID(router.query.gameID)
   }, [])
   const roleToStr = function(role) {
-    // console.log('this player and role', thisPlayer, thisPlayer.role)
     switch(role) {
       case 'werewolf':
         return wwStr;
@@ -133,7 +130,6 @@ export default function Game() {
   const [roleStr, setRoleStr] = useState(roleToStr(thisPlayer.role));
 
   const getGameState = async function()  {
-    // console.log('getting game state')
     if (gameID) {
       const response = await fetch(`/api/gameState/${gameID}`, {
         method: 'GET',
@@ -141,22 +137,13 @@ export default function Game() {
           'Content-Type': 'application/json',
         },
       });
-      // console.log('response from fetch gameData:\n', response)
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       } else {
         const gameState = await response.json();
-        // console.log('GAME STATE IN getGameState: is this null', gameState)
         if (gameState !== null) {
           delete gameState.phase;
-          // console.log('GAME STATE IN getGameState: is phase gone?', gameState)
           setGameData(gameState);
-                // return gameState;
-          // setPlayers(gameState.users)
-          // // console.log(gameData, players, '-------IN INIT USEEFFECT------')
-          // // setPhase(gameState.phase)
-          // //  setGameID(gameData.gameID) //should we be setting this here or from router.query line 79
-          // setThisPlayer(gameState.users.filter(user => user.username === gameState.users[0].username)[0])
         }
       }
     }
@@ -164,32 +151,18 @@ export default function Game() {
   }
 
   useEffect(() => {
-    // console.log('in gameData useEffect: is this null?\n', gameData)
     if (gameData !== null) {
       setPlayers(gameData.users)
-      // console.log(gameData, players, '-------IN INIT USEEFFECT------')
-      // setPhase(gameData.phase)
-      //  setGameID(gameData.gameID) //should we be setting this here or from router.query line 79
       const thisPlayerArr = gameData.users.filter(user => user.username === localStorage.getItem('user'));
-      // console.log(thisPlayerArr[0], 'THISPLAYERARR')
       if (thisPlayerArr[0] !== undefined) {
         setThisPlayer(thisPlayerArr[0]);
       }
     }
   }, [gameData])
 
-  // useEffect(() => {
-  //   if (gameData !== null) {
-  //   setPlayers(gameData.users)
-  //   }
-  // }, [gameData, phaseIndex])
-
-
   useEffect(() => {
     if(gameStarted) {
       setIsWerewolf(thisPlayer.role === 'werewolf')
-      // console.log(thisPlayer)
-      // console.log('am i alive? ', thisPlayer.isAlive)
       setRoleStr(roleToStr(thisPlayer.role));
     }
   }, [thisPlayer])
@@ -252,10 +225,6 @@ export default function Game() {
     }
   }
 
-  // const endGame = function(winner) {
-  //   console.log('Werewolves Win!\n');
-  //   router.push('/end');
-  // }
   const handleEndPhase = async function(phaseEnded) {
     if (gameStarted) {
       console.log('handling phase end, ', phaseEnded);
@@ -264,11 +233,9 @@ export default function Game() {
           console.log('The night has ended. Here is the result:\n');
           await killUser()
           if (werewolvesHaveWon()) {
-            //route to ww end screen
             console.log('Werewolves Win!\n');
             setGameDone(true);
             setWolfWins(true);
-            // router.push('/end');
           }
           break;
         case 'day':
@@ -278,12 +245,10 @@ export default function Game() {
             console.log('Villagers Win!\n');
             setGameDone(true);
             setVillWins(true);
-            // router.push('/end');
           } else if (werewolvesHaveWon()) {
             console.log('Werewolves Win!\n');
             setGameDone(true);
             setWolfWins(true);
-            // router.push('/end');
           }
           break;
         default:
@@ -329,7 +294,6 @@ export default function Game() {
     }
     axios(options)
       .then(res => {
-        // console.log(res.data, '------returned from useeffect-------')
         setGameData(res.data)
       });
   }, [gameID])
@@ -369,8 +333,6 @@ export default function Game() {
     setText(e.target.value)
   }
 
-
-
   const handleSend = () => {
     let visibleTo = 'all'
     if (phase === 'night' && thisPlayer.role === 'werewolf') {
@@ -408,7 +370,6 @@ export default function Game() {
       console.error(`Error reseting votes: ${response.statusText}`)
     } else {
       const updatedGameState = await response.json()
-      // console.log(updatedGameState, '----UPDATED GAME STATE-------')
     }
     return response;
   }
@@ -416,16 +377,9 @@ export default function Game() {
   const onNextPhase = async function() {
     console.log('end of phase', phase, '\ngameData:\n', gameData)
     await killUser()
-    // console.log('kill result:\n', killResult)
     const resetResult = await resetVotes(gameID);
-    // console.log('reset result result:\n', resetResult)
-    // setPlayers(gameData.players)
     setPhaseIndex((phaseIndex + 1) % phases.length)
   }
-
-  // useEffect(() => {
-  //   console.log(thisPlayer, thisPlayer.isAlive, thisPlayer.role, phase)
-  // }, [thisPlayer])
 
   if (!gameDone) {
     return (

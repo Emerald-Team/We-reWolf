@@ -68,7 +68,6 @@ export default function Home() {
   }, [])
 
   const [username, setUsername] = useState("")
-
   const [password, setPassword] = useState("")
   const [showing, setShowing] = useState(false)
   const [email, setEmail] = useState("")

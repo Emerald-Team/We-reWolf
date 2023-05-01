@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from "react"
 import { useRouter, redirect } from "next/router"
-
 import axios from "axios"
 
 export default function SignUp() {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [email, setEmail] = useState("")
-  const [message, setMessage] = useState("")
-
-  const [species, setSpecies] = useState("")
-  const [id, setId] = useState({})
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [species, setSpecies] = useState("");
+  const [id, setId] = useState({});
   const router = useRouter();
+
   useEffect(() => {
     if (localStorage.getItem("user")) {
-      router.push("/joinGameLobby")
+      router.push("/joinGameLobby");
     }
-  }, [])
+  }, []);
 
   const styles = {
     container: {
@@ -69,8 +68,6 @@ export default function SignUp() {
     },
   }
   const signupHandler = async () => {
-    console.log(username, password, email, "Login Info");
-
     let obj = {
       username: username,
       password: password,
@@ -78,7 +75,6 @@ export default function SignUp() {
       species: species,
     }
     await axios
-
       .post("api/createUser", obj)
       .then((res) => {
         console.log("response data :", res.data)
@@ -90,11 +86,8 @@ export default function SignUp() {
         router.push("/joinGameLobby")
       })
       .catch((res) => {
-        //setMessage(res.data);
         router.push("/signup")
       })
-
-    //router.push("/lobby");
   }
 
   return (
@@ -143,9 +136,6 @@ export default function SignUp() {
             <option value="Human">Human</option>
             <option value="Werewolf">Werewolf</option>
           </select>
-          {/* <input type="text" placeholder="w.e. you want" style={styles.input} />
-          <input type="text" placeholder="w.e. you want" style={styles.input} />
-          <input type="text" placeholder="w.e. you want" style={styles.input} /> */}
           <button
             className="signButton"
             type="submit"

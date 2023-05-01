@@ -1,21 +1,8 @@
 const mongoose = require('mongoose');
 
-const uri = 'AVAILABLE FROM YOUR MONGODB ATLAS PAGE';
-// const options = {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true
-// }
-
-// console.log(mongoose)
-// console.log(mongoose.connect)
+const uri = 'MONGO_DB_ATLAS_STRING';
 
 mongoose.connect(uri)
-  // .then(result => {
-  //   console.log('result', result)
-  // })
-  // .catch(err => {
-  //   console.log('error',err)
-  // });
 
 const database = mongoose.connection;
 
